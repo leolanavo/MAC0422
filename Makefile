@@ -55,7 +55,7 @@ ep1sh:
 	$(call create_vars,ep1sh,exec)
 
 .PHONY: test
-test:
+debug:
 	$(foreach x, $(BIN), $(call create_vars,$x,test))
 
 #$(eval $(BINDIR)/$1)
@@ -89,7 +89,6 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCDIR)/%.h | $(OBJDIR)
 $(OBJDIR) $(BINDIR) $(SRCDIR) $(INCDIR) $(TSTDIR) $(TXTDIR) $(FINALDIR) $(LTXDIR):
 	@$(MKDIR) $@
 
-.PHONY: debug
 # phony targets for automation
 .PHONY: init
 init: | $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR)
