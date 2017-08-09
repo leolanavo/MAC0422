@@ -27,7 +27,7 @@ TESTFLAGS := -g
 
 CC    := gcc
 MV    := mv
-RM    := rm -f
+RM    := rm -rf
 CP    := cp -r
 ECHO  := echo -e
 MKDIR := mkdir -p
@@ -89,15 +89,15 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCDIR)/%.h | $(OBJDIR)
 $(OBJDIR) $(BINDIR) $(SRCDIR) $(INCDIR) $(TSTDIR) $(TXTDIR) $(FINALDIR) $(LTXDIR):
 	@$(MKDIR) $@
 
+
 # phony targets for automation
 .PHONY: init
 init: | $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR)
 	@$(ECHO) "Creating directories..."
 	$(eval DIRS := $(INCDIR) $(SRCDIR))
-	$(foreach DIR, $(DIRS), $(foreach X, $(BIN), $(MKDIR) $(DIR)/$X))
-	
-	@$(ECHO) "Initializing repository..."
-	@git init
+	$(foreach DIR, $(DIRS), $(foreach X, $(BIN), @$(MKDIR) $(DIR)/$X))
+	@#Solving a bug where a directory "@mkdir" would appear
+	@$(RM) @mkdir
 	
 	@$(ECHO) "Creating the .gitignore..."
 	@$(ECHO) "$(OBJDIR)\n$(FINALDIR)\n$(TXTDIR)\n$(BINDIR)\n$(TSTDIR)\n.git" > .gitignore
