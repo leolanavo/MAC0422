@@ -43,8 +43,8 @@ LTXDIR := report
 
 # main target
 .PHONY: all
-all: 
-	$(foreach x, $(BIN), $(call create_vars,$x,exec))
+all:
+	$(foreach x, $(BIN), $(call create_vars,$x,"exec"))
 
 .PHONY: ep1
 ep1:
@@ -56,24 +56,26 @@ ep1sh:
 
 .PHONY: test
 debug:
-	$(foreach x, $(BIN), $(call create_vars,$x,test))
-
-#$(eval $(BINDIR)/$1)
-#$(eval $(TSTDIR)/$1)
+	$(foreach x, $(BIN), $(call create_vars,$x,"test"))
+	
 
 define create_vars
-	$(eval SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$1/*.c)))
-	$(eval OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.c, $(SRC)))
-	$(eval INC := $(strip $(wildcard $(INCDIR)/*.c) $(wildcard $(INCDIR)/$1/*.c)))
-	$(eval ifeq ($2,exec))
-		@$(ECHO) "EXEC"
-	$(eval else)
-		@$(ECHO) "TEST"
-	$(eval endif)
+	$(eval $1.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$1/*.c)))
+	$(eval $1.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.c, $(SRC)))
+	$(eval $1.INC := $(strip $(wildcard $(INCDIR)/*.c) $(wildcard $(INCDIR)/$1/*.c)))
+	$(if (filter-out $2,"exec"), $(addprefix $(BINDIR), $1), $(addprefix $(TSTDIR), $1))
+	$(if (filter-out $2,"exec"), $(eval exec), $(eval test))
 endef
 
 # build rules
+.PHONY: exec
+exec: $(BINDIR)/$(BIN)
+
+.PHONY: test
+test: $(TSTDIR)/$(BIN)
+
 $(BINDIR)/%: $(OBJ) | $(BINDIR)
+	@echo "hello"
 	$(CC) $(CFLAGS) $(EXECFLAGS) -o $@ $^
 
 $(TSTDIR)/%: $(OBJ) | $(TSTDIR)
@@ -89,7 +91,6 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCDIR)/%.h | $(OBJDIR)
 $(OBJDIR) $(BINDIR) $(SRCDIR) $(INCDIR) $(TSTDIR) $(TXTDIR) $(FINALDIR) $(LTXDIR):
 	@$(MKDIR) $@
 
-
 # phony targets for automation
 .PHONY: init
 init: | $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR)
@@ -104,8 +105,6 @@ init: | $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR)
 	
 	@$(ECHO) "Adding the initial files..."
 	@git add $(SRCDIR) $(INCDIR) $(LTXDIR) .gitignore Makefile
-	@git commit -m "Initial commit"
-	@git push origin master
 	
 	@$(ECHO) "Finished"
 
@@ -131,9 +130,3 @@ tar: clean | $(FINALDIR)
 	@$(CP) Makefile $(FINALDIR)
 	@$(ECHO) "Compressing..."
 	@$(TAR) $(TARF).tar.gz $(FINALDIR)
-
-.PHONY: upload
-upload:
-	@git add --all
-	@git commit -m "Upload all the files"
-	@git push origin master
