@@ -44,42 +44,17 @@ LTXDIR := report
 # main target
 .PHONY: all
 all:
-	$(foreach x, $(BIN), $(call create_vars,$x,"exec"))
-
-.PHONY: ep1
-ep1:
-	$(call create_vars,ep1,exec)
-
-.PHONY: ep1sh
-ep1sh:
-	$(call create_vars,ep1sh,exec)
-
-.PHONY: test
-debug:
-	$(foreach x, $(BIN), $(call create_vars,$x,"test"))
+	$(foreach x, $(BIN), $(call create_vars,$x))
 	
-
 define create_vars
-	$(eval $1.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$1/*.c)))
-	$(eval $1.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.c, $(SRC)))
-	$(eval $1.INC := $(strip $(wildcard $(INCDIR)/*.c) $(wildcard $(INCDIR)/$1/*.c)))
-	$(if (filter-out $2,"exec"), $(addprefix $(BINDIR), $1), $(addprefix $(TSTDIR), $1))
-	$(if (filter-out $2,"exec"), $(eval exec), $(eval test))
+	$(eval SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$1/*.c)))
+	$(eval OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.c, $(SRC)))
+	$(eval INC := $(strip $(wildcard $(INCDIR)/*.c) $(wildcard $(INCDIR)/$1/*.c)))
+	$(eval EXECBIN := $(addprefix $(BINDIR)/, $(BIN)))
 endef
 
-# build rules
-.PHONY: exec
-exec: $(BINDIR)/$(BIN)
-
-.PHONY: test
-test: $(TSTDIR)/$(BIN)
-
-$(BINDIR)/%: $(OBJ) | $(BINDIR)
-	@echo "hello"
+$(EXECBIN): $(OBJ) | $(BINDIR)
 	$(CC) $(CFLAGS) $(EXECFLAGS) -o $@ $^
-
-$(TSTDIR)/%: $(OBJ) | $(TSTDIR)
-	$(CC) $(CFLAGS) $(TESTFLAGS) -o $@ $^
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -102,9 +77,6 @@ init: | $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR)
 	
 	@$(ECHO) "Creating the .gitignore..."
 	@$(ECHO) "$(OBJDIR)\n$(FINALDIR)\n$(TXTDIR)\n$(BINDIR)\n$(TSTDIR)\n.git" > .gitignore
-	
-	@$(ECHO) "Adding the initial files..."
-	@git add $(SRCDIR) $(INCDIR) $(LTXDIR) .gitignore Makefile
 	
 	@$(ECHO) "Finished"
 
