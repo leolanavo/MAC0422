@@ -21,13 +21,15 @@
 BIN   	  := ep1sh ep1
 TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
-CFLAGS    := -Wall -std=c11
+
+CFLAGS    := -Wall -std=c11 -lreadline
 EXECFLAGS := -O2
 TESTFLAGS := -g
 
 CC    := gcc
 MV    := mv
-RM    := rm -rf
+RM    := rm -f
+RMDIR := rm -rf
 CP    := cp -r
 ECHO  := echo -e
 MKDIR := mkdir -p
@@ -40,50 +42,57 @@ TSTDIR := test
 TXTDIR := txt
 INCDIR := include
 LTXDIR := report
+ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) \
+        $(FINALDIR) $(BINDIR) $(TSTDIR) $(OBJDIR)
+BINROOT := $(foreach r,$(INCDIR) $(SRCDIR),$(foreach b,$(BIN),$r/$b))
 
 # main target
 .PHONY: all
-all:
-	$(foreach x, $(BIN), $(call create_vars,$x))
-	
+all: CFLAGS += $(EXECFLAGS)
+all: $(addprefix $(BINDIR)/,$(BIN))
+
+.PHONY: debug
+debug: CFLAGS += $(TESTFLAGS)
+debug: $(addprefix $(BINDIR)/,$(BIN))
+
+# Create the necessary lists of dependencies for each binary
 define create_vars
-	$(eval SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$1/*.c)))
-	$(eval OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.c, $(SRC)))
-	$(eval INC := $(strip $(wildcard $(INCDIR)/*.c) $(wildcard $(INCDIR)/$1/*.c)))
-	$(eval EXECBIN := $(addprefix $(BINDIR)/, $(BIN)))
+$(eval $1.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$1/*.c)))
+$(eval $1.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC)))
+$(eval $1.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$1/*.h)))
 endef
+$(foreach x,$(BIN),$(call create_vars,$x))
 
-$(EXECBIN): $(OBJ) | $(BINDIR)
-	$(CC) $(CFLAGS) $(EXECFLAGS) -o $@ $^
+# Compile each one of the binaries
+define bin-factory
+$$(BINDIR)/$1: $$($1.OBJ) | $$(BINDIR)
+	$$(CC) $$(CFLAGS) -o $$@ $$^
+endef
+$(foreach x,$(BIN),$(eval $(call bin-factory,$x)))
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
-	$(CC) $(CFLAGS) -c -o $@ $<
+define object-factory
+$$(OBJDIR)/$1.o: $$(SRCDIR)/$1.c $$(wildcard $$(INCDIR)/$1.h) | $$(OBJDIR)
+	$$(CC) $$(CFLAGS) -c -o $$@ $$<
+endef
+$(foreach b,$(BIN),\
+	$(foreach obj,$($b.OBJ),\
+		$(eval $(call object-factory,$(patsubst $(OBJDIR)/%.o,%,$(obj))))))
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCDIR)/%.h | $(OBJDIR)
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-# directory creation rules
-$(OBJDIR) $(BINDIR) $(SRCDIR) $(INCDIR) $(TSTDIR) $(TXTDIR) $(FINALDIR) $(LTXDIR):
+# Directory creation rules
+$(ROOT) $(BINROOT):
 	@$(MKDIR) $@
 
 # phony targets for automation
 .PHONY: init
-init: | $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR)
-	@$(ECHO) "Creating directories..."
-	$(eval DIRS := $(INCDIR) $(SRCDIR))
-	$(foreach DIR, $(DIRS), $(foreach X, $(BIN), @$(MKDIR) $(DIR)/$X))
-	@#Solving a bug where a directory "@mkdir" would appear
-	@$(RM) @mkdir
-	
+init: | $(ROOT) $(BINROOT)
 	@$(ECHO) "Creating the .gitignore..."
 	@$(ECHO) "$(OBJDIR)\n$(FINALDIR)\n$(TXTDIR)\n$(BINDIR)\n$(TSTDIR)\n.git" > .gitignore
-	
 	@$(ECHO) "Finished"
 
 .PHONY: clean
 clean:
-	@$(RM) $(OBJDIR)
-	@$(RM) $(TSTDIR)
+	@$(RMDIR) $(OBJDIR)
+	@$(RMDIR) $(TSTDIR)
 	@$(RM) $(LTXDIR)/*.dvi $(LTXDIR)/*.aux $(LTXDIR)/*.log
 
 .PHONY: organize
@@ -93,12 +102,17 @@ organize:
 	@$(MV) *.h $(INCDIR)
 	@$(MV) *.txt $(TXTDIR)
 
-.PHONY: tar
-tar: clean | $(FINALDIR)
+.PHONY: package
+package: clean | $(FINALDIR)
+	
 	@$(ECHO) "Copying files..."
 	@$(CP) $(SRCDIR) $(FINALDIR)
 	@$(CP) $(INCDIR) $(FINALDIR)
 	@$(CP) $(LTXDIR) $(FINALDIR)
 	@$(CP) Makefile $(FINALDIR)
+	
 	@$(ECHO) "Compressing..."
 	@$(TAR) $(TARF).tar.gz $(FINALDIR)
+	
+	@$(ECHO) "Cleaning..."
+	@$(RMDIR) $(FINALDIR)
