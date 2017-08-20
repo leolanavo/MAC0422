@@ -18,7 +18,7 @@
 #                                                 #
 ###################################################
 
-BIN   	  := ep1sh ep1
+BIN   	  := ep1sh
 TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
 
