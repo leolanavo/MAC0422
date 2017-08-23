@@ -3,95 +3,102 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <unistd.h>
-#include <sys/time.h>
-#include <sys/syscall.h>
 #include <grp.h>
+#include <sys/syscall.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <readline/history.h>
 #include <readline/readline.h>
 
-void process_cmd(char *cmd, char *lc_dir) {
-    /* "/bin/ping -c 10 www.google.com.br"; */
-    /* "/bin/usr/cal 2017"; */
-    /* "./ep1"; */
-
+void process_cmd(char* cmd, char* lc_dir)
+{
     /*Get the first string of the command*/
     int i;
     int size = strlen(cmd);
-    
-    for (i = 0; i < size && cmd[i] != 32; i++);
-    char *path = calloc(i, sizeof(char));
-    
+
+    for (i = 0; i < size && cmd[i] != 32; i++)
+        ;
+    char* path = calloc(i, sizeof(char));
+
     for (i = i - 1; i >= 0; i--)
         path[i] = cmd[i];
 
+    // debug
     printf("check path: %s\n", path);
+    time_t t;
+
+    if (strcmp(path, "date") == 0) {
+        t = time(&t);
+        printf("%lu\n", t);
+    }
+
 
     /*Date command*/
-    if (strcmp(path,"date") == 0) { 
+    /* if (strcmp(path, "date") == 0) { */
+        /* struct tm* br = malloc(sizeof(struct tm)); */
+        /* time_t brtime; */
         
-        struct timeval *tv = malloc(sizeof(struct timeval));
-        struct timezone *tz = malloc(sizeof(struct timezone));
+        /* brtime=time(&brtime); */
+        /* printf("%lu", brtime); */
+        /* br = localtime_r(&brtime, br); */
+        /* char* time = asctime(br); */
 
-        int rc = syscall(SYS_gettimeofday, tv, tz);
-        if (rc == -1) printf("System call failed.\n");
-        
-        /* br = localtime_r (&brtime, br);
-        char *time = asctime(br);
+        /* int str_len = strlen(time); */
+        /* char* str_time = calloc(str_len + 2, sizeof(char)); */
+        /* for (int j = 0; j < str_len - 6; j++) */
+            /* str_time[j] = time[j]; */
 
-        int str_len = strlen(time);
-        char *str_time = calloc(str_len + 2, sizeof(char));
-        for (int j = 0; j < str_len - 6; j++)
-            str_time[j] = time[j]; 
+        /* printf("%s %d\n", str_time, br->tm_year + 1900); */
 
-        printf("%s %s %d\n", str_time, br->tm_zone, br->tm_year + 1900);
-        
-        free(br);
-        free(str_time); */
-    }
+        /* free(br); */
+        /* free(str_time); */
+    /* } */
 
     /* Chown command */
-    else if (strcmp(path,"chown") == 0) {
-        
-        /* Parsing the string */
+    /* else if (strcmp(path,"chown") == 0) { */
 
-        int sz_group, offset, tmp;
-        offset = 7; /* removing "chown :" from the counting */
+    /* [> Parsing the string <] */
 
-        for (sz_group = offset; sz_group < size && cmd[sz_group] != 32; sz_group++);    
-        char *grp_name = calloc(sz_group - offset, sizeof(char));
-        
-        tmp = sz_group - 1;       
-        for (int j = sz_group - offset - 1; tmp >= offset; tmp--, j--)
-            grp_name[j] = cmd[tmp];
+    /* int sz_group, offset, tmp; */
+    /* offset = 7; [> removing "chown :" from the counting <] */
 
-        int sz_file = size - sz_group - 1;
-        char *file_name = calloc (sz_file, sizeof(char));
-        
-        tmp = size - 1;
-        for (int j = sz_file - 1; tmp >= size - sz_file; j--, tmp--)
-            file_name[j] = cmd[tmp];
+    /* for (sz_group = offset; sz_group < size && cmd[sz_group] != 32;
+     * sz_group++);     */
+    /* char *grp_name = calloc(sz_group - offset, sizeof(char)); */
 
-        char *path_file = calloc (size + sz_file, sizeof(char));
-    	
-    	/* Making system call */
+    /* tmp = sz_group - 1;        */
+    /* for (int j = sz_group - offset - 1; tmp >= offset; tmp--, j--) */
+    /* grp_name[j] = cmd[tmp]; */
 
-    	struct group *grp = getgrnam (grp_name);
-        if (grp == NULL) printf("There is no such group named '%s'\n", grp_name);
+    /* int sz_file = size - sz_group - 1; */
+    /* char *file_name = calloc (sz_file, sizeof(char)); */
 
-        int rc = syscall(SYS_chown, file_name, (uid_t)-1, grp->gr_gid);
-        if (rc == -1) printf("System call failed.\n");
+    /* tmp = size - 1; */
+    /* for (int j = sz_file - 1; tmp >= size - sz_file; j--, tmp--) */
+    /* file_name[j] = cmd[tmp]; */
 
-        else {
-            int ret_value = chown (file_name, (uid_t)-1, grp->gr_gid);
-            if (ret_value == -1) printf("chown: erro\n");
-        }
-    }
+    /* char *path_file = calloc (size + sz_file, sizeof(char)); */
 
+    /* [> Making system call <] */
+
+    /* struct group *grp = getgrnam (grp_name); */
+    /* if (grp == NULL) printf("There is no such group named '%s'\n", grp_name);
+     */
+
+    /* int rc = syscall(SYS_chown, file_name, (uid_t)-1, grp->gr_gid); */
+    /* if (rc == -1) printf("System call failed.\n"); */
+
+    /* else { */
+    /* int ret_value = chown (file_name, (uid_t)-1, grp->gr_gid); */
+    /* if (ret_value == -1) printf("chown: erro\n"); */
+    /* } */
+    /* } */
 }
 
-void input_interface() {
+void input_interface()
+{
     char dir[1024], *s;
 
     while (1) {
@@ -115,7 +122,8 @@ void input_interface() {
     }
 }
 
-int main() {
+int main()
+{
     input_interface();
     return 0;
 }
