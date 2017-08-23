@@ -12,6 +12,34 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+char** parse_args (char* str) {
+    int cmd_index;
+    int j = 0;
+    int nrow = 8;
+    int ncol = 8;
+    char** args;
+    int nspaces = 0;
+
+    int* wsizes = calloc(8, sizeof(int));
+
+    for (int i = 0, cur_size = 0; i < strlen(str); i++, cur_size++) {
+        if (str[i] == 32) {
+            wsizes[nspaces] = cur_size;
+            nspaces++;
+            cur_size = 0;
+        }
+    }
+    args = malloc(nspaces * sizeof(char*));
+
+    for (int i = wsizes[0] + 2, j = 1; i < strlen(str) && j < nspaces; i++, j++) {
+        args[j - 1] = malloc(wsizes[j]);
+        while (i < strlen(str) && str[i] != 32) {
+            args[j - 1][i - wsizes[0] - 2] = str[i];
+            i++;
+        }
+    }
+}
+
 void cmd_date() {
     time_t t;
     char buf[1024];
@@ -22,6 +50,29 @@ void cmd_date() {
     localtime_r(&t, result);
     asctime_r(result, buf);
     printf("%s", buf);
+
+    free(result);
+}
+
+void cmd_ping(char* path, char* cmd) {
+    pid_t p;
+    if ((p = fork()) == 0) {
+        return;
+    }
+    else
+        return;
+}
+
+void cmd_cal(char* path, char* cmd) {
+
+}
+
+void cmd_ep1(char* path, char* cmd) {
+
+}
+
+void cmd_chown (char* path, char* cmd) {
+
 }
 
 void process_cmd(char* cmd, char* lc_dir) {
@@ -37,10 +88,22 @@ void process_cmd(char* cmd, char* lc_dir) {
 
     if (strcmp(path, "date") == 0)
         cmd_date();
+
+    if (strcmp (path, "") == 0)
+        cmd_chown(path, cmd);
+
+    else if (strcmp(path, "/bin/ping") == 0)
+        cmd_ping(path, cmd);
+    
+    else if (strcmp(path, "/usr/bin/cal") == 0)
+        cmd_cal(path, cmd);
+    
+    else if (strcmp(path, "./ep1") == 0)
+        cmd_ep1(path, cmd);
+
 }
 
-void input_interface()
-{
+void input_interface() {
     char dir[1024], *s;
 
     while (1) {
@@ -64,8 +127,7 @@ void input_interface()
     }
 }
 
-int main()
-{
+int main() {
     input_interface();
     return 0;
 }
