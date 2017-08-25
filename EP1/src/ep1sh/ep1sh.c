@@ -8,36 +8,49 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include <readline/history.h>
 #include <readline/readline.h>
 
 char** parse_args (char* str) {
-    int cmd_index;
-    int j = 0;
-    int nrow = 8;
-    int ncol = 8;
     char** args;
-    int nspaces = 0;
+    int k;
+    int nspaces = 0, last = 0;
 
     int* wsizes = calloc(8, sizeof(int));
 
     for (int i = 0, cur_size = 0; i < strlen(str); i++, cur_size++) {
-        if (str[i] == 32) {
+        
+        // Realloc
+        if (nspaces == sizeof(wsizes)/sizeof(int)) {
+            int* aux = calloc(2 * nspaces, sizeof(int));
+            for (int j = 0; j < nspaces; j++)
+                aux[j] = wsizes[j];
+            free(wsizes);
+            wsizes = aux;
+        }
+        
+        if (str[i] == 32 || i == strlen(str) - 1) {
             wsizes[nspaces] = cur_size;
             nspaces++;
             cur_size = 0;
-        }
-    }
-    args = malloc(nspaces * sizeof(char*));
-
-    for (int i = wsizes[0] + 2, j = 1; i < strlen(str) && j < nspaces; i++, j++) {
-        args[j - 1] = malloc(wsizes[j]);
-        while (i < strlen(str) && str[i] != 32) {
-            args[j - 1][i - wsizes[0] - 2] = str[i];
             i++;
         }
     }
+
+    args = malloc((nspaces + 2) * sizeof(char*));
+    
+    for (int i = 0, j = 0; i < strlen(str) && j < nspaces; i++, j++) {
+        args[j] = malloc(wsizes[j]);
+        for (k = 0; i < strlen(str) && str[i] != 32; k++, i++)
+            args[j][k] = str[i];
+        args[j][k] = '\0';
+        last = j;
+    }
+    
+    args[last + 1] = NULL;
+    return args;
 }
 
 void cmd_date() {
@@ -54,25 +67,23 @@ void cmd_date() {
     free(result);
 }
 
-void cmd_ping(char* path, char* cmd) {
+void cmd_execute(char* path, char* cmd) {
+    char** args = parse_args(cmd);
     pid_t p;
     if ((p = fork()) == 0) {
-        return;
+        execv(path, args);
+        perror("deu ruim");
+        exit(-1);
     }
-    else
-        return;
-}
-
-void cmd_cal(char* path, char* cmd) {
-
-}
-
-void cmd_ep1(char* path, char* cmd) {
-
+    else {
+        waitpid(p, NULL, 0);
+        free(args);
+    }
 }
 
 void cmd_chown (char* path, char* cmd) {
-
+    char** args= parse_args(cmd);
+    free(args);
 }
 
 void process_cmd(char* cmd, char* lc_dir) {
@@ -89,17 +100,11 @@ void process_cmd(char* cmd, char* lc_dir) {
     if (strcmp(path, "date") == 0)
         cmd_date();
 
-    if (strcmp (path, "") == 0)
+    if (strcmp (path, "chown") == 0)
         cmd_chown(path, cmd);
 
-    else if (strcmp(path, "/bin/ping") == 0)
-        cmd_ping(path, cmd);
-    
-    else if (strcmp(path, "/usr/bin/cal") == 0)
-        cmd_cal(path, cmd);
-    
-    else if (strcmp(path, "./ep1") == 0)
-        cmd_ep1(path, cmd);
+    else
+        cmd_execute(path, cmd);
 
 }
 
