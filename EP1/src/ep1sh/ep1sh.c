@@ -14,7 +14,7 @@
 #include <readline/readline.h>
 
 char** parse_args(char* str) {
-    char** args;
+    /*char** args;
     int k;
     int nspaces = 0, last = 0;
 
@@ -42,7 +42,7 @@ char** parse_args(char* str) {
     args = malloc((nspaces + 2) * sizeof(char*));
 
     for (int i = 0, j = 0; i < strlen(str) && j < nspaces; i++, j++) {
-        args[j] = malloc(wsizes[j]);
+        args[j] = malloc(wsizes[j] + 1);
         for (k = 0; i < strlen(str) && str[i] != 32; k++, i++)
             args[j][k] = str[i];
         args[j][k] = '\0';
@@ -50,6 +50,31 @@ char** parse_args(char* str) {
     }
 
     args[last + 1] = NULL;
+    return args;*/
+
+    // chwon\0:root\0ex.txt\0
+
+    int num_args = 0;
+
+    for (int i = 0; i < strlen(str); i++) {
+      	while (isblank(str[i])) i++;
+		num_args++;
+    }
+
+    char **args = malloc(num_args * sizeof(*args));
+    
+    int i = 0, j = 0;
+    do {
+    	args[j++] = &str[i];
+    	while (isalpha(str[i])) i++;
+    	while (isblank(str[i]) && i < strlen(str)) i++;
+    	if (i >= strlen(str)) break;
+    } while(1);
+
+    for (int i = 0; i < num_args; i++) {
+    	printf("ARGS[%d]: %s\n", i, args[i]);
+    }
+
     return args;
 }
 
@@ -90,25 +115,22 @@ void cmd_chown(char* cmd, int size, char* dir) {
     strcat(path_file, "/");
     strcat(path_file, args[2]);
 
-    //take ':' from the group name
-    int grp_sz = strlen(args[1]) - 1;
-    char *grp_name = calloc (grp_sz, sizeof(char));
-    for (int i = 0; i < grp_sz; i++) {
-        grp_name[i] = args[1][i + 1];
-    }
-
-    printf("NOME GRUPO %s\n",grp_name );
+    //take ':' from the group name (chown :grupo arquivo)
+    char *grp_name = &args[1][1];
     
     // get the group id
     struct group *grp = getgrnam(grp_name);
+    printf("Struct group\n");
     if (grp == NULL)
         printf("There is no such group named '%s'\n", grp_name);
     else {
 
-        int ret_value = chown(file_name, (uid_t)-1, grp->gr_gid);
+        int ret_value = chown(path_file, (uid_t)-1, grp->gr_gid);
         if (ret_value == -1)
             perror("chown: erro");
     }
+
+   
 }
 
 void process_cmd(char* cmd, char* lc_dir)
