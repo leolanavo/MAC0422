@@ -81,40 +81,33 @@ void cmd_execute(char* path, char* cmd) {
 }
 
 void cmd_chown(char* cmd, int size, char* dir) {
-    // parse de arguments
-    int sz_group, offset, tmp;
-    offset = 7; // removing "chown :" from the counting
-
-    for (sz_group = offset; sz_group < size && cmd[sz_group] != 32; sz_group++)
-        ;
-    char* grp_name = calloc(sz_group - offset, sizeof(char));
-
-    tmp = sz_group - 1;
-    for (int j = sz_group - offset - 1; tmp >= offset; tmp--, j--)
-        grp_name[j] = cmd[tmp];
-
-    int sz_file = size - sz_group - 1;
-    char* file_name = calloc(sz_file, sizeof(char));
-
-    tmp = size - 1;
-    for (int j = sz_file - 1; tmp >= size - sz_file; j--, tmp--)
-        file_name[j] = cmd[tmp];
-
+    
+    char **args = parse_args(cmd);
+    
     // concatenate the local directory and the file name
-    char* path_file = calloc(size + sz_file + 1, sizeof(char));
+    char *path_file = calloc(size + strlen(args[2]) + 1, sizeof(char));
     strcpy(path_file, dir);
     strcat(path_file, "/");
-    strcat(path_file, file_name);
+    strcat(path_file, args[2]);
 
+    //take ':' from the group name
+    int grp_sz = strlen(args[1]) - 1;
+    char *grp_name = calloc (grp_sz, sizeof(char));
+    for (int i = 0; i < grp_sz; i++) {
+        grp_name[i] = args[1][i + 1];
+    }
+
+    printf("NOME GRUPO %s\n",grp_name );
+    
     // get the group id
-    struct group* grp = getgrnam(grp_name);
+    struct group *grp = getgrnam(grp_name);
     if (grp == NULL)
         printf("There is no such group named '%s'\n", grp_name);
     else {
+
         int ret_value = chown(file_name, (uid_t)-1, grp->gr_gid);
-        if (ret_value == -1) {
+        if (ret_value == -1)
             perror("chown: erro");
-        }
     }
 }
 
