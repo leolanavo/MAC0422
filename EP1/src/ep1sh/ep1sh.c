@@ -112,8 +112,9 @@ void cmd_chown(char* cmd, int size, char* dir) {
         printf("There is no such group named '%s'\n", grp_name);
     else {
         int ret_value = chown(file_name, (uid_t)-1, grp->gr_gid);
-        if (ret_value == -1)
-            printf("chown: erro\n");
+        if (ret_value == -1) {
+            perror("chown: erro");
+        }
     }
 }
 
@@ -156,11 +157,11 @@ void input_interface()
         char* line = readline(str);
 
         if (line && *line) {
+        	printf("this is your line: %s\n", line);
             process_cmd(line, dir);
             add_history(line);
         }
 
-        free(str);
     }
 }
 
