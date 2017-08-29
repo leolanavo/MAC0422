@@ -55,14 +55,14 @@ char** parse_args(char* str) {
 
 void cmd_date() {
     time_t t;
-    char buf[26];
+    char *buf = malloc(80 * sizeof(int));
     t = time(&t);
 
     struct tm* result = malloc(sizeof(struct tm));
 
     localtime_r(&t, result);
-    asctime_r(result, buf);
-    printf("%s", buf);
+    strftime(buf, 80, "%a %b %d %H:%M:%S %Z %Y", result);
+    printf("%s\n", buf);
 
     free(result);
 }
