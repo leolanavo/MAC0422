@@ -2,14 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <grp.h>
 #include <sys/syscall.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-
 #include <readline/history.h>
 #include <readline/readline.h>
 
@@ -97,18 +95,14 @@ void cmd_chown(char* cmd, int size, char* dir) {
         grp_name[i] = args[1][i + 1];
     }
 
-    printf("NOME GRUPO %s\n",grp_name );
-    
-    // get the group id
-    struct group *grp = getgrnam(grp_name);
-    if (grp == NULL)
-        printf("There is no such group named '%s'\n", grp_name);
-    else {
+    printf("%s\n", path_file);
+    struct group* gp = getgrnam(grp_name);
+    int ret = chown(path_file, -1, gp->gr_gid);
+    printf("%d\n", ret);
 
-        int ret_value = chown(file_name, (uid_t)-1, grp->gr_gid);
-        if (ret_value == -1)
-            perror("chown: erro");
-    }
+    
+    free(grp_name);
+    free(path_file);
 }
 
 void process_cmd(char* cmd, char* lc_dir)
@@ -117,8 +111,7 @@ void process_cmd(char* cmd, char* lc_dir)
     int i;
     int size = strlen(cmd);
 
-    for (i = 0; i < size && cmd[i] != 32; i++)
-        ;
+    for (i = 0; i < size && cmd[i] != 32; i++);
     char* path = calloc(i, sizeof(char));
 
     for (i = i - 1; i >= 0; i--)
@@ -128,7 +121,7 @@ void process_cmd(char* cmd, char* lc_dir)
         cmd_date();
 
     else if (strcmp(path, "chown") == 0)
-        cmd_chown(cmd, size, lc_dir);
+        cmd_chown(cmd, strlen(lc_dir), lc_dir);
 
     else
         cmd_execute(path, cmd);
@@ -154,7 +147,6 @@ void input_interface()
             process_cmd(line, dir);
             add_history(line);
         }
-
     }
 }
 
