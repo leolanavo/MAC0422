@@ -6,6 +6,11 @@ typedef struct {
     int times[4];
 } process;
 
+void destroy_process(process* p) {
+    free(p->name);
+    free(p);
+}
+
 int count_lines(FILE* filename) {
     int i = 0;
     char c;
@@ -19,7 +24,6 @@ int count_lines(FILE* filename) {
 
 void read_time (FILE* filename, process* p) {
     int spaces = 0;
-    int times[4];
     char c;
     while (spaces < 3) {
         c = fgetc(filename);
@@ -43,8 +47,6 @@ char* realloc_str(int size, char* str) {
 
 process* parse_line (FILE* filename) {
     process* p = malloc(sizeof(process*)); 
-    char c = 0; 
-    int space;
     
     // Read times
     read_time(filename, p);
@@ -66,13 +68,23 @@ process* parse_line (FILE* filename) {
     return p;
 }
 
-int main (int argc, char **argv) {
-    FILE* filename = fopen(argv[1], "r");
-    
+process** get_process (FILE* filename, int* size) {
     int fsize = count_lines(filename);
     process** plist = malloc(fsize * sizeof(process));
 
     for (int i = 0; i < fsize; i++) {
         plist[i] = parse_line(filename);
     }
+    *size = fsize;
+    return plist;
+}
+
+int main (int argc, char *argv[]) {
+    FILE* filename = fopen(argv[1], "r");
+    int size;
+    process** p = get_process(filename, &size);
+
+    for (int i = 0; i < size; i++)
+        printf("Name: %s | TI: %d | DT: %d | TF: %d\n", 
+                p[i]->name, p[i]->times[0], p[i]->times[1], p[i]->times[2]);
 }
