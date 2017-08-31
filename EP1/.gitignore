@@ -1,6 +1,8 @@
-obj
+build
 ep1-leonardo-beatriz
 txt
 bin
 test
 .git
+
+*.txt
