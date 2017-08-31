@@ -18,7 +18,7 @@
 #                                                 #
 ###################################################
 
-BIN   	  := ep1sh
+BIN   	  := ep1sh ep1
 TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
 
@@ -37,7 +37,7 @@ TAR   := tar -cvf
 
 BINDIR := bin
 SRCDIR := src
-OBJDIR := obj
+OBJDIR := build
 TSTDIR := test
 TXTDIR := txt
 INCDIR := include
@@ -53,7 +53,7 @@ all: $(addprefix $(BINDIR)/,$(BIN))
 
 .PHONY: debug
 debug: CFLAGS += $(TESTFLAGS)
-debug: $(addprefix $(BINDIR)/,$(BIN))
+debug: $(addprefix $(TSTDIR)/,$(BIN))
 
 # Create the necessary lists of dependencies for each binary
 define create_vars
@@ -69,6 +69,12 @@ $$(BINDIR)/$1: $$($1.OBJ) | $$(BINDIR)
 	$$(CC) $$(CFLAGS) -o $$@ $$^
 endef
 $(foreach x,$(BIN),$(eval $(call bin-factory,$x)))
+
+define test-factory
+$$(TSTDIR)/$1: $$($1.OBJ) | $$(TSTDIR)
+	$$(CC) $$(CFLAGS) -o $$@ $$^
+endef
+$(foreach x,$(BIN),$(eval $(call test-factory,$x)))
 
 define object-factory
 $$(OBJDIR)/$1.o: $$(SRCDIR)/$1.c $$(wildcard $$(INCDIR)/$1.h) | $$(OBJDIR) $$(BINROOT)
