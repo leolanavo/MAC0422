@@ -68,11 +68,13 @@ void cmd_date() {
 void cmd_execute(char* path, char* cmd) {
     char** args = parse_args(cmd);
     pid_t p;
+    
     if ((p = fork()) == 0) {
         execv(path, args);
-        perror("deu ruim");
-        exit(-1);
-    } else {
+        perror("error executing last command");
+    } 
+
+    else {
         waitpid(p, NULL, 0);
         free(args);
     }
@@ -95,12 +97,11 @@ void cmd_chown(char* cmd, int size, char* dir) {
         grp_name[i] = args[1][i + 1];
     }
 
-    printf("%s\n", path_file);
     struct group* gp = getgrnam(grp_name);
     int ret = chown(path_file, -1, gp->gr_gid);
-    printf("%d\n", ret);
+    if (ret == -1)
+    	perror("error:chown");
 
-    
     free(grp_name);
     free(path_file);
 }
@@ -143,7 +144,6 @@ void input_interface()
         char* line = readline(str);
 
         if (line && *line) {
-        	printf("this is your line: %s\n", line);
             process_cmd(line, dir);
             add_history(line);
         }

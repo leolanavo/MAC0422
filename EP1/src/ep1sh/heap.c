@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct {
-	char *name;
-	int times[4];
-} process;
+#include "heap.h"
 
 int greater (process *p, int index_1, int index_2) {
 	return p[index_1].times[3] > p[index_2].times[3];
@@ -46,8 +42,4 @@ process delMin (process *p, int total) {
 		sink(1, p, total);
 		return min;
 	}
-}
-
-int main () {
-	return 0;
 }
