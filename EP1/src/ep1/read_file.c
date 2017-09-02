@@ -6,11 +6,14 @@ typedef struct {
     int times[4];
 } process;
 
+/* Frees alloced memorie for the process structured */
 void destroy_process(process* p) {
     free(p->name);
     free(p);
 }
 
+/* Receives a file pointer, and return the number of lines
+ * of the files. */
 int count_lines(FILE* filename) {
     int i = 0;
     char c;
@@ -22,6 +25,8 @@ int count_lines(FILE* filename) {
     return i;
 }
 
+/* Receives a file pointer, and return the number of lines
+ * of the files. */
 void read_time (FILE* filename, process* p) {
     int spaces = 0;
     char c;
@@ -37,6 +42,8 @@ void read_time (FILE* filename, process* p) {
     }
 }
 
+/* Receives a file pointer and a process pointer, and inserts
+ * the times in the times vector of the process pointer.*/
 char* realloc_str(int size, char* str) {
     char* tmp = malloc(2*size*sizeof(char));
     for (int i = 0; i < size; i++)
@@ -45,6 +52,8 @@ char* realloc_str(int size, char* str) {
     return(str);
 }
 
+/* Receives an string and its size, and return the same string
+ * with the same content, but with double the size alloced. */
 process* parse_line (FILE* filename) {
     process* p = malloc(sizeof(process*)); 
     
@@ -68,6 +77,9 @@ process* parse_line (FILE* filename) {
     return p;
 }
 
+/* Receives a file pointer and an integer pointer, which is the 
+ * number of lines in the file. Return an array of process's pointers
+ * with the file's data. */
 process** get_process (FILE* filename, int* size) {
     int fsize = count_lines(filename);
     process** plist = malloc(fsize * sizeof(process));
