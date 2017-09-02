@@ -3,21 +3,6 @@
 
 #define const int QUANTUM = 1
 
-/* Has a process pointer to store the content of a node 
- * in the queue and a next to store which node is the 
- * next in the queue. */
-typedef struct cell {
-    process* p;
-    struct cell* next;
-} node;
-
-/* Has two node pointers to indicate in which nodes the queue
- * begins and ends. */
-typedef struct {
-    node* first;
-    node* last;
-} rrqueue;
-
 /* Receives an rrqueue pointer and moves the first node to the 
  * last position. */
 void move_queue(rrqueue* q) {
