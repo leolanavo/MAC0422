@@ -1,13 +1,8 @@
-#ifndef READ_LINE_H
-#define READ_LINE_H
+#ifndef READ_FILE_H
+#define READ_FILE_H
 
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct {
-    char* name;
-    int times[4];
-} process;
 
 /* Frees alloced memorie for the process structured */
 void destroy_process(process* p);
