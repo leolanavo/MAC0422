@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../include/ep1/types.h"
 
 /* Frees alloced memorie for the process structured */
 void destroy_process(process* p);
@@ -28,3 +29,5 @@ process* parse_line (FILE* filename);
  * number of lines in the file. Return an array of process's pointers
  * with the file's data. */
 process** get_process (FILE* filename, int* size);
+
+#endif
