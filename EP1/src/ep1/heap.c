@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/ep1/types.h"
+#include "../../include/ep1/types.h"
 
 int greater (process *p, int index_1, int index_2) {
 	return p[index_1].times[3] > p[index_2].times[3];

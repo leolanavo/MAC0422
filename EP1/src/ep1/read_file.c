@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct {
-    char* name;
-    int times[4];
-} process;
+#include "../../include/ep1/types.h"
 
 /* Frees alloced memorie for the process structured */
 void destroy_process(process* p) {

@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include "../include/ep1/heap.h"
-#include "../include/ep1/read_file.h"
+#include "../../include/ep1/types.h"
+#include "../../include/ep1/heap.h"
+#include "../../include/ep1/read_file.h"
 
 //Shortest Job First
 void SJF (FILE *trace_file, char *result) {

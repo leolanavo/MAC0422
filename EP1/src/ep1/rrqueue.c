@@ -1,5 +1,5 @@
-#include <../include/ep1/read_file.h>
-#include <../include/ep1/types.h>
+#include "../../include/ep1/read_file.h"
+#include "../../include/ep1/types.h"
 
 #define const int QUANTUM = 1
 
@@ -68,7 +68,9 @@ rrqueue* init_queue(int max, process** plist) {
     q->last = NULL;
 
     for(int i = 0; i < max - 1; i++)
-        insert_queue(q, plist[i]);   
+        insert_queue(q, plist[i]);
+
+    return q;
 }
 
 int main () {
