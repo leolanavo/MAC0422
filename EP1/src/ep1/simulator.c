@@ -1,27 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <math.h>
+#include <time.h>
+#include <sys/time.h>
 #include "../../include/ep1/types.h"
 #include "../../include/ep1/heap.h"
 #include "../../include/ep1/read_file.h"
 
-void* processing (void *process) {
-	return process;
+#define SIZE_LOT 10
+pthread_mutex_t lock;
+
+
+void* processing (void *pr) {
+    pthread_mutex_lock(&lock);
+    
+    struct timespec ts;
+    process *p = (process*) pr;
+    
+    double dt = p->times[1];
+    ts.tv_sec = floor(dt);
+    ts.tv_nsec = (dt - ts.tv_sec)*1e9;
+    
+    nanosleep(&ts, NULL);
+    
+    pthread_mutex_unlock(&lock);
+    return pr;
+}
+
+double sec (struct timespec ts) {
+    return round((ts.tv_sec + (ts.tv_nsec * 1e-9))*10)/10;
 }
 
 //Shortest Job First
 void SJF (FILE *trace_file, char *result) {
-	int ret, nb_process;
-	pthread_t main_thread;
-	process *p = NULL;
+    int ret, nb_process;
+    pthread_t main_thread;
+    process *p = NULL;
+  
+    process **plist = get_process(trace_file, &nb_process);
+    heap *min_heap = minPQ(nb_process);
+    
+    struct timespec start, intI, intF;
+    clock_gettime(CLOCK_REALTIME, &start);
+    int index = 0;
+    pthread_mutex_init(&lock, NULL);
 
-	process **pr = get_process(trace_file, &nb_process);
-	heap min_heap = minPQ (nb_process);
+    while (index < nb_process) {
+        clock_gettime(CLOCK_REALTIME, &intI);
 
-	while (min_heap.pr_total > 0) {
-		*p = delMin(min_heap);
-		ret = pthread_create(&main_thread, NULL, &processing, (void*)p);
-	}
+        for (int i = 0; i < 10 && index < nb_process; i++) {
+            clock_gettime(CLOCK_REALTIME, &intF);
+            if (sec(intF) - sec(intI) > 10.0) break;
+
+            plist[index]->times[3] = plist[index]->times[1];
+            
+            insert(min_heap, plist[index]);
+            index++;
+        }
+        
+        while (min_heap->pr_total > 0) {
+            p = delMin(min_heap);        
+            
+            struct timespec threadI, threadF;
+            clock_gettime(CLOCK_REALTIME, &threadI);
+            
+            ret = pthread_create(&main_thread, NULL, &processing, (void*)p);
+            pthread_join(main_thread, NULL);
+            
+            clock_gettime(CLOCK_REALTIME, &threadF);
+            printf("%lf | %lf\n", sec(threadF), sec(threadI));
+            
+            if (ret == -1) {
+                perror("pthread_create exited with failure");
+                exit(-1);
+            }
+            
+            free(p);
+        }
+    }
+    pthread_mutex_destroy(&lock);    
 }
 
 //Each process is given a time interval (QUANTUM)
@@ -36,11 +94,11 @@ void Priority (FILE *trace_file, char *result) {
 
 int main (int argc, char **argv) {
 
-	FILE* fl_name = fopen (argv[2], "r");
-	
-	if (*argv[1] == 1) SJF(fl_name, argv[3]);
-	else if (*argv[1] == 2) Round_Robin(fl_name, argv[3]);
-	else Priority(fl_name, argv[3]);
+    FILE* fl_name = fopen (argv[2], "r");
+ 
+    if (*argv[1] == '1') SJF(fl_name, argv[3]);
+    else if (*argv[1] == '2') Round_Robin(fl_name, argv[3]);
+    else Priority(fl_name, argv[3]);
 
-	return 0;
+    return 0;
 }
