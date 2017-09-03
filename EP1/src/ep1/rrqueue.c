@@ -19,7 +19,7 @@ void remove_queue(rrqueue* q) {
         q->first = NULL;
     
     q->first = q->first->next;
-    q->last = q->first;
+    q->last->next = q->first;
     
     free(n);
 }
@@ -56,8 +56,4 @@ rrqueue* init_queue(int max, process** plist) {
         insert_queue(q, plist[i]);
 
     return q;
-}
-
-int main () {
-    return 0;
 }
