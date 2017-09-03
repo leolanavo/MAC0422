@@ -3,14 +3,14 @@
 
 /* Receives a list of processes and the list size. 
  * Returns a priority queue with all the processes given. */
-heap minPQ (int size);
-
-/* Receives the priority queue and its size. 
- * Returns the process with the least completion time left */
-process delMin (heap h);
+heap* minPQ (int size);
 
 /* Receives the priority queue structure heap and the process
  * that will be added. */
-void insert (heap h, process entry);
+void insert (heap *h, process *entry);
+
+/* Receives the priority queue and its size. 
+ * Returns the process with the least completion time left */
+process* delMin (heap *h);
 
 #endif
