@@ -86,13 +86,3 @@ process** get_process (FILE* filename, int* size) {
     *size = fsize;
     return plist;
 }
-
-int main (int argc, char *argv[]) {
-    FILE* filename = fopen(argv[1], "r");
-    int size;
-    process** p = get_process(filename, &size);
-
-    for (int i = 0; i < size; i++)
-        printf("Name: %s | TI: %d | DT: %d | TF: %d\n", 
-                p[i]->name, p[i]->times[0], p[i]->times[1], p[i]->times[2]);
-}
