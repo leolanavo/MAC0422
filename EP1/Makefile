@@ -22,7 +22,7 @@ BIN   	  := ep1sh ep1
 TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
 
-CFLAGS    := -Wall -std=c11 -lreadline -pthread
+CFLAGS    := -Wall -std=c11 -lreadline -pthread -lm
 EXECFLAGS := -O2
 TESTFLAGS := -g
 
