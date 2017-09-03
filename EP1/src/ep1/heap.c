@@ -2,44 +2,61 @@
 #include <stdlib.h>
 #include "../../include/ep1/types.h"
 
-int greater (process *p, int index_1, int index_2) {
-	return p[index_1].times[3] > p[index_2].times[3];
+int greater (heap h, int index_1, int index_2) {
+	return h.min_pq[index_1].times[3] > h.min_pq[index_2].times[3];
 }
 
-void exchange (process *p, int index_1, int index_2) {
-	process tmp = p[index_1];
-	p[index_1] = p[index_2];
-	p[index_2] = tmp;
+void exchange (heap h, int index_1, int index_2) {
+	process tmp = h.min_pq[index_1];
+	h.min_pq[index_1] = h.min_pq[index_2];
+	h.min_pq[index_2] = tmp;
 }
 
-void sink (int k, process *p, int total) {
+void swim (int k, heap h) {
+	while (k > 1 && greater(h, k/2, k)) {
+		exchange(h, k/2, k);
+		k = k/2;
+	}
+}
+
+void insert (heap h, process entry) {
+	h.min_pq[++h.pr_total] = entry;
+	swim(h.pr_total, h);
+}
+
+void sink (int k, heap h) {
 	int j;
-	while (2*k <= total) {
+	while (2*k <= h.pr_total) {
 		j = 2*k;
-		if (j < total && greater(p, j, j + 1)) j++;
-		if (!greater(p, k, j)) break;
-		exchange(p, k, j);
+		if (j < h.pr_total && greater(h, j, j + 1)) j++;
+		if (!greater(h, k, j)) break;
+		exchange(h, k, j);
 		k = j;
 	}
 }
 
-process* minPQ (process **p, int pr_total) {
-	process *pr_heap = malloc(pr_total + 1);
-	
-	for (int i = 0; i < pr_total; i++)
-		pr_heap[i + 1] = *p[i];
-	
-	for (int k = pr_total/2; k >= 1; k--)
-		sink(k, pr_heap, pr_total);
+heap minPQ (int size) {
+	heap h;
 
-	return pr_heap;
+	h.min_pq = malloc(size + 1);
+	h.size = size + 1;
+	h.pr_total = 0;
+
+	return h;
 }
 
-process delMin (process *p, int total) {
-	if (total > 0) {
-		process min = p[1];
-		exchange (p, 1, total--);
-		sink(1, p, total);
-		return min;
+process delMin (heap h) {
+	process min;
+	
+	if (h.pr_total == 0) {
+		min.name = NULL;
+		min.times[0] = min.times[1] = min.times[2] = min.times[3] = 0; 
 	}
+	else {		
+		min = h.min_pq[1];
+		exchange (h, 1, h.pr_total--);
+		sink(1, h);
+	}
+
+	return min;	
 }

@@ -9,6 +9,13 @@ typedef struct {
     int times[4];
 } process;
 
+/* This is the priority queue structure, with queue and its size,
+ * and the total number of processes int it.*/
+typedef struct {
+	process *min_pq;
+	int size, pr_total;
+} heap; 
+
 /* This structure has a process pointer to store the content 
  * of a node in the queue and a next to store which node 
  * is the next in the queue. */
