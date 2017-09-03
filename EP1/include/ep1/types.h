@@ -6,13 +6,13 @@
  * time to complete the task. */
 typedef struct {
     char* name;
-    int times[4];
+    double* times;
 } process;
 
 /* This is the priority queue structure, with queue and its size,
  * and the total number of processes int it.*/
 typedef struct {
-	process *min_pq;
+	process **min_pq;
 	int size, pr_total;
 } heap; 
 
