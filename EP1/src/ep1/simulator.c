@@ -10,6 +10,7 @@
 #include "../../include/ep1/rrqueue.h"
 
 #define SIZE_LOT 10
+#define QUANTUM 5
 pthread_mutex_t lock;
 
 void* processing (void *pr) {
@@ -42,21 +43,23 @@ void SJF (FILE *trace_file, char *result) {
     heap *min_heap = init_heap(nb_process);
     
     struct timespec start, intI, intF;
-    clock_gettime(CLOCK_REALTIME, &start);
     int index = 0;
     pthread_mutex_init(&lock, NULL);
 
+    clock_gettime(CLOCK_REALTIME, &start);
     while (index < nb_process) {
         clock_gettime(CLOCK_REALTIME, &intI);
 
-        for (int i = 0; i < 10 && index < nb_process; i++) {
+        for (int i = 0; i < 10 && index < nb_process;) {
             clock_gettime(CLOCK_REALTIME, &intF);
             if (sec(intF) - sec(intI) > 10.0) break;
-
-            plist[index]->times[3] = plist[index]->times[1];
             
-            insert_heap(min_heap, plist[index]);
-            index++;
+            if (sec(intF) - sec(start) >= plist[index]->times[0]) {
+                plist[index]->times[3] = plist[index]->times[1];
+                insert_heap(min_heap, plist[index]);
+                index++; 
+                i++;
+            }
         }
         
         while (min_heap->pr_total > 0) {
@@ -89,40 +92,55 @@ void Round_Robin (FILE *trace_file, char *result) {
     process *p = NULL;
   
     process **plist = get_process(trace_file, &nb_process);
-    rrqueue *q = init_rrqueue(nb_process);
+    rrqueue *q = init_rrqueue();
     
-    struct timespec start, intI, intF;
-    clock_gettime(CLOCK_REALTIME, &start);
-    int index = 0;
+    struct timespec start, end, cur;
+    int index = 0, int_index = 0;
     pthread_mutex_init(&lock, NULL);
 
+    clock_gettime(CLOCK_REALTIME, &start);
     while (index < nb_process) {
-        for (int i = 0; index < nb_process; i++) {
-
-            plist[index]->times[3] = plist[index]->times[1];
-            
-            insert_rrqueue(q, plist[index]);
-            index++;
-        }
         
-        while (min_heap->pr_total > 0) {
-            p = delMin(min_heap);        
-            
-            struct timespec threadI, threadF;
-            clock_gettime(CLOCK_REALTIME, &threadI);
-            
-            ret = pthread_create(&main_thread, NULL, &processing, (void*)p);
-            pthread_join(main_thread, NULL);
-            
-            clock_gettime(CLOCK_REALTIME, &threadF);
-            printf("%lf | %lf\n", sec(threadF), sec(threadI));
-            
+        clock_gettime(CLOCK_REALTIME, &cur);
+        double runtime = sec(cur) - sec(start);
+        int isWorth = 1;
+
+        while(index < nb_process && runtime > 10.0 && isWorth) {
+            if (runtime >= plist[index]->times[0]) {
+                plist[index]->times[0] = runtime;
+                plist[index]->times[3] = plist[index]->times[1];
+                insert_rrqueue(q, plist[index]);
+                index++;
+            }
+            else if (index < nb_process) {
+                if (plist[index]->times[0] - runtime > 10) {
+                    isWorth = 0;
+                }
+            }
+        }
+
+        while (index != int_index) {
+            //execução da thread
+ 
             if (ret == -1) {
                 perror("pthread_create exited with failure");
                 exit(-1);
             }
-            
-            free(p);
+ 
+            clock_gettime(CLOCK_REALTIME, &cur);
+            q->first->p->times[3] -= QUANTUM;
+ 
+            if (q->first->p->times[3] <= 0) {
+                q->first->p->times[4] = sec(cur) - sec(start);
+                q->first->p->times[3] = q->first->p->times[4] - q->first->p->times[0];
+                //fprintf
+                remove_rrqueue(q);
+                nb_process--;
+                int_index++;
+            }
+            else {
+                move_rrqueue(q);
+            }
         }
     }
     pthread_mutex_destroy(&lock);    
