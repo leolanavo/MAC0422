@@ -7,10 +7,10 @@
 #include "../../include/ep1/types.h"
 #include "../../include/ep1/heap.h"
 #include "../../include/ep1/read_file.h"
+#include "../../include/ep1/rrqueue.h"
 
 #define SIZE_LOT 10
 pthread_mutex_t lock;
-
 
 void* processing (void *pr) {
     pthread_mutex_lock(&lock);
@@ -84,7 +84,48 @@ void SJF (FILE *trace_file, char *result) {
 
 //Each process is given a time interval (QUANTUM)
 void Round_Robin (FILE *trace_file, char *result) {
+    int ret, nb_process;
+    pthread_t main_thread;
+    process *p = NULL;
+  
+    process **plist = get_process(trace_file, &nb_process);
+    rrqueue *q = init_rrqueue(nb_process);
+    
+    struct timespec start, intI, intF;
+    clock_gettime(CLOCK_REALTIME, &start);
+    int index = 0;
+    pthread_mutex_init(&lock, NULL);
 
+    while (index < nb_process) {
+        for (int i = 0; index < nb_process; i++) {
+
+            plist[index]->times[3] = plist[index]->times[1];
+            
+            insert_rrqueue(q, plist[index]);
+            index++;
+        }
+        
+        while (min_heap->pr_total > 0) {
+            p = delMin(min_heap);        
+            
+            struct timespec threadI, threadF;
+            clock_gettime(CLOCK_REALTIME, &threadI);
+            
+            ret = pthread_create(&main_thread, NULL, &processing, (void*)p);
+            pthread_join(main_thread, NULL);
+            
+            clock_gettime(CLOCK_REALTIME, &threadF);
+            printf("%lf | %lf\n", sec(threadF), sec(threadI));
+            
+            if (ret == -1) {
+                perror("pthread_create exited with failure");
+                exit(-1);
+            }
+            
+            free(p);
+        }
+    }
+    pthread_mutex_destroy(&lock);    
 }
 
 //Each level of priority defines how much time the process receives 
