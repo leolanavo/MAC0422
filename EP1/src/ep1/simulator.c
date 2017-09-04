@@ -33,9 +33,14 @@ double sec (struct timespec ts) {
     return round((ts.tv_sec + (ts.tv_nsec * 1e-9))*10)/10;
 }
 
+void write_file (FILE *f, char *pr_name, double tf, double tr) {
+	fprintf(f, "%s %lf %lf\n", pr_name, tf, tr);
+}
+
 //Shortest Job First
-void SJF (FILE *trace_file, char *result) {
+void SJF (FILE *trace_file, FILE *result) {
     int ret, nb_process;
+    double tf, tr;
     pthread_t main_thread;
     process *p = NULL;
   
@@ -72,7 +77,10 @@ void SJF (FILE *trace_file, char *result) {
             pthread_join(main_thread, NULL);
             
             clock_gettime(CLOCK_REALTIME, &threadF);
-            printf("%lf | %lf\n", sec(threadF), sec(threadI));
+            
+            tf = sec(threadF);
+            tr = (start - sec(threadI)) - tf;
+            write_file(result, p->name, tf, tr);
             
             if (ret == -1) {
                 perror("pthread_create exited with failure");
@@ -86,7 +94,7 @@ void SJF (FILE *trace_file, char *result) {
 }
 
 //Each process is given a time interval (QUANTUM)
-void Round_Robin (FILE *trace_file, char *result) {
+void Round_Robin (FILE *trace_file, FILE *result) {
     int ret, nb_process;
     pthread_t main_thread;
     process *p = NULL;
@@ -147,17 +155,18 @@ void Round_Robin (FILE *trace_file, char *result) {
 }
 
 //Each level of priority defines how much time the process receives 
-void Priority (FILE *trace_file, char *result) {
+void Priority (FILE *trace_file, FILE *result) {
 
 }
 
 int main (int argc, char **argv) {
 
-    FILE* fl_name = fopen (argv[2], "r");
+    FILE* fl_input = fopen(argv[2], "r");
+    FILE* fl_result = fopen(argv[3], "w"); 
  
-    if (*argv[1] == '1') SJF(fl_name, argv[3]);
-    else if (*argv[1] == '2') Round_Robin(fl_name, argv[3]);
-    else Priority(fl_name, argv[3]);
+    if (*argv[1] == '1') SJF(fl_input, fl_result);
+    else if (*argv[1] == '2') Round_Robin(fl_input, fl_result);
+    else Priority(fl_input, fl_result);
 
     return 0;
 }
