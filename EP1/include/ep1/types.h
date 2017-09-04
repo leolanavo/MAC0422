@@ -1,6 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <time.h>
+
 /* This structure has the process name, and a array with
  * initial time, duration time, deadline time and remaining
  * time to complete the task. */
@@ -30,5 +32,11 @@ typedef struct {
     node* first;
     node* last;
 } rrqueue;
+
+typedef struct {
+    process* p;
+    struct timespec ts;
+    int details;
+} arg_thread;
 
 #endif
