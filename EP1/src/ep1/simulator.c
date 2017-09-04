@@ -19,7 +19,10 @@ void* processing (void *pr) {
     
     struct timespec ts;
     process *p = (process*) pr;
-    
+
+    fprintf(stderr, "The current CPU being used is: %d\n",sched_getcpu());
+    fprintf(stderr, "The current process is: %s\n",p->name);
+
     double dt = p->times[1];
     ts.tv_sec = floor(dt);
     ts.tv_nsec = (dt - ts.tv_sec)*1e9;
