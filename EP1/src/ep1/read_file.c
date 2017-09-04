@@ -15,7 +15,7 @@ int count_lines(FILE* filename) {
     char c;
     do {
         c = fgetc(filename);
-        if (c == '\n') i++;
+        if (c == '\n' || c == EOF) i++;
     } while (c != EOF);
     rewind(filename);
     return i;
@@ -24,18 +24,9 @@ int count_lines(FILE* filename) {
 /* Receives a file pointer, and return the number of lines
  * of the files. */
 void read_time (FILE* filename, process* p) {
-    int spaces = 0;
-    char c;
     p->times = malloc(5 * sizeof(double));
-    while (spaces < 3) {
-        c = fgetc(filename);
-        if (c != ' ') {
-            p->times[spaces] *= 10;
-            p->times[spaces] += (c - 48);
-        }
-        else {
-            spaces++;
-        }
+    for (int i = 0; i < 3; i++) {
+        fscanf(filename, "%lf", &(p->times[i]));
     }
 }
 
@@ -62,6 +53,7 @@ process* parse_line (FILE* filename) {
     int size = 16;
     p->name = malloc(size * sizeof(char));
 
+    fgetc(filename);
     for (char c = fgetc(filename); c != '\n' && c != EOF; c = fgetc(filename)) {
         if (i >= size) {
             p->name = realloc_str(size, p->name);

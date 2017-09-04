@@ -14,11 +14,15 @@ void move_rrqueue(rrqueue* q) {
 void remove_rrqueue(rrqueue* q) {
     node* n = q->first;
 
-    if (q->first == q->first->next)
+    if (q->first == q->first->next) {
         q->first = NULL;
+        q->last = NULL;
+    }
     
-    q->first = q->first->next;
-    q->last->next = q->first;
+    else {
+        q->first = q->first->next;
+        q->last->next = q->first;
+    }
     
     free(n);
 }
