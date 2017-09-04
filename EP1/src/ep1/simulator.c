@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <math.h>
 #include <time.h>
+#include <sched.h>
 #include <sys/time.h>
 #include "../../include/ep1/types.h"
 #include "../../include/ep1/heap.h"
@@ -87,7 +88,7 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             clock_gettime(CLOCK_REALTIME, &threadF);
             
             tf = sec(threadF);
-            tr = (sec(start) - sec(threadI)) - tf;
+            tr = tf - (sec(threadI) - sec(start));
             write_file(result, p->name, tf, tr);
             
             if (ret == -1) {
