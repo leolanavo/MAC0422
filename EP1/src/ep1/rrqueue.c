@@ -1,7 +1,6 @@
+#include <stdlib.h>
 #include "../../include/ep1/read_file.h"
 #include "../../include/ep1/types.h"
-
-#define const int QUANTUM = 1
 
 /* Receives an rrqueue pointer and moves the first node to the 
  * last position. */
@@ -43,17 +42,10 @@ void insert_rrqueue(rrqueue* q, process* p) {
     q->last->next = q->first;
 }
 
-/* Receives an integer, which is the number of process to be staggered 
- * and a process double pointer, which is a list of all process. Returns 
- * a rrqueue pointer with all the process listed in the process double 
- * pointer. */
-rrqueue* init_rrqueue(int max, process** plist) {
+/* Returns a allocted rrqueue pointer */
+rrqueue* init_rrqueue() {
     rrqueue* q = malloc(sizeof(rrqueue));
     q->first = NULL;
     q->last = NULL;
-
-    for(int i = 0; i < max - 1; i++)
-        insert_queue(q, plist[i]);
-
     return q;
 }
