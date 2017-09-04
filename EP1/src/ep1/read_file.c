@@ -26,7 +26,7 @@ int count_lines(FILE* filename) {
 void read_time (FILE* filename, process* p) {
     int spaces = 0;
     char c;
-    p->times = malloc(4 * sizeof(double));
+    p->times = malloc(5 * sizeof(double));
     while (spaces < 3) {
         c = fgetc(filename);
         if (c != ' ') {
