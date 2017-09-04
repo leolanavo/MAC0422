@@ -21,7 +21,7 @@ void swim (int k, heap *h) {
 	}
 }
 
-void insert (heap *h, process *entry) {
+void insert_heap (heap *h, process *entry) {
 	h->pr_total = h->pr_total + 1;
     h->min_pq[h->pr_total] = malloc(sizeof(process));
     h->min_pq[h->pr_total]->name = malloc(strlen(entry->name));
@@ -45,7 +45,7 @@ void sink (int k, heap *h) {
 	}
 }
 
-heap* minPQ (int size) {
+heap* init_heap (int size) {
 	heap *h = malloc(sizeof(heap));
 
 	h->min_pq = malloc((size + 1) * sizeof(process*));
@@ -55,7 +55,7 @@ heap* minPQ (int size) {
 	return h;
 }
 
-process* delMin (heap *h) {
+process* remove_heap (heap *h) {
 	process *min;
 	if (h->pr_total == 0) {
 	    min = NULL; 

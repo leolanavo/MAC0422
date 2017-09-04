@@ -39,7 +39,7 @@ void SJF (FILE *trace_file, char *result) {
     process *p = NULL;
   
     process **plist = get_process(trace_file, &nb_process);
-    heap *min_heap = minPQ(nb_process);
+    heap *min_heap = init_heap(nb_process);
     
     struct timespec start, intI, intF;
     clock_gettime(CLOCK_REALTIME, &start);
@@ -55,12 +55,12 @@ void SJF (FILE *trace_file, char *result) {
 
             plist[index]->times[3] = plist[index]->times[1];
             
-            insert(min_heap, plist[index]);
+            insert_heap(min_heap, plist[index]);
             index++;
         }
         
         while (min_heap->pr_total > 0) {
-            p = delMin(min_heap);        
+            p = remove_heap(min_heap);        
             
             struct timespec threadI, threadF;
             clock_gettime(CLOCK_REALTIME, &threadI);
