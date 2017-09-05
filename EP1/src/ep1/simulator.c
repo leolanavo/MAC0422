@@ -5,6 +5,7 @@
 #include <time.h>
 #include <sched.h>
 #include <sys/time.h>
+#include <float.h>
 #include "../../include/ep1/types.h"
 #include "../../include/ep1/heap.h"
 #include "../../include/ep1/read_file.h"
@@ -226,6 +227,98 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
 
 //Each level of priority defines how much time the process receives 
 void Priority (FILE *trace_file, FILE *result, int details) {
+    int ret, nb_process, index, int_index, isWorth, context, hsize;
+    double tf, tr, rel_runtime, abs_runtime, end, begin, start_time;
+    pthread_t main_thread;
+    struct timespec start, intI, intF, cur;
+  
+    process **plist = get_process(trace_file, &nb_process);
+    heap* min_heap = init_heap(nb_process);
+    
+    index = int_index = context = 0;
+    pthread_mutex_init(&lock, NULL);
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    start_time = sec(start);
+
+    while (index < nb_process) {
+        isWorth = 1;
+
+        clock_gettime(CLOCK_REALTIME, &intI);
+        begin = sec(intI) - start_time;
+        end = begin;
+
+        rel_runtime = end - begin;
+        while(index < nb_process && rel_runtime < 10.0 && isWorth) {
+            abs_runtime = end;
+            if (abs_runtime >= plist[index]->times[0]) {
+                plist[index]->times[0] = abs_runtime;
+                plist[index]->times[3] = plist[index]->times[2] 
+                    - abs_runtime - plist[index]->times[1];
+                insert_heap(q, plist[index]);
+                index++;
+            }
+            else if (index < nb_process) {
+                if (plist[index]->times[0] - begin > 10) {
+                    isWorth = 0;
+                }
+            }
+            clock_gettime(CLOCK_REALTIME, &intF);
+            end = sec(intF) - start_time;
+            rel_runtime = end - begin;
+        }
+
+        hsize = index - int_index;
+        while (index != int_index && hsize) {
+            arg_thread* argv = malloc(sizeof(arg_thread));
+
+            argv->p = remove_heap(heap);
+
+            argv->ts = argv->p->times[1] < hsize*QUANTUM? 
+                convert_ts(argv->p->times[1]) :
+                convert_ts(hsize * QUANTUM);
+
+            argv->details = details;
+
+            ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
+            pthread_join(main_thread, NULL);
+
+            if (ret == -1) {
+                perror("pthread_create exited with failure");
+                exit(-1);
+            }
+ 
+            argv->p->times[1] -= (hsize) * QUANTUM;
+
+            clock_gettime(CLOCK_REALTIME, &cur);
+
+            if (q->first->p->times[1] <= 0) {
+                tf = sec(cur) - start_time;
+                printf("t0 do %s: %.1lf\n", q->first->p->name, q->first->p->times[0]);
+                tr = tf - q->first->p->times[0];
+                write_file(result, q->first->p->name, tf, tr);
+                int_index++;
+            }
+            else {
+                move_rrqueue(q);
+                context++;
+                argv->p->times[3] = DBL_MAX;
+                insert_heap(h, argv->p)
+            }
+            hsize--;
+        }
+
+        hsize = index - int_index;
+        clock_gettime(CLOCK_REALTIME, &intF);
+        end = sec(intF) - start_time;
+
+        for (int i = index - int_index; i < 0; i--) {
+            min_heap->min_pq[i]->times[3] = min_heap->min_pq[i]->times[2] 
+                - abs_runtime - min_heap->min_pq[i]->times[1];
+            
+        }
+    }
+    pthread_mutex_destroy(&lock);    
 
 }
 
