@@ -19,17 +19,22 @@ pthread_mutex_t lock;
 void* processing (void *args) {
     pthread_mutex_lock(&lock);
     arg_thread* argv = (arg_thread*) args;
+    int cpu = sched_getcpu();
 
     if (argv->details) {
     	fprintf(stderr, "The current process is: %s\n",argv->p->name);
-    	fprintf(stderr, "The current CPU being used is: %d\n",sched_getcpu());
+    	fprintf(stderr, "The current CPU being used is: %d\n",cpu);
     	printf("\n");
     }
 
-
-    struct timespec ts = argv->ts;
-    
+    struct timespec ts = argv->ts;    
     nanosleep(&ts, NULL);
+
+    if (argv->details) {
+    	fprintf(stderr, "The process freeing the CPU is: %s\n",argv->p->name);
+    	fprintf(stderr, "CPU being freed is: %d\n",cpu);
+    	printf("\n");
+    }
     
     pthread_mutex_unlock(&lock);
     return argv;
@@ -49,6 +54,11 @@ double sec (struct timespec ts) {
 void write_file (FILE *f, char *pr_name, double tf, double tr) {
 	fprintf(f, "%s %.1lf %.1lf\n", pr_name, tf, tr);
 }
+
+void write_file_context (FILE *f, int c) {
+	fprintf(f, "%d", c);
+}
+
 void trace_line (char *p, int l) {
 	fprintf(stderr, "Arrival of: %s, input file line: %d\n", p, l);
     printf("\n");
@@ -126,7 +136,6 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             }
 
             write_file(result, argv->p->name, tf, tr);
-
             
             if (ret == -1) {
                 perror("pthread_create exited with failure");
@@ -136,12 +145,14 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             free(argv);
         }
     }
+
+    write_file_context(result, 0);
     pthread_mutex_destroy(&lock);    
 }
 
 //Each process is given a time interval (QUANTUM)
 void Round_Robin (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, index, int_index, isWorth, context, rs_line;
+    int ret, nb_process, index, int_index, isWorth, context, tr_line, rs_line;
     double tf, tr, rel_runtime, abs_runtime, end, begin, start_time;
     pthread_t main_thread;
     struct timespec start, intI, intF, cur;
@@ -149,7 +160,7 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
     process **plist = get_process(trace_file, &nb_process);
     rrqueue *q = init_rrqueue();
     
-    rs_line = 1;
+    tr_line = rs_line = 1;
     index = int_index = context = 0;
     pthread_mutex_init(&lock, NULL);
 
@@ -171,6 +182,12 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
                 plist[index]->times[0] = abs_runtime;
                 plist[index]->times[3] = plist[index]->times[1];
                 insert_rrqueue(q, plist[index]);
+
+                if (details) {
+                	trace_line(plist[index]->name, tr_line);
+                	tr_line++;
+                }
+                
                 index++;
             }
             else if (index < nb_process) {
@@ -208,8 +225,13 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
 
             if (q->first->p->times[3] <= 0) {
                 tf = sec(cur) - start_time;
-                printf("t0 do %s: %.1lf\n", q->first->p->name, q->first->p->times[0]);
                 tr = tf - q->first->p->times[0];
+
+                if (details) {
+            		result_line(argv->p->name, rs_line);
+            		rs_line++;		            	
+            	}
+
                 write_file(result, q->first->p->name, tf, tr);
                 remove_rrqueue(q);
                 int_index++;
@@ -222,12 +244,14 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
             qsize--;
         }
     }
+
+    write_file_context(result, context);
     pthread_mutex_destroy(&lock);    
 }
 
 //Each level of priority defines how much time the process receives 
 void Priority (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, index, int_index, isWorth, context, hsize;
+    int ret, nb_process, index, int_index, isWorth, context, hsize, tr_line, rs_line;
     double tf, tr, rel_runtime, abs_runtime, end, begin, start_time;
     pthread_t main_thread;
     struct timespec start, intI, intF, cur;
@@ -236,6 +260,7 @@ void Priority (FILE *trace_file, FILE *result, int details) {
     heap* min_heap = init_heap(nb_process);
     
     index = int_index = context = 0;
+    tr_line = rs_line = 1;
     pthread_mutex_init(&lock, NULL);
 
     clock_gettime(CLOCK_REALTIME, &start);
@@ -255,7 +280,13 @@ void Priority (FILE *trace_file, FILE *result, int details) {
                 plist[index]->times[0] = abs_runtime;
                 plist[index]->times[3] = plist[index]->times[2] 
                     - abs_runtime - plist[index]->times[1];
-                insert_heap(q, plist[index]);
+                insert_heap(min_heap, plist[index]);
+
+                if (details) {
+                	trace_line(plist[index]->name, tr_line);
+                	tr_line++;
+                }
+
                 index++;
             }
             else if (index < nb_process) {
@@ -272,7 +303,7 @@ void Priority (FILE *trace_file, FILE *result, int details) {
         while (index != int_index && hsize) {
             arg_thread* argv = malloc(sizeof(arg_thread));
 
-            argv->p = remove_heap(heap);
+            argv->p = remove_heap(min_heap);
 
             argv->ts = argv->p->times[1] < hsize*QUANTUM? 
                 convert_ts(argv->p->times[1]) :
@@ -292,18 +323,24 @@ void Priority (FILE *trace_file, FILE *result, int details) {
 
             clock_gettime(CLOCK_REALTIME, &cur);
 
-            if (q->first->p->times[1] <= 0) {
+            if (argv->p->times[1] <= 0) {
                 tf = sec(cur) - start_time;
-                printf("t0 do %s: %.1lf\n", q->first->p->name, q->first->p->times[0]);
-                tr = tf - q->first->p->times[0];
-                write_file(result, q->first->p->name, tf, tr);
+                tr = tf - argv->p->times[0];
+
+                if (details) {
+            		result_line(argv->p->name, rs_line);
+            		rs_line++;		            	
+            	}
+
+                write_file(result, argv->p->name, tf, tr);
                 int_index++;
             }
             else {
-                move_rrqueue(q);
                 context++;
+                if (details) context_change(context);
+
                 argv->p->times[3] = DBL_MAX;
-                insert_heap(h, argv->p)
+                insert_heap(min_heap, argv->p);
             }
             hsize--;
         }
@@ -318,8 +355,9 @@ void Priority (FILE *trace_file, FILE *result, int details) {
             
         }
     }
-    pthread_mutex_destroy(&lock);    
 
+    write_file_context(result, context);
+    pthread_mutex_destroy(&lock);    
 }
 
 int main (int argc, char **argv) {
