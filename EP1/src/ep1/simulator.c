@@ -12,13 +12,14 @@
 
 #define SIZE_LOT 10
 #define QUANTUM 5.0
+
 pthread_mutex_t lock;
 
 void* processing (void *args) {
     pthread_mutex_lock(&lock);
     arg_thread* argv = (arg_thread*) args;
 
-    if (argv->details == 1) {
+    if (argv->details) {
     	fprintf(stderr, "The current process is: %s\n",argv->p->name);
     	fprintf(stderr, "The current CPU being used is: %d\n",sched_getcpu());
     	printf("\n");
@@ -47,15 +48,32 @@ double sec (struct timespec ts) {
 void write_file (FILE *f, char *pr_name, double tf, double tr) {
 	fprintf(f, "%s %.1lf %.1lf\n", pr_name, tf, tr);
 }
+void trace_line (char *p, int l) {
+	fprintf(stderr, "Arrival of: %s, input file line: %d\n", p, l);
+    printf("\n");
+}
+
+void result_line(char *p, int l) {
+	fprintf(stderr, "Exit of: %s, output file line: %d\n", p, l);
+	printf("\n");
+}
+
+void context_change (int c) {
+	fprintf(stderr, "Number of context changes so far: %d\n", c);
+	printf("\n");
+}
+
 
 //Shortest Job First
 void SJF (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process;
+    int ret, nb_process, tr_line, rs_line;
     double tf, tr;
     pthread_t main_thread;
-  
+  	
+  	tr_line = rs_line = 1;
     process **plist = get_process(trace_file, &nb_process);
     heap *min_heap = init_heap(nb_process);
+
     
     struct timespec start, intI, intF;
     int index = 0;
@@ -72,6 +90,12 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             else if (sec(intF) - sec(start) <= plist[index]->times[0]) {
                 plist[index]->times[3] = plist[index]->times[1];
                 insert_heap(min_heap, plist[index]);
+                
+                if (details) {
+                	trace_line(plist[index]->name, tr_line);
+                	tr_line++;
+                }
+
                 index++; 
                 i++;
             }
@@ -94,6 +118,12 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             
             tf = sec(threadF) - sec(start);
             tr = tf - (sec(threadI) - sec(start));
+            
+            if (details) {
+            	result_line(argv->p->name, rs_line);
+            	rs_line++;		            	
+            }
+
             write_file(result, argv->p->name, tf, tr);
 
             
@@ -110,7 +140,7 @@ void SJF (FILE *trace_file, FILE *result, int details) {
 
 //Each process is given a time interval (QUANTUM)
 void Round_Robin (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, index, int_index, isWorth, context;
+    int ret, nb_process, index, int_index, isWorth, context, rs_line;
     double tf, tr, rel_runtime, abs_runtime, end, begin, start_time;
     pthread_t main_thread;
     struct timespec start, intI, intF, cur;
@@ -118,6 +148,7 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
     process **plist = get_process(trace_file, &nb_process);
     rrqueue *q = init_rrqueue();
     
+    rs_line = 1;
     index = int_index = context = 0;
     pthread_mutex_init(&lock, NULL);
 
@@ -150,7 +181,7 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
             end = sec(intF) - start_time;
             rel_runtime = end - begin;
         }
-        printf("%.1lf\n", abs_runtime);
+        
         int qsize = index - int_index;
         while (index != int_index && qsize) {
             arg_thread* argv = malloc(sizeof(arg_thread));
@@ -185,6 +216,7 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
             else {
                 move_rrqueue(q);
                 context++;
+                if (details) context_change(context);
             }
             qsize--;
         }
