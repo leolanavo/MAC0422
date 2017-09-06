@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "../../include/ep1/types.h"
 
 /* Frees alloced memorie for the process structured */
@@ -15,8 +16,14 @@ int count_lines(FILE* filename) {
     char c;
     do {
         c = fgetc(filename);
-        if (c == '\n' || c == EOF) i++;
+        if (isalnum(c)) {
+            i++;
+            while(c != '\n') {
+                c = fgetc(filename);
+            } 
+        }
     } while (c != EOF);
+    
     rewind(filename);
     return i;
 }
@@ -54,7 +61,7 @@ process* parse_line (FILE* filename) {
     p->name = malloc(size * sizeof(char));
 
     fgetc(filename);
-    for (char c = fgetc(filename); c != '\n' && c != EOF; c = fgetc(filename)) {
+    for (char c = fgetc(filename); isalnum(c); c = fgetc(filename)) {
         if (i >= size) {
             p->name = realloc_str(size, p->name);
             size *= 2;
@@ -77,5 +84,6 @@ process** get_process (FILE* filename, int* size) {
         plist[i] = parse_line(filename);
     }
     *size = fsize;
+
     return plist;
 }
