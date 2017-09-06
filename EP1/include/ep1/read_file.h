@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "../../include/ep1/types.h"
 
 /* Frees alloced memorie for the process structured */
