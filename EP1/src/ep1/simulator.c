@@ -51,8 +51,8 @@ double sec (struct timespec ts) {
     return round((ts.tv_sec + (ts.tv_nsec * 1e-9))*10)/10;
 }
 
-void write_file (FILE *f, char *pr_name, double tf, double tr) {
-	fprintf(f, "%s %.1lf %.1lf\n", pr_name, tf, tr);
+void write_file (FILE *f, process *p, double tf, double tr) {
+	fprintf(f, "%s %.1lf %.1lf | tempo antes da deadline: %.1lf\n", p->name, tf, tr, (p->times[1] - tf));
 }
 
 void write_file_context (FILE *f, int c) {
@@ -93,6 +93,8 @@ void SJF (FILE *trace_file, FILE *result, int details) {
     clock_gettime(CLOCK_REALTIME, &start);
     while (index < nb_process) {
         clock_gettime(CLOCK_REALTIME, &intI);
+
+        printf("nb_process: %d\n", nb_process);
 
         for (int i = 0; i < 10 && index < nb_process;) {
             clock_gettime(CLOCK_REALTIME, &intF);
@@ -135,7 +137,7 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             	rs_line++;		            	
             }
 
-            write_file(result, argv->p->name, tf, tr);
+            write_file(result, argv->p, tf, tr);
             
             if (ret == -1) {
                 perror("pthread_create exited with failure");
@@ -232,7 +234,7 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
             		rs_line++;		            	
             	}
 
-                write_file(result, q->first->p->name, tf, tr);
+                write_file(result, q->first->p, tf, tr);
                 remove_rrqueue(q);
                 int_index++;
             }
@@ -332,7 +334,7 @@ void Priority (FILE *trace_file, FILE *result, int details) {
             		rs_line++;		            	
             	}
 
-                write_file(result, argv->p->name, tf, tr);
+                write_file(result, argv->p, tf, tr);
                 int_index++;
             }
             else {
