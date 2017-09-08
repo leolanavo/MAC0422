@@ -116,9 +116,20 @@ void insert_loop(process** plist, void* s, int id, double start_time, int nb_pro
     }
 }
 
+void exec_thread(arg_thread* argv) {
+    int ret;
+    ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
+    pthread_join(main_thread, NULL);
+    
+    if (ret == -1) {
+        perror("pthread_create exited with failure");
+        exit(-1);
+    }
+}
+
 //Shortest Job First
 void SJF (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, tr_line, rs_line, read_index;
+    int nb_process, tr_line, rs_line, read_index;
     double tf, tr, start_time;
     pthread_t main_thread;
     struct timespec start, threadI, threadF;
@@ -142,10 +153,7 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             arg_thread* argv = construct_argv(SJFID, (void*) min_heap, DBL_MAX, details);
 
             clock_gettime(CLOCK_REALTIME, &threadI);
-            
-            ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
-            pthread_join(main_thread, NULL);
-            
+            exec_thread(argv);
             clock_gettime(CLOCK_REALTIME, &threadF);
             
             tf = sec(threadF) - start_time;
@@ -157,12 +165,6 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             }
 
             write_file(result, argv->p, tf, tr);
-
-            if (ret == -1) {
-                perror("pthread_create exited with failure");
-                exit(-1);
-            }
-
             free(argv);
         }
     }
@@ -173,7 +175,7 @@ void SJF (FILE *trace_file, FILE *result, int details) {
 
 //Each process is given a time interval (QUANTUM)
 void Round_Robin (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, read_index, exec_index, context, tr_line, rs_line;
+    int nb_process, read_index, exec_index, context, tr_line, rs_line;
     double tf, tr, start_time;
     pthread_t main_thread;
     struct timespec start, cur_time;
@@ -196,16 +198,9 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
 
         int qsize = read_index - exec_index;
         while (qsize) {
-            arg_thread* argv = construct_argv(RRID, (void*) q, QUANTUM, details);
 
-            ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
-            pthread_join(main_thread, NULL);
-            
-            if (ret == -1) {
-                perror("pthread_create exited with failure");
-                exit(-1);
-            }
- 
+            arg_thread* argv = construct_argv(RRID, (void*) q, QUANTUM, details);
+            exec_thread(argv); 
             q->first->p->times[1] -= QUANTUM;
 
             clock_gettime(CLOCK_REALTIME, &cur_time);
@@ -237,7 +232,7 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
 
 //Each level of priority defines how much time the process receives 
 void Priority (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, read_index, exec_index, context, hsize, tr_line, rs_line;
+    int nb_process, read_index, exec_index, context, hsize, tr_line, rs_line;
     double tf, tr, abs_runtime, start_time;
     pthread_t main_thread;
     struct timespec start, cur_time;
@@ -261,19 +256,10 @@ void Priority (FILE *trace_file, FILE *result, int details) {
         hsize = read_index - exec_index;
         while (hsize) {
             arg_thread* argv = construct_argv(PRID, (void*) min_heap, hsize*QUANTUM, details);
-
-            ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
-            pthread_join(main_thread, NULL);
-
-            if (ret == -1) {
-                perror("pthread_create exited with failure");
-                exit(-1);
-            }
- 
+            exec_thread(arg_thread);
             argv->p->times[1] -= (hsize) * QUANTUM;
 
             clock_gettime(CLOCK_REALTIME, &cur_time);
-
             if (argv->p->times[1] <= 0) {
                 tf = sec(cur_time) - start_time;
                 tr = tf - argv->p->times[0];
@@ -312,7 +298,6 @@ void Priority (FILE *trace_file, FILE *result, int details) {
 }
 
 int main (int argc, char **argv) {
-
     FILE* fl_input = fopen(argv[2], "r");
     FILE* fl_result = fopen(argv[3], "w");
     int d;
