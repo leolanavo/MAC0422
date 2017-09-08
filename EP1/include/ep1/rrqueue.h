@@ -10,7 +10,7 @@ void move_rrqueue(rrqueue* q);
 void remove_rrqueue(rrqueue* q);
 
 /* Receives a rrqueue pointer and a process  pointer, and inserts 
- * the process pointer in the last position of the rrqueue pointer. */
+ * the process pointer in the first position of the rrqueue pointer. */
 void insert_rrqueue(rrqueue* q, process* p);
 
 /* Returns an allocted rrqueue pointer. */

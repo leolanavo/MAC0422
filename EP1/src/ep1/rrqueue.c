@@ -28,7 +28,7 @@ void remove_rrqueue(rrqueue* q) {
 }
 
 /* Receives a rrqueue pointer and a process  pointer, and inserts 
- * the process pointer in the last position of the rrqueue pointer. */
+ * the process pointer in the first position of the rrqueue pointer. */
 void insert_rrqueue(rrqueue* q, process* p) {
     node* c = malloc(sizeof(node));
     c->p = p;
@@ -40,8 +40,8 @@ void insert_rrqueue(rrqueue* q, process* p) {
         q->first->next = c;
     }
     else {
-        q->last->next = c;
-        q->last = c;
+        c->next = q->first;
+        q->first = c;
     }
     q->last->next = q->first;
 }
