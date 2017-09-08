@@ -10,9 +10,16 @@
 #include "../../include/ep1/heap.h"
 #include "../../include/ep1/read_file.h"
 #include "../../include/ep1/rrqueue.h"
+#include "../../include/ep1/write_file.h"
 
 #define SIZE_LOT 10
 #define QUANTUM 5.0
+#define TIME_LIMIT 5.0
+
+//ID of which escalonator
+#define SJFID 1
+#define RRID 2
+#define PRID 3
 
 pthread_mutex_t lock;
 
@@ -51,80 +58,89 @@ double sec (struct timespec ts) {
     return round((ts.tv_sec + (ts.tv_nsec * 1e-9))*10)/10;
 }
 
-void write_file (FILE *f, process *p, double tf, double tr) {
-	fprintf(f, "%s %.1lf %.1lf | tempo antes da deadline: %.1lf\n", p->name, tf, tr, (p->times[1] - tf));
+void insert_process(process* p, void* s, int id, double abs_runtime) {
+    p->times[3] = id == PRID? 
+        p->times[2] - abs_runtime - p->times[1] : p->times[1];
+    
+    if (id == SJFID || id == PRID)
+        insert_heap((heap*) s, p);
+    else
+        insert_rrqueue((rrqueue*) s, p);  
 }
 
-void write_file_context (FILE *f, int c) {
-	fprintf(f, "%d", c);
+arg_thread* construct_argv(int id, void* s, double exec_time, int details) {
+    arg_thread* argv = malloc(sizeof(arg_thread));
+    
+    argv->p = id == RRID? ((rrqueue*)s)->first->p : remove_heap((heap*) s);
+
+    argv->ts = argv->p->times[1] < exec_time? 
+        convert_ts(argv->p->times[1]) : convert_ts(exec_time);
+    
+    argv->details = details;
+    return argv;
 }
 
-void trace_line (char *p, int l, double t) {
-	fprintf(stderr, "Arrival of: %s, input file line: %d, at instant: %.1lf\n", p, l, t);
-    printf("\n");
-}
+/*
+ * NOTE: in the variable names, int stands for interval. */
+void insert_loop(process** plist, void* s, int id, double start_time, int nb_process,
+                int* index, int* tr_line, int details) {
+    
+    int i = 0;
+    struct timespec intI, intF;
+    double abs_runtime, int_runtime, begin, end;
+    
+    clock_gettime(CLOCK_REALTIME, &intI);
+    begin = sec(intI) - start_time;
+    end = begin;
+    int_runtime = end - begin;
 
-void result_line(char *p, int l) {
-	fprintf(stderr, "Exit of: %s, output file line: %d\n", p, l);
-	printf("\n");
-}
+    while (*(index) < nb_process && int_runtime < TIME_LIMIT) {
+        abs_runtime = end;
 
-void context_change (int c) {
-	fprintf(stderr, "Number of context changes so far: %d\n", c);
-	printf("\n");
-}
+        if (id == SJFID && i >= SIZE_LOT) return;
 
+        if (abs_runtime >= plist[*(index)]->times[0]) {
+            insert_process(plist[*(index)], s, id, abs_runtime);
+
+            if (details) {
+                trace_line(plist[*(index)]->name, *(tr_line), abs_runtime);
+                *(tr_line) = *(tr_line) + 1;
+            }
+
+            *(index) = *(index) + 1;
+            i++;
+        }
+        clock_gettime(CLOCK_REALTIME, &intF);
+        end = sec(intF) - start_time;
+        int_runtime = end - begin;
+    }
+}
 
 //Shortest Job First
 void SJF (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, tr_line, rs_line;
-    double tf, tr, abs_runtime, rel_runtime;
+    int ret, nb_process, tr_line, rs_line, read_index;
+    double tf, tr, start_time;
     pthread_t main_thread;
+    struct timespec start, threadI, threadF;
   	
   	tr_line = rs_line = 1;
-    rel_runtime = abs_runtime = 0;
+    read_index = 0;
+    
     process **plist = get_process(trace_file, &nb_process);
     heap *min_heap = init_heap(nb_process);
-
     
-    struct timespec start, intI, intF;
-    int index = 0;
     pthread_mutex_init(&lock, NULL);
 
     clock_gettime(CLOCK_REALTIME, &start);
-    while (index < nb_process) {
-        clock_gettime(CLOCK_REALTIME, &intI);
+    start_time = sec(start);
 
-        printf("nb_process: %d\n", nb_process);
-
-        for (int i = 0; i < 10 && index < nb_process;) {
-            clock_gettime(CLOCK_REALTIME, &intF);
-            abs_runtime = sec(intF) - sec(start);
-            rel_runtime = sec(intF) - sec(intI);
-            if (rel_runtime > 10.0) break;
-            
-            if (abs_runtime >= plist[index]->times[0]) {
-                plist[index]->times[3] = plist[index]->times[1];
-                insert_heap(min_heap, plist[index]);
-                
-                if (details) {
-                	trace_line(plist[index]->name, tr_line, abs_runtime);
-                	tr_line++;
-                }
-
-                index++; 
-                i++;
-            }
-        }
+    while (read_index < nb_process) {
+        insert_loop(plist, (void*) min_heap, SJFID, start_time, 
+                    nb_process, &read_index, &tr_line, details);
         
         while (min_heap->pr_total > 0) {
-            arg_thread* argv = malloc(sizeof(arg_thread));
+            arg_thread* argv = construct_argv(SJFID, (void*) min_heap, DBL_MAX, details);
 
-            argv->p = remove_heap(min_heap);
-            argv->ts = convert_ts(argv->p->times[3]);
-            argv->details = details;
-
-            struct timespec threadI, threadF;
             clock_gettime(CLOCK_REALTIME, &threadI);
             
             ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
@@ -132,7 +148,7 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             
             clock_gettime(CLOCK_REALTIME, &threadF);
             
-            tf = sec(threadF) - sec(start);
+            tf = sec(threadF) - start_time;
             tr = tf - argv->p->times[0];
             
             if (details) {
@@ -141,12 +157,12 @@ void SJF (FILE *trace_file, FILE *result, int details) {
             }
 
             write_file(result, argv->p, tf, tr);
-            
+
             if (ret == -1) {
                 perror("pthread_create exited with failure");
                 exit(-1);
             }
-            
+
             free(argv);
         }
     }
@@ -157,55 +173,30 @@ void SJF (FILE *trace_file, FILE *result, int details) {
 
 //Each process is given a time interval (QUANTUM)
 void Round_Robin (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, index, int_index, context, tr_line, rs_line;
-    double tf, tr, rel_runtime, abs_runtime, end, begin, start_time;
+    int ret, nb_process, read_index, exec_index, context, tr_line, rs_line;
+    double tf, tr, start_time;
     pthread_t main_thread;
-    struct timespec start, intI, intF, cur;
+    struct timespec start, cur_time;
   
     process **plist = get_process(trace_file, &nb_process);
     rrqueue *q = init_rrqueue();
     
     tr_line = rs_line = 1;
-    index = int_index = context = 0;
+    read_index = exec_index = context = 0;
     pthread_mutex_init(&lock, NULL);
 
     clock_gettime(CLOCK_REALTIME, &start);
     start_time = sec(start);
 
-
-    while (index < nb_process) {
-        clock_gettime(CLOCK_REALTIME, &intI);
-        begin = sec(intI) - start_time;
-        end = begin;
-
-        rel_runtime = end - begin;
-        while(index < nb_process && rel_runtime < 10.0) {
-            abs_runtime = end;
-            if (abs_runtime >= plist[index]->times[0]) {
-                plist[index]->times[3] = plist[index]->times[1];
-                insert_rrqueue(q, plist[index]);
-
-                if (details) {
-                	trace_line(plist[index]->name, tr_line, abs_runtime);
-                	tr_line++;
-                }
-                index++;
-            }
-            clock_gettime(CLOCK_REALTIME, &intF);
-            end = sec(intF) - start_time;
-            rel_runtime = end - begin;
-        }
+    while (exec_index < nb_process) {
         
-        int qsize = index - int_index;
-        while (index != int_index && qsize) {
-            arg_thread* argv = malloc(sizeof(arg_thread));
+        if (read_index < nb_process)
+            insert_loop(plist, (void*)q, RRID, start_time, 
+                        nb_process, &read_index, &tr_line, details);
 
-            argv->p = q->first->p;
-            
-            argv->ts = argv->p->times[3] < QUANTUM? 
-                convert_ts(argv->p->times[3]) : convert_ts(QUANTUM);
-            
-            argv->details = details;
+        int qsize = read_index - exec_index;
+        while (qsize) {
+            arg_thread* argv = construct_argv(RRID, (void*) q, QUANTUM, details);
 
             ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
             pthread_join(main_thread, NULL);
@@ -215,12 +206,11 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
                 exit(-1);
             }
  
-            clock_gettime(CLOCK_REALTIME, &cur);
+            q->first->p->times[1] -= QUANTUM;
 
-            q->first->p->times[3] -= QUANTUM;
-
-            if (q->first->p->times[3] <= 0) {
-                tf = sec(cur) - start_time;
+            clock_gettime(CLOCK_REALTIME, &cur_time);
+            if (q->first->p->times[1] <= 0) {
+                tf = sec(cur_time) - start_time;
                 tr = tf - q->first->p->times[0];
 
                 if (details) {
@@ -230,7 +220,7 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
 
                 write_file(result, q->first->p, tf, tr);
                 remove_rrqueue(q);
-                int_index++;
+                exec_index++;
             }
             else {
                 move_rrqueue(q);
@@ -247,56 +237,30 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
 
 //Each level of priority defines how much time the process receives 
 void Priority (FILE *trace_file, FILE *result, int details) {
-    int ret, nb_process, index, int_index, context, hsize, tr_line, rs_line;
-    double tf, tr, rel_runtime, abs_runtime, end, begin, start_time;
+    int ret, nb_process, read_index, exec_index, context, hsize, tr_line, rs_line;
+    double tf, tr, abs_runtime, start_time;
     pthread_t main_thread;
-    struct timespec start, intI, intF, cur;
+    struct timespec start, cur_time;
   
     process **plist = get_process(trace_file, &nb_process);
     heap* min_heap = init_heap(nb_process);
     
-    index = int_index = context = 0;
-    abs_runtime = rel_runtime = 0.0;
+    read_index = exec_index = context = 0;
+    abs_runtime = 0;
     tr_line = rs_line = 1;
     pthread_mutex_init(&lock, NULL);
 
     clock_gettime(CLOCK_REALTIME, &start);
     start_time = sec(start);
 
-    while (index < nb_process) {
-        clock_gettime(CLOCK_REALTIME, &intI);
-        begin = sec(intI) - start_time;
-        end = begin;
+    while (exec_index < nb_process) {
+        if(read_index < nb_process)
+            insert_loop(plist, (void*)min_heap, PRID, start_time, 
+                        nb_process, &read_index, &tr_line, details);
 
-        rel_runtime = end - begin;
-        while(index < nb_process && rel_runtime < 10.0) {
-            abs_runtime = end;
-            if (abs_runtime >= plist[index]->times[0]) {
-                plist[index]->times[3] = plist[index]->times[2] - abs_runtime - plist[index]->times[1];
-                insert_heap(min_heap, plist[index]);
-
-                if (details) {
-                	trace_line(plist[index]->name, tr_line, abs_runtime);
-                	tr_line++;
-                }
-                index++;
-            }
-            clock_gettime(CLOCK_REALTIME, &intF);
-            end = sec(intF) - start_time;
-            rel_runtime = end - begin;
-        }
-
-        hsize = index - int_index;
-        while (index != int_index && hsize) {
-            arg_thread* argv = malloc(sizeof(arg_thread));
-
-            argv->p = remove_heap(min_heap);
-
-            argv->ts = argv->p->times[1] < hsize*QUANTUM? 
-                convert_ts(argv->p->times[1]) :
-                convert_ts(hsize * QUANTUM);
-
-            argv->details = details;
+        hsize = read_index - exec_index;
+        while (hsize) {
+            arg_thread* argv = construct_argv(PRID, (void*) min_heap, hsize*QUANTUM, details);
 
             ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
             pthread_join(main_thread, NULL);
@@ -308,10 +272,10 @@ void Priority (FILE *trace_file, FILE *result, int details) {
  
             argv->p->times[1] -= (hsize) * QUANTUM;
 
-            clock_gettime(CLOCK_REALTIME, &cur);
+            clock_gettime(CLOCK_REALTIME, &cur_time);
 
             if (argv->p->times[1] <= 0) {
-                tf = sec(cur) - start_time;
+                tf = sec(cur_time) - start_time;
                 tr = tf - argv->p->times[0];
 
                 if (details) {
@@ -320,7 +284,7 @@ void Priority (FILE *trace_file, FILE *result, int details) {
             	}
 
                 write_file(result, argv->p, tf, tr);
-                int_index++;
+                exec_index++;
             }
             else {
                 context++;
@@ -332,11 +296,11 @@ void Priority (FILE *trace_file, FILE *result, int details) {
             hsize--;
         }
 
-        hsize = index - int_index;
-        clock_gettime(CLOCK_REALTIME, &intF);
-        end = sec(intF) - start_time;
+        hsize = read_index - exec_index;
+        clock_gettime(CLOCK_REALTIME, &cur_time);
+        abs_runtime = sec(cur_time) - start_time;
 
-        for (int i = index - int_index; i < 0; i--) {
+        for (int i = read_index - exec_index; i < 0; i--) {
             min_heap->min_pq[i]->times[3] = min_heap->min_pq[i]->times[2] 
                 - abs_runtime - min_heap->min_pq[i]->times[1];
             
@@ -356,8 +320,9 @@ int main (int argc, char **argv) {
     if (argc == 5 && *argv[4] == 'd') d = 1;
     else d = 0;
  
-    if (*argv[1] == '1') SJF(fl_input, fl_result, d);
-    else if (*argv[1] == '2') Round_Robin(fl_input, fl_result, d);
+    int id = atoi(argv[1]);
+    if (id == SJFID) SJF(fl_input, fl_result, d);
+    else if (id == RRID) Round_Robin(fl_input, fl_result, d);
     else Priority(fl_input, fl_result, d);
 
     return 0;
