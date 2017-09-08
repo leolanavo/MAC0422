@@ -72,7 +72,7 @@ void cmd_date() {
     free(result);
 }
 
-/* Receives the command and its argumments that the shell
+/* Receives the command and its arguments that the shell
  * will execute and execute it. */
 void cmd_execute(char* path, char* cmd) {
     char** args = parse_args(cmd);
