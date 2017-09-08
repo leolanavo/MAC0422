@@ -118,6 +118,7 @@ void insert_loop(process** plist, void* s, int id, double start_time, int nb_pro
 
 void exec_thread(arg_thread* argv) {
     int ret;
+    pthread_t main_thread;
     ret = pthread_create(&main_thread, NULL, &processing, (void*)argv);
     pthread_join(main_thread, NULL);
     
@@ -131,7 +132,6 @@ void exec_thread(arg_thread* argv) {
 void SJF (FILE *trace_file, FILE *result, int details) {
     int nb_process, tr_line, rs_line, read_index;
     double tf, tr, start_time;
-    pthread_t main_thread;
     struct timespec start, threadI, threadF;
   	
   	tr_line = rs_line = 1;
@@ -177,7 +177,6 @@ void SJF (FILE *trace_file, FILE *result, int details) {
 void Round_Robin (FILE *trace_file, FILE *result, int details) {
     int nb_process, read_index, exec_index, context, tr_line, rs_line;
     double tf, tr, start_time;
-    pthread_t main_thread;
     struct timespec start, cur_time;
   
     process **plist = get_process(trace_file, &nb_process);
@@ -234,7 +233,6 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
 void Priority (FILE *trace_file, FILE *result, int details) {
     int nb_process, read_index, exec_index, context, hsize, tr_line, rs_line;
     double tf, tr, abs_runtime, start_time;
-    pthread_t main_thread;
     struct timespec start, cur_time;
   
     process **plist = get_process(trace_file, &nb_process);
@@ -256,7 +254,7 @@ void Priority (FILE *trace_file, FILE *result, int details) {
         hsize = read_index - exec_index;
         while (hsize) {
             arg_thread* argv = construct_argv(PRID, (void*) min_heap, hsize*QUANTUM, details);
-            exec_thread(arg_thread);
+            exec_thread(argv);
             argv->p->times[1] -= (hsize) * QUANTUM;
 
             clock_gettime(CLOCK_REALTIME, &cur_time);
