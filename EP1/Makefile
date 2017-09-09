@@ -22,7 +22,7 @@ BIN       := ep1sh ep1
 TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
 
-CFLAGS    := -Wall -std=c11 -lreadline -pthread -lm
+CFLAGS    := -Wall -std=c11 -pthread -lm -O2 -lreadline
 EXECFLAGS := -O2
 TESTFLAGS := -g
 
@@ -45,9 +45,9 @@ LTXDIR := report
 ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR) $(TSTDIR) $(OBJDIR)
 BINROOT := $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
 
+# all: CFLAGS += $(EXECFLAGS)
 # main target
 .PHONY: all
-all: CFLAGS += $(EXECFLAGS)
 all: $(addprefix $(BINDIR)/,$(BIN))
 
 .PHONY: debug)
