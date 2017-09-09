@@ -18,7 +18,7 @@
 #                                                 #
 ###################################################
 
-BIN   	  := ep1sh ep1
+BIN       := ep1sh ep1
 TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
 
@@ -42,8 +42,7 @@ TSTDIR := test
 TXTDIR := txt
 INCDIR := include
 LTXDIR := report
-ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) \
-        $(FINALDIR) $(BINDIR) $(TSTDIR) $(OBJDIR)
+ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR) $(TSTDIR) $(OBJDIR)
 BINROOT := $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
 
 # main target
@@ -110,15 +109,12 @@ organize:
 
 .PHONY: package
 package: clean | $(FINALDIR)
-	
 	@$(ECHO) "Copying files..."
 	@$(CP) $(SRCDIR) $(FINALDIR)
 	@$(CP) $(INCDIR) $(FINALDIR)
 	@$(CP) $(LTXDIR) $(FINALDIR)
 	@$(CP) Makefile $(FINALDIR)
-	
 	@$(ECHO) "Compressing..."
 	@$(TAR) $(TARF).tar.gz $(FINALDIR)
-	
 	@$(ECHO) "Cleaning..."
 	@$(RMDIR) $(FINALDIR)
