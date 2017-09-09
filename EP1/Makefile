@@ -22,9 +22,10 @@ BIN       := ep1sh ep1
 TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
 
-CFLAGS    := -Wall -std=c11 -pthread -lm -O2 -lreadline
+CFLAGS    := -Wall -std=gnu11 -lpthread -lm 
 EXECFLAGS := -O2
 TESTFLAGS := -g
+READFLAGS := -lreadline
 
 CC    := gcc
 MV    := mv
@@ -45,13 +46,15 @@ LTXDIR := report
 ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR) $(TSTDIR) $(OBJDIR)
 BINROOT := $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
 
-# all: CFLAGS += $(EXECFLAGS)
 # main target
 .PHONY: all
+all: CFLAGS += $(EXECFLAGS)
+all: CFLAGS += $(READFLAGS)
 all: $(addprefix $(BINDIR)/,$(BIN))
 
 .PHONY: debug)
 debug: CFLAGS += $(TESTFLAGS)
+debug: CFLAGS += $(READFLAGS)
 debug: $(addprefix $(TSTDIR)/,$(BIN))
 
 # Create the necessary lists of dependencies for each binary
@@ -63,19 +66,19 @@ $(foreach x,$(BIN),\
 # Compile each one of the binaries
 define bin-factory
 $$(BINDIR)/$1: $$($1.OBJ) | $$(BINDIR)
-	$$(CC) $$(CFLAGS) -o $$@ $$^
+	$$(CC) $$^ -o $$@  $$(CFLAGS)
 endef
 $(foreach x,$(BIN),$(eval $(call bin-factory,$x)))
 
 define test-factory
 $$(TSTDIR)/$1: $$($1.OBJ) | $$(TSTDIR)
-	$$(CC) $$(CFLAGS) -o $$@ $$^
+	$$(CC) $$^ -o $$@  $$(CFLAGS)
 endef
 $(foreach x,$(BIN),$(eval $(call test-factory,$x)))
 
 define object-factory
 $$(OBJDIR)/$1.o: $$(SRCDIR)/$1.c $$(wildcard $$(INCDIR)/$1.h) | $$(OBJDIR) $$(BINROOT)
-	$$(CC) $$(CFLAGS) -c -o $$@ $$<
+	$$(CC) -c $$< -o $$@ $$(CFLAGS)
 endef
 $(foreach b,$(BIN),\
 	$(foreach obj,$($b.OBJ),\
