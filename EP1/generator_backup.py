@@ -4,7 +4,7 @@ import os
 
 def main():
 
-    size = [10, 25, 50]
+    size = [20, 50, 100]
 
     for s in size:
         for id in range (1, 4):
