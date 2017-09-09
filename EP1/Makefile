@@ -50,17 +50,18 @@ BINROOT := $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
 all: CFLAGS += $(EXECFLAGS)
 all: $(addprefix $(BINDIR)/,$(BIN))
 
-.PHONY: debug
+.PHONY: debug)
 debug: CFLAGS += $(TESTFLAGS)
 debug: $(addprefix $(TSTDIR)/,$(BIN))
 
 # Create the necessary lists of dependencies for each binary
-define create_vars
-$(eval $1.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$1/*.c)))
-$(eval $1.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($1.SRC)))
-$(eval $1.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$1/*.h)))
-endef
-$(foreach x,$(BIN),$(call create_vars,$x))
+$(foreach x,$(BIN),\
+$(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$x/*.c)))\
+$(warning $(x.SRC))\
+$(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
+$(warning $(x.OBJ))\
+$(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$x/*.h)))\
+$(warning $(x.INC)))
 
 # Compile each one of the binaries
 define bin-factory
