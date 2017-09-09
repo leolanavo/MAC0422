@@ -8,7 +8,7 @@ def main():
     for s in size:
         for id in range (1, 4):
             for i in range (1, 31):
-                trace_fl = "trace" + str(s) + "_" + str(id) + "_" + str(i) + ".txt"
+                trace_fl = "trace" + str(s) + "_" + str(i) + ".txt"
                 result_fl = "result" + str(s) + "_" + str(id) + "_"+ str(i) + ".txt"
                 print(trace_fl)
 
