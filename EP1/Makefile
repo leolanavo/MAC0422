@@ -56,12 +56,9 @@ debug: $(addprefix $(TSTDIR)/,$(BIN))
 
 # Create the necessary lists of dependencies for each binary
 $(foreach x,$(BIN),\
-$(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$x/*.c)))\
-$(warning $(x.SRC))\
-$(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
-$(warning $(x.OBJ))\
-$(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$x/*.h)))\
-$(warning $(x.INC)))
+  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$x/*.c)))\
+  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
+  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$x/*.h))))
 
 # Compile each one of the binaries
 define bin-factory
