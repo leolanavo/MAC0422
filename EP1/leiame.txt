@@ -1,0 +1,15 @@
+******************
+*** Compilação ***
+******************
+
+Use o comando "make" e os dois binários  devem ser compilados 
+automaticamente.
+
+****************
+*** Execução ***
+****************
+
+Para executar os binários use os comandos:
+    |--> ./ep1 <id do escalonador> <arquivo de trace> <arquivo de saída> <d>
+    |
+    |--> ./ep1sh
