@@ -36,14 +36,14 @@ ECHO  := echo -e
 MKDIR := mkdir -p
 TAR   := tar -cvf
 
-BINDIR := bin
+BINDIR := .
 SRCDIR := src
 OBJDIR := build
 TSTDIR := test
 TXTDIR := txt
 INCDIR := include
 LTXDIR := report
-ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(BINDIR) $(TSTDIR) $(OBJDIR)
+ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(TSTDIR) $(OBJDIR)
 BINROOT := $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
 
 # main target
@@ -85,7 +85,7 @@ $(foreach b,$(BIN),\
 		$(eval $(call object-factory,$(patsubst $(OBJDIR)/%.o,%,$(obj))))))
 
 # Directory creation rules
-$(ROOT) $(BINROOT):
+$(ROOT) $(BINROOT) $(BINDIR):
 	@$(MKDIR) $@
 
 # phony targets for automation
