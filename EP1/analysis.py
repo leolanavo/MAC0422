@@ -11,13 +11,15 @@ def conf(sample):
 
     conf.append(mean - t*(stdv/th.sqrt(30)))
     conf.append(mean + t*(stdv/th.sqrt(30)))
+    conf.append(stat.variance(sample))
+    conf.append(stat.median(sample))
 
     return conf    
 
 
 def main():
 
-    size = [25]
+    size = [10, 25, 50]
     
     for s in size:
         
@@ -50,9 +52,10 @@ def main():
             fn_dead_m = stat.mean(mean_deadline)
             fn_ctx_m = stat.mean(context)
 
-            file_output.write("DL mean: " + str(fn_dead_m) + " CTX mean: " + str(fn_ctx_m))
+            file_output.write("DL mean: " + str(fn_dead_m) + " CTX mean: " + str(fn_ctx_m) + "\n")
             conf_i = conf(mean_deadline)
-            file_output.write(" IC:" + "[" + str(conf_i[0]) + "; " + str(conf_i[1]) + "]")
+            file_output.write(" IC:" + "[" + str(conf_i[0]) + "; " + str(conf_i[1]) + "]" + "\n")
+            file_output.write("Variance: " + str(conf_i[2]) + "Median: " + str(conf_i[3]))
 
             file_output.close()
 main()
