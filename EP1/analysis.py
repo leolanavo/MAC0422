@@ -19,7 +19,7 @@ def conf(sample):
 
 def main():
 
-    size = [10, 25, 50]
+    size = [10, 25]
     
     for s in size:
         
@@ -40,9 +40,7 @@ def main():
                     sum_mean = sum_mean + float(file_input.readline())
                 
                 num_context = int(file_input.readline()) 
-                
-                if sum_mean < 0:
-                    sum_mean = -sum_mean
+                sum_mean = -sum_mean
 
                 mean_deadline.append(sum_mean/s)  
                 context.append(num_context)
@@ -52,10 +50,11 @@ def main():
             fn_dead_m = stat.mean(mean_deadline)
             fn_ctx_m = stat.mean(context)
 
-            file_output.write("DL mean: " + str(fn_dead_m) + " CTX mean: " + str(fn_ctx_m) + "\n")
+            file_output.write("Media de Atraso na Deadline: " + str(fn_dead_m) + "\n")
             conf_i = conf(mean_deadline)
-            file_output.write(" IC:" + "[" + str(conf_i[0]) + "; " + str(conf_i[1]) + "]" + "\n")
-            file_output.write("Variance: " + str(conf_i[2]) + "Median: " + str(conf_i[3]))
+            file_output.write("IC:" + "[" + str(conf_i[0]) + "; " + str(conf_i[1]) + "]" + "\n")
+            file_output.write("Variancia: " + str(conf_i[2]) + "; "+ "Mediana: " + str(conf_i[3]) + "\n")
+            file_output.write("Media de Mudancas de Contexto: " + str(fn_ctx_m) + "\n")
 
             file_output.close()
 main()
