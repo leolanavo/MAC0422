@@ -50,11 +50,16 @@ def main():
             fn_dead_m = stat.mean(mean_deadline)
             fn_ctx_m = stat.mean(context)
 
-            file_output.write("Media de Atraso na Deadline: " + str(fn_dead_m) + "\n")
             conf_i = conf(mean_deadline)
+            conf_i_c = conf(context)
+
+            file_output.write("Media de Atraso na Deadline: " + str(fn_dead_m) + "\n")
             file_output.write("IC:" + "[" + str(conf_i[0]) + "; " + str(conf_i[1]) + "]" + "\n")
             file_output.write("Variancia: " + str(conf_i[2]) + "; "+ "Mediana: " + str(conf_i[3]) + "\n")
+            
             file_output.write("Media de Mudancas de Contexto: " + str(fn_ctx_m) + "\n")
+            file_output.write("IC:" + "[" + str(conf_i_c[0]) + "; " + str(conf_i_c[1]) + "]" + "\n")
+            file_output.write("Variancia: " + str(conf_i_c[2]) + "; "+ "Mediana: " + str(conf_i_c[3]) + "\n")
 
             file_output.close()
 main()
