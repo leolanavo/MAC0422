@@ -3,8 +3,7 @@
 #include "../../include/ep1/types.h"
 
 void write_file (FILE *f, process *p, double tf, double tr) {
-    /* fprintf(f, "%s %.1lf %.1lf\n", p->name, tf, tr); */
-    fprintf(f, "%.1lf\n", p->times[2] - tf);
+    fprintf(f, "%s %.1lf %.1lf\n", p->name, tf, tr);
 }
 
 void write_file_context (FILE *f, int c) {
