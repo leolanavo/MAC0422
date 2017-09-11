@@ -1,0 +1,112 @@
+SHORTEST JOB FIRST
+
+Trace10:
+  Media de Atraso na Deadline: 33.529
+  IC:[28.902; 38.155]
+  Variancia: 153.558; Mediana: 32.825
+
+Trace25:
+  Media de Atraso na Deadline: 129.534
+  IC:[120.631; 138.437]
+  Variancia: 568.586; Mediana: 124.464
+
+Trace50:
+
+ROUND ROBIN
+
+Trace10:
+  Media de Atraso na Deadline: 74.015
+  IC:[65.275; 82.754]
+  Variancia: 547.911; Mediana: 74.405
+
+Trace25:
+  Media de Atraso na Deadline: 209.954
+  IC:[195.440; 224.468]
+  Variancia: 1511.148; Mediana: 209.568
+
+Trace50:
+
+PRIORITY
+
+Trace10:
+  Media de Atraso na Deadline: 57.360
+  IC:[51.383; 63.337]
+  Variancia: 256.295; Mediana: 57.535
+
+Trace25:
+  Media de Atraso na Deadline: 164.981
+  IC:[154.447; 175.515]
+  Variancia: 796.006; Mediana: 164.226
+
+Trace50:
+
+
+
+
+SHORTEST JOB FIRST
+
+Trace10:
+  Media de Cumprimento da Deadline: 0.213
+  IC:[0.174; 0.252]
+  Variancia: 0.010; Mediana: 0.2
+  
+  Media de Mudancas de Contexto: 0.0
+  IC:[0.0; 0.0]
+  Variancia: 0.0; Mediana: 0.0
+
+Trace25:
+  Media de Cumprimento da Deadline: 0.102
+  IC:[0.089; 0.116]
+  Variancia: 0.001; Mediana: 0.12
+  
+  Media de Mudancas de Contexto: 0.0
+  IC:[0.0; 0.0]
+  Variancia: 0.0; Mediana: 0.0
+
+
+Trace50:
+
+ROUND ROBIN
+
+Trace10:
+  Media de Cumprimento da Deadline: 0.076
+  IC:[0.043; 0.110]
+  Variancia: 0.008; Mediana: 0.1
+  
+  Media de Mudancas de Contexto: 25.566
+  IC:[23.778; 27.355]
+  Variancia: 22.943; Mediana: 26.0
+
+Trace25:
+  Media de Cumprimento da Deadline: 0.042
+  IC:[0.025; 0.059]
+  Variancia: 0.002089; Mediana: 0.04
+  
+  Media de Mudancas de Contexto: 63.2
+  IC:[60.069; 66.330]
+  Variancia: 70.303; Mediana: 63.5
+
+
+Trace50:
+
+PRIORITY
+
+Trace10:
+  Media de Cumprimento da Deadline: 0.056
+  IC:[0.026; 0.087]
+  Variancia: 0.006; Mediana: 0.0
+  
+  Media de Mudancas de Contexto: 5.833
+  IC:[5.174; 6.491]
+  Variancia: 3.109; Mediana: 6.0
+
+Trace25:
+  Media de Cumprimento da Deadline: 0.032
+  IC:[0.017; 0.046]
+  Variancia: 0.001; Mediana: 0.02
+  
+  Media de Mudancas de Contexto: 6.433
+  IC:[5.785; 7.081]
+  Variancia: 3.012; Mediana: 6.0
+
+Trace50:
