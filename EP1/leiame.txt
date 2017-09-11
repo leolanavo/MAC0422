@@ -13,3 +13,9 @@ Para executar os binários use os comandos:
     |--> ./ep1 <id do escalonador> <arquivo de trace> <arquivo de saída> <d>
     |
     |--> ./ep1sh
+
+**************
+*** Slides ***
+**************
+
+Os slides estão na pasta report/
