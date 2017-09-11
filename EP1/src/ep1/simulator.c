@@ -1,3 +1,5 @@
+/* Implements three schedulers SJF, RR and Priority. */
+
 #define _GNU_SOURCE
 
 #include <stdio.h>
@@ -25,6 +27,9 @@
 
 pthread_mutex_t lock;
 
+/* Receives a void* which has a process, a timespec and a flag.
+ * Consumes the time specified in the timespec variable, and prints
+ * th necessary info if the flag is different from zero. */
 void* processing (void *args) {
     pthread_mutex_lock(&lock);
     arg_thread* argv = (arg_thread*) args;
@@ -49,6 +54,7 @@ void* processing (void *args) {
     return argv;
 }
 
+/* Receives a double.  Returns the double structered as a timespec. */
 struct timespec convert_ts (double dt) {
     struct timespec ts;
     ts.tv_sec = floor(dt);
@@ -56,10 +62,16 @@ struct timespec convert_ts (double dt) {
     return ts;
 }
 
+/* Receives a timespec struct. Returns the timespec 
+ * converted into a double with one decimal place of precision*/
 double sec (struct timespec ts) {
     return round((ts.tv_sec + (ts.tv_nsec * 1e-9))*10)/10;
 }
 
+/* Receives a process pointer, a void pointer (which is a data structere), 
+ * an id (identifies the scheduler), and a double (the runtime of the
+ * scheduling). Inserts the process in the structere and calculates its 
+ * priority according to the scheduler. */
 void insert_process(process* p, void* s, int id, double abs_runtime) {
     p->times[3] = id == PRID? 
         p->times[2] - abs_runtime - p->times[1] : p->times[1];
@@ -82,8 +94,17 @@ arg_thread* construct_argv(int id, void* s, double exec_time, int details) {
     return argv;
 }
 
-/*
- * NOTE: in the variable names, int stands for interval. */
+/* Receives a process pointer array, a void pointer, an int, the starting time
+ * of the scheduler, the number of process in the array, the index of the array,
+ * the line of the file, and a flag.
+ *
+ * Makes a loop of 10 seconds, or less in the case of SJF, and inseserts the
+ * process which already entered the CPU in the structere.
+ * 
+ * Prints the necessary information with the flag is non-zero.
+ * 
+ * NOTE: in the variable names, int stands for interval. 
+ * NOTE2: the arguments are the same from insert_process function. */
 void insert_loop(process** plist, void* s, int id, double start_time, int nb_process,
                 int* index, int* tr_line, int details) {
     
@@ -118,6 +139,9 @@ void insert_loop(process** plist, void* s, int id, double start_time, int nb_pro
     }
 }
 
+/* Receives an arg_thread pointer, which has process pointer, a timespec
+ * and a flag. Execute a thread using the processing function 
+ * and the arg_thread as argument for processing. */
 void exec_thread(arg_thread* argv) {
     int ret;
     pthread_t main_thread;
@@ -130,7 +154,8 @@ void exec_thread(arg_thread* argv) {
     }
 }
 
-//Shortest Job First
+/* Receives the input file, the output file and a flag.
+ * Implements the Shortest Job First scheduler using a heap.*/
 void SJF (FILE *trace_file, FILE *result, int details) {
     int nb_process, tr_line, rs_line, read_index;
     double tf, tr, start_time;
@@ -175,7 +200,8 @@ void SJF (FILE *trace_file, FILE *result, int details) {
     pthread_mutex_destroy(&lock);    
 }
 
-//Each process is given a time interval (QUANTUM)
+/* Receives the input file, the output file and a flag.
+ * Implements the Round Robin scheduler using a queue.*/
 void Round_Robin (FILE *trace_file, FILE *result, int details) {
     int nb_process, read_index, exec_index, context, tr_line, rs_line;
     double tf, tr, start_time;
@@ -231,7 +257,8 @@ void Round_Robin (FILE *trace_file, FILE *result, int details) {
     pthread_mutex_destroy(&lock);    
 }
 
-//Each level of priority defines how much time the process receives 
+/* Receives the input file, the output file and a flag.
+ * Implements the Priority scheduler using a heap. */
 void Priority (FILE *trace_file, FILE *result, int details) {
     int nb_process, read_index, exec_index, context, hsize, tr_line, rs_line;
     double tf, tr, abs_runtime, start_time;
