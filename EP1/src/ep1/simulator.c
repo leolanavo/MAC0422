@@ -75,7 +75,7 @@ double sec (struct timespec ts) {
 void insert_process(process* p, void* s, int id, double abs_runtime) {
     p->times[3] = id == PRID? 
         p->times[2] - abs_runtime - p->times[1] : p->times[1];
-    
+
     if (id == SJFID || id == PRID)
         insert_heap((heap*) s, p);
     else
