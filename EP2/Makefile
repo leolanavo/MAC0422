@@ -56,13 +56,13 @@ $(foreach x,$(BIN),\
 # Compile each one of the binaries
 define bin-factory
 $$(BINDIR)/$1: $$($1.OBJ) | $$(BINDIR)
-	$$(CC) $$^ -o $$@  $$(CFLAGS)
+	$$(CC) $$^ -o $$@  $$(CFLAGS) $$(LDFLAGS)
 endef
 $(foreach x,$(BIN),$(eval $(call bin-factory,$x)))
 
 define test-factory
 $$(TSTDIR)/$1: $$($1.OBJ) | $$(TSTDIR)
-	$$(CC) $$^ -o $$@  $$(CFLAGS)
+	$$(CC) $$^ -o $$@  $$(CFLAGS) $$(LDFLAGS)
 endef
 $(foreach x,$(BIN),$(eval $(call test-factory,$x)))
 
@@ -105,9 +105,9 @@ package: clean | $(FINALDIR)
 	@$(CP) $(INCDIR) $(FINALDIR)
 	@$(CP) $(LTXDIR) $(FINALDIR)
 	@$(CP) Makefile $(FINALDIR)
-	
+
 	@$(ECHO) "Compressing..."
 	@$(TAR) $(TARF).tar.gz $(FINALDIR)
-	
+
 	@$(ECHO) "Cleaning..."
 	@$(RMDIR) $(FINALDIR)
