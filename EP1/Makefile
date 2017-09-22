@@ -6,26 +6,9 @@
 # and type in the terminal: make init.                  #
 #########################################################
 
-###################################################
-# Subtitles:                                      #
-#                                                 #
-# BIN -> the name of the executable.              #
-# CFLAGS -> the list of flags you want.           #
-# FINALDIR -> the name of the directory that will #
-#             be compressed in .tar.              #
-# TARF -> the name of the .tar file.              #
-# TEX -> the name of the .tex file.               #
-#                                                 #
-###################################################
 
-BIN       := ep1sh ep1
-TARF      := ep1-leonardo-beatriz
-FINALDIR  := ep1-leonardo-beatriz
-
-CFLAGS    := -Wall -std=gnu11 -lpthread -lm 
 EXECFLAGS := -O2
 TESTFLAGS := -g
-READFLAGS := -lreadline
 
 CC    := gcc
 MV    := mv
@@ -36,26 +19,33 @@ ECHO  := echo -e
 MKDIR := mkdir -p
 TAR   := tar -cvf
 
-BINDIR := .
+BINDIR := bin
 SRCDIR := src
 OBJDIR := build
 TSTDIR := test
 TXTDIR := txt
 INCDIR := include
 LTXDIR := report
+
+-include Config.mk
+
 ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(TSTDIR) $(OBJDIR)
 BINROOT := $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
 
 # main target
 .PHONY: all
 all: CFLAGS += $(EXECFLAGS)
-all: CFLAGS += $(READFLAGS)
 all: $(addprefix $(BINDIR)/,$(BIN))
 
-.PHONY: debug)
+.PHONY: debug
 debug: CFLAGS += $(TESTFLAGS)
-debug: CFLAGS += $(READFLAGS)
 debug: $(addprefix $(TSTDIR)/,$(BIN))
+
+.PHONY: nothing
+nothing:
+	@echo $(BIN)
+	@echo $(LDFLAGS)
+	@echo $(CFLAGS)
 
 # Create the necessary lists of dependencies for each binary
 $(foreach x,$(BIN),\
@@ -66,7 +56,7 @@ $(foreach x,$(BIN),\
 # Compile each one of the binaries
 define bin-factory
 $$(BINDIR)/$1: $$($1.OBJ) | $$(BINDIR)
-	$$(CC) $$^ -o $$@  $$(CFLAGS)
+	$$(CC) $$^ -o $$@  $$(CFLAGS) $$(LDFLAGS)
 endef
 $(foreach x,$(BIN),$(eval $(call bin-factory,$x)))
 
@@ -115,7 +105,9 @@ package: clean | $(FINALDIR)
 	@$(CP) $(INCDIR) $(FINALDIR)
 	@$(CP) $(LTXDIR) $(FINALDIR)
 	@$(CP) Makefile $(FINALDIR)
+
 	@$(ECHO) "Compressing..."
 	@$(TAR) $(TARF).tar.gz $(FINALDIR)
+
 	@$(ECHO) "Cleaning..."
 	@$(RMDIR) $(FINALDIR)
