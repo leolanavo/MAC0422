@@ -30,7 +30,19 @@ LTXDIR := report
 -include Config.mk
 
 ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(FINALDIR) $(TSTDIR) $(OBJDIR)
-BINROOT := $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
+
+ifneq ($(words $(BIN)), 1)
+ROOT += $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
+$(foreach x,$(BIN),\
+  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$x/*.c)))\
+  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
+  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$x/*.h))))
+else
+$(foreach x,$(BIN),\
+  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c)))\
+  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
+  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h))))
+endif
 
 # main target
 .PHONY: all
@@ -46,12 +58,7 @@ nothing:
 	@echo $(BIN)
 	@echo $(LDFLAGS)
 	@echo $(CFLAGS)
-
-# Create the necessary lists of dependencies for each binary
-$(foreach x,$(BIN),\
-  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$x/*.c)))\
-  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
-  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$x/*.h))))
+	@echo $(ROOT)
 
 # Compile each one of the binaries
 define bin-factory
@@ -62,25 +69,25 @@ $(foreach x,$(BIN),$(eval $(call bin-factory,$x)))
 
 define test-factory
 $$(TSTDIR)/$1: $$($1.OBJ) | $$(TSTDIR)
-	$$(CC) $$^ -o $$@  $$(CFLAGS)
+	$$(CC) $$^ -o $$@  $$(CFLAGS) $$(LDFLAGS)
 endef
 $(foreach x,$(BIN),$(eval $(call test-factory,$x)))
 
 define object-factory
-$$(OBJDIR)/$1.o: $$(SRCDIR)/$1.c $$(wildcard $$(INCDIR)/$1.h) | $$(OBJDIR) $$(BINROOT)
-	$$(CC) -c $$< -o $$@ $$(CFLAGS)
+$$(OBJDIR)/$1.o: $$(SRCDIR)/$1.c $$(wildcard $$(INCDIR)/$1.h) | $$(OBJDIR) $$(ROOT)
+	$$(CC) -c $$< -o $$@ $$(CFLAGS) $$(LDFLAGS)
 endef
 $(foreach b,$(BIN),\
 	$(foreach obj,$($b.OBJ),\
 		$(eval $(call object-factory,$(patsubst $(OBJDIR)/%.o,%,$(obj))))))
 
 # Directory creation rules
-$(ROOT) $(BINROOT) $(BINDIR):
+$(ROOT) $(BINDIR):
 	@$(MKDIR) $@
 
 # phony targets for automation
 .PHONY: init
-init: | $(ROOT) $(BINROOT)
+init: | $(ROOT)
 	@$(ECHO) "Creating the .gitignore..."
 	@$(ECHO) "$(OBJDIR)\n$(FINALDIR)\n$(TXTDIR)\n$(BINDIR)\n$(TSTDIR)\n.git" > .gitignore
 	@$(ECHO) "Finished"

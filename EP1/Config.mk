@@ -15,4 +15,4 @@ TARF      := ep1-leonardo-beatriz
 FINALDIR  := ep1-leonardo-beatriz
 
 CFLAGS    := -Wall -Werror -Wextra -std=gnu11
-LDFLAGS   := -I $(INCDIR) -lm -lpthread -lreadline
+LDFLAGS   := -I $(INCDIR) -lpthread -lm -lreadline
