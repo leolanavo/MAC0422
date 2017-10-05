@@ -25,6 +25,7 @@ typedef struct {
     pthread_t* th;
     uint speed;
     int dist;
+    uint lap;
     uint score;
 } cyclist;
 
@@ -51,7 +52,7 @@ typedef struct {
 typedef struct {
     cyclist** competitors;
     velodrome* v;
-    uint laps;
+    uint total_laps;
     uint ncomp;
 } race;
 
