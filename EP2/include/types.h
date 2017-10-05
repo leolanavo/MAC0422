@@ -11,22 +11,24 @@ typedef suint bool;
 #define true 1
 #define false 0
 
-/****************************************************************
- * Struct: cyclist                                              *
- * ------------                                                 *
- *   @param th:     the thread that represents the cyclist      *
- *   @param speed:  the current speed of a cyclist              *
- *   @param dist:   the current traveled distance of a cyclist  *
- *   @param track:  the current track of a cyclist              *
- *   @param meter:  the current meter of a cyclist              *
- *   @param score: the current score of a cyclist               *
- ****************************************************************/
+/*****************************************************************
+ * Struct: cyclist                                               *
+ * ------------                                                  *
+ *   @param th:       the thread that represents the cyclist     *
+ *   @param speed:    the current speed of a cyclist             *
+ *   @param dist:     the current traveled distance of a cyclist *
+ *   @param lap:      the current lap of the cyclist             *
+ *   @param score:    the current score of a cyclist             *
+ *   @param overtook: mark if the cyclist tried to overtake in   *
+ *                    the previous iteration                     *
+ *****************************************************************/
 typedef struct {
     pthread_t* th;
     uint speed;
     int dist;
     uint lap;
     uint score;
+    bool overtook;
 } cyclist;
 
 /*************************************************************
