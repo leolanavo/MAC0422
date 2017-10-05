@@ -50,7 +50,7 @@ typedef struct {
  *   @param ncomp:       number of competitors in the race   *
  *************************************************************/
 typedef struct {
-    cyclist** competitors;
+    cyclist** comp;
     velodrome* v;
     uint total_laps;
     uint ncomp;
