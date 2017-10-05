@@ -5,15 +5,41 @@
 #include "types.h"
 #include "cyclist.h"
 
+#define TRACKS 10
+
+void print_tracks (uint length, velodrome* v, cyclist** comp) {
+    printf("--------------------\n");
+    for (int i = 0; i < length; i++){
+        for (int j = 0; j < TRACKS; j++)
+            printf("|%u|", v->tracks[i][j]);
+        printf("--------------------\n");
+    }
+}
+
 /* Construct a velodrome*, with a matrix length X 10 as the velodrome
  * matrix */
-velodrome* construct_velodrome (uint length) {
+velodrome* construct_velodrome (uint length, uint ncomp, cyclist** comp) {
     velodrome* v = malloc(sizeof(velodrome));
     v->length = length;
 
     v->tracks = malloc(length * sizeof(uint*));
     for (uint i = 0; i < length; i++)
-        v->tracks[i] = malloc(10 * sizeof(uint));
+        v->tracks[i] = malloc(TRACKS * sizeof(uint));
+
+    for (int i = 0; i < length; i++)
+        for (int j = 0; j < TRACKS; j++)
+            v->tracks[i][j] = -1;
+
+    int tmp = 0;
+    int i = length - 1;
+    while (tmp < ncomp) {
+        for (int j = 0; j < TRACKS; j++) {
+            v->tracks[i][j] = tmp;
+            comp[tmp]->dist = i - length;
+            tmp++;
+        }
+        i--;
+    }
     return v;
 }
 
@@ -22,7 +48,7 @@ velodrome* construct_velodrome (uint length) {
 cyclist** construct_competitors (uint ncomp) {
     cyclist** competitors = malloc(ncomp*sizeof(cyclist*));
     for (uint i = 0; i < ncomp; i++) {
-        competitors[i] = init_cyclist(i);
+        competitors[i] = init_cyclist();
     }
     return competitors;
 }

@@ -19,17 +19,13 @@ typedef suint bool;
  *   @param dist:   the current traveled distance of a cyclist  *
  *   @param track:  the current track of a cyclist              *
  *   @param meter:  the current meter of a cyclist              *
- *   @param points: the current score of a cyclist              *
- *   @param id:     identifier of a cyclist                     *
+ *   @param score: the current score of a cyclist               *
  ****************************************************************/
 typedef struct {
     pthread_t* th;
     uint speed;
-    double dist;
-    uint track;
-    uint meter;
-    uint points;
-    uint id;
+    int dist;
+    uint score;
 } cyclist;
 
 /*************************************************************
