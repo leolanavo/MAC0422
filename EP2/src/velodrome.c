@@ -67,14 +67,3 @@ void destroy_competitors (cyclist** c, uint size) {
         free(c[i]);
     free(c);
 }
-
-int main (int argc, char** argv) {
-    if (argc != 4) {
-        printf("Insufficient number of arguments\n");
-        exit(-1);
-    }
-
-    race* r = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
-    destroy_race(r);
-    return 0;
-}
