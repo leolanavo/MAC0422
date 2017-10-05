@@ -27,18 +27,6 @@ cyclist** construct_competitors (uint ncomp) {
     return competitors;
 }
 
-/* Construct a race with a velodrome* with length as its length,
- * an array of cyclist* with ncomp as the number of competitors and
- * initialize the number of laps in the race */
-race* construct_race (uint length, uint ncomp, uint laps) {
-    race* r = malloc(sizeof(race));
-    r->v = construct_velodrome(length);
-    r->competitors = construct_competitors(ncomp);
-    r->laps = laps;
-    r->ncomp = ncomp;
-    return r;
-}
-
 /* Frees the matrix that represents the velodrome */
 void destroy_velodrome(velodrome* v) {
     for (uint i = 0; i < v->length; i++)
@@ -52,13 +40,6 @@ void destroy_competitors (cyclist** c, uint size) {
     for (uint i = 0; i < size; i++)
         free(c[i]);
     free(c);
-}
-
-/* Free the race* and its fields */
-void destroy_race (race* r) {
-    destroy_velodrome(r->v);
-    destroy_competitors(r->competitors, r->ncomp);
-    free(r);
 }
 
 int main (int argc, char** argv) {
