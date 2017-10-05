@@ -12,7 +12,7 @@
 race* construct_race (uint length, uint ncomp, uint laps) {
     race* r = malloc(sizeof(race));
     r->v = construct_velodrome(length);
-    r->competitors = construct_competitors(ncomp);
+    r->comp = construct_competitors(ncomp);
     r->laps = laps;
     r->ncomp = ncomp;
     return r;
@@ -21,6 +21,6 @@ race* construct_race (uint length, uint ncomp, uint laps) {
 /* Free the race* and its fields */
 void destroy_race (race* r) {
     destroy_velodrome(r->v);
-    destroy_competitors(r->competitors, r->ncomp);
+    destroy_competitors(r->comp, r->ncomp);
     free(r);
 }
