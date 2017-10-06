@@ -7,17 +7,38 @@
 #include "velodrome.h"
 
 race* race;
-int count_cyclist;
+uint stage_0, th_continue;
+pthread_mutex_t inc_count_s0, inc_count_s1, move_cyclist;
 
-pthread_mutex_t inc_count;
-pthread_mutex_t move_cyclist;
 
 void* thread_cyclist (void *arg) {
 
-}
+	cyclist* c = (cyclist*) arg;
 
-void* thread_coordinator (void *arg) {
+	while (c->lap < race->laps) {
+		
 
+
+		if (stage_0) {
+			
+			pthread_mutex_lock(&inc_count_s0);
+			th_continue++;
+			pthread_mutex_unlock(&inc_count_s0);
+
+			while (th_continue != race->ncomp);
+			stage_0 = 0;
+		}
+
+		else {
+			
+			pthread_mutex_lock(&inc_count_s1);
+			th_continue--;
+			pthread_mutex_unlock(&inc_count_s1);
+
+			while (th_continue != 0);
+			stage_0 = 1;
+		}
+	}
 }
 
 /* Construct a race with a velodrome* with length as its length,
@@ -45,10 +66,12 @@ int main (int argc, char** argv) {
         exit(-1);
     }
 
-    pthread_mutex_init(&inc_count, NULL);
+    pthread_mutex_init(&inc_count_s0, NULL);
+    pthread_mutex_init(&inc_count_s1, NULL);
     pthread_mutex_init(&move_cyclist, NULL);
 
-    count_cyclist = 0;
+    th_continue = 0;
+    stage_0 = 1;
     race = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
     
     destroy_race(race);

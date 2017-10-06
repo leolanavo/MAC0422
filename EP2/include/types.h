@@ -22,11 +22,11 @@ typedef suint bool;
  *   @param score: the current score of a cyclist               *
  ****************************************************************/
 typedef struct {
-    pthread_t* th;
     uint speed;
     int dist;
     uint lap;
     uint score;
+    bool down;
 } cyclist;
 
 /*************************************************************

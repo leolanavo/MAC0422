@@ -33,6 +33,7 @@ cyclist* init_cyclist () {
     cyclist* c = malloc(sizeof(cyclist));
     c->speed = 30;
     c->score = 0;
+    c->down = false;
     return c;
 }
 
