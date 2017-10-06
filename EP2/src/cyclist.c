@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <time.h>
+#include <limits.h>
+
 #include "types.h"
 
 #define prob_to_60 70
@@ -38,20 +40,33 @@ cyclist* init_cyclist () {
 }
 
 /* Change the position of the cyclist in the velodrome matrix */
-void move_cyclist (cyclist* c) {
-    c->dist++;
-}
+void move_cyclist (cyclist* c, velodrome* v, uint row, uint col, cyclist** comp, uint length) {
+    bool empty_front = v->tracks[(row+1)%length][col] == -1? true : false;
+    bool empty_right = v->tracks[row][col+1] == -1? true : false;
+    bool empty_diagr = v->tracks[(row+1)%length][col+1] == -1? true : false;
+    bool empty_diagl = v->tracks[(row+1)%length][col-1] == -1? true : false;
 
-/* int main (int argc, char** argv) {
- *     if (argc != 2) {
- *         printf("Wrong number of arguments");
- *         exit(-1);
- *     }
- *
- *     srand(time(NULL));
- *
- *     cyclist* c = malloc(sizeof(cyclist));
- *     c->speed = atoi(argv[1]);
- *     change_speed(c);
- *     free(c);
- * } */
+    uint v_front = empty_front? comp[v->tracks[row+1][col]]->speed : INT_MAX;
+
+    if (v_front < c->speed && empty_right && empty_diagr) {
+        v->tracks[(row+1)%length][col+1] = v->tracks[row][col];
+        v->tracks[row][col] = -1;
+        c->dist++;
+        c->overtook = true;
+    }
+    else if (c->overtook && empty_diagl) {
+        v->tracks[(row+1)%length][col-1] = v->tracks[row][col];
+        v->tracks[row][col] = -1;
+        c->dist++;
+        c->overtook = false;
+    }
+    else if (empty_front) {
+        v->tracks[(row+1)%length][col] = v->tracks[row][col];
+        v->tracks[row][col] = -1;
+        c->dist++;
+        c->overtook = false;
+    }
+    else if (v_front < c->speed && (!empty_right || !empty_diagr)){
+        c->speed = v_front;
+    }
+}
