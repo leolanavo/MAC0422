@@ -48,13 +48,13 @@ typedef struct {
  * ------------                                              *
  *   @param competitors: array of cyclists in the race       *
  *   @param v:           represents a velodrome              *
- *   @param laps:        number of laps in the race          *
+ *   @param nlaps:        number of laps in the race         *
  *   @param ncomp:       number of competitors in the race   *
  *************************************************************/
 typedef struct {
     cyclist** comp;
     velodrome* v;
-    uint total_laps;
+    uint nlaps;
     uint ncomp;
 } race;
 

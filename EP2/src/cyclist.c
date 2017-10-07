@@ -39,6 +39,12 @@ cyclist* init_cyclist () {
     return c;
 }
 
+void break_down (uint lap) {
+    if (lap % 15 == 0) {
+
+    }
+}
+
 /* Change the position of the cyclist in the velodrome matrix */
 void move_cyclist (cyclist* c, velodrome* v, uint row, uint col, cyclist** comp, uint length) {
     bool empty_front = v->tracks[(row+1)%length][col] == -1? true : false;

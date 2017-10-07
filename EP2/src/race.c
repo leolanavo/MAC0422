@@ -7,38 +7,48 @@
 #include "velodrome.h"
 
 race* race;
-uint stage_0, th_continue;
+uint th_continue;
 pthread_mutex_t inc_count_s0, inc_count_s1, move_cyclist;
 
 
+uint barrier (uint st) {
+
+    if (st) {
+            
+        pthread_mutex_lock(&inc_count_s0);
+        th_continue_s0++;
+        pthread_mutex_unlock(&inc_count_s0);
+
+        while (th_continue != race->ncomp);
+        return false;
+    }
+
+    else {
+            
+        pthread_mutex_lock(&inc_count_s1);
+        th_continue_s1++;
+        pthread_mutex_unlock(&inc_count_s1);
+
+        while (th_continue_s1 != 0);
+        return true;
+    }
+}
+
+void* thread_coordinator (void *arg) {
+
+}
+
 void* thread_cyclist (void *arg) {
 
-	cyclist* c = (cyclist*) arg;
+    cyclist* c = (cyclist*) arg;
+    bool stage = true;
 
-	while (c->lap < race->laps) {
-		
+    while (c->lap < race->nlaps) {
+        
 
-
-		if (stage_0) {
-			
-			pthread_mutex_lock(&inc_count_s0);
-			th_continue++;
-			pthread_mutex_unlock(&inc_count_s0);
-
-			while (th_continue != race->ncomp);
-			stage_0 = 0;
-		}
-
-		else {
-			
-			pthread_mutex_lock(&inc_count_s1);
-			th_continue--;
-			pthread_mutex_unlock(&inc_count_s1);
-
-			while (th_continue != 0);
-			stage_0 = 1;
-		}
-	}
+        overtook(c->lap);
+        stage = barrier(stage);     
+    }
 }
 
 /* Construct a race with a velodrome* with length as its length,
@@ -71,7 +81,6 @@ int main (int argc, char** argv) {
     pthread_mutex_init(&move_cyclist, NULL);
 
     th_continue = 0;
-    stage_0 = 1;
     race = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
     
     destroy_race(race);
