@@ -14,11 +14,13 @@ typedef suint bool;
 /*****************************************************************
  * Struct: cyclist                                               *
  * ------------                                                  *
- *   @param th:       the thread that represents the cyclist     *
  *   @param speed:    the current speed of a cyclist             *
  *   @param dist:     the current traveled distance of a cyclist *
  *   @param lap:      the current lap of the cyclist             *
+ *   @param id:       the identifier of a cyclist                *
  *   @param score:    the current score of a cyclist             *
+ *   @param row:      the current row of a cyclist               *
+ *   @param col:      the current column of a cyclist            *
  *   @param overtook: mark if the cyclist tried to overtake in   *
  *                    the previous iteration                     *
  *****************************************************************/
@@ -26,9 +28,11 @@ typedef struct {
     uint speed;
     int dist;
     uint lap;
+    uint id;
     uint score;
+    uint row;
+    uint col;
     bool overtook;
-
 } cyclist;
 
 /*************************************************************

@@ -9,6 +9,7 @@
 #define prob_to_60 70
 #define prob_to_30 50
 #define prob_to_90 10
+#define prob_break 1
 
 /* Change the speed of a cyclist according to the rules defined in
  * the assignment. */
@@ -35,40 +36,42 @@ cyclist* init_cyclist () {
     cyclist* c = malloc(sizeof(cyclist));
     c->speed = 30;
     c->score = 0;
-    c->down = false;
     return c;
 }
 
-void break_down (uint lap) {
-    if (lap % 15 == 0) {
-
+void break_cyclist (cyclist* c, velodrome* v, race* r) {
+    uint prob = (uint)rand()%100;
+    if (prob < prob_break) {
+        uint id = v->tracks[c->row][c->col];
+        v->tracks[c->row][c->col] = -1;
+        // Destory thread;
     }
 }
 
 /* Change the position of the cyclist in the velodrome matrix */
-void move_cyclist (cyclist* c, velodrome* v, uint row, uint col, cyclist** comp, uint length) {
-    bool empty_front = v->tracks[(row+1)%length][col] == -1? true : false;
-    bool empty_right = v->tracks[row][col+1] == -1? true : false;
-    bool empty_diagr = v->tracks[(row+1)%length][col+1] == -1? true : false;
-    bool empty_diagl = v->tracks[(row+1)%length][col-1] == -1? true : false;
+void move_cyclist (cyclist* c, velodrome* v,cyclist** comp, uint length) {
+    bool empty_front = v->tracks[(c->row+1)%length][c->col] == -1? true : false;
+    bool empty_right = v->tracks[c->row][c->col+1] == -1? true : false;
+    bool empty_diagr = v->tracks[(c->row+1)%length][c->col+1] == -1? true : false;
+    bool empty_diagl = v->tracks[(c->row+1)%length][c->col-1] == -1? true : false;
 
-    uint v_front = empty_front? comp[v->tracks[row+1][col]]->speed : INT_MAX;
+    uint v_front = empty_front? comp[v->tracks[c->row+1][c->col]]->speed : INT_MAX;
 
     if (v_front < c->speed && empty_right && empty_diagr) {
-        v->tracks[(row+1)%length][col+1] = v->tracks[row][col];
-        v->tracks[row][col] = -1;
+        v->tracks[(c->row+1)%length][c->col+1] = v->tracks[c->row][c->col];
+        v->tracks[c->row][c->col] = -1;
         c->dist++;
         c->overtook = true;
     }
     else if (c->overtook && empty_diagl) {
-        v->tracks[(row+1)%length][col-1] = v->tracks[row][col];
-        v->tracks[row][col] = -1;
+        v->tracks[(c->row+1)%length][c->col-1] = v->tracks[c->row][c->col];
+        v->tracks[c->row][c->col] = -1;
         c->dist++;
         c->overtook = false;
     }
     else if (empty_front) {
-        v->tracks[(row+1)%length][col] = v->tracks[row][col];
-        v->tracks[row][col] = -1;
+        v->tracks[(c->row+1)%length][c->col] = v->tracks[c->row][c->col];
+        v->tracks[c->row][c->col] = -1;
         c->dist++;
         c->overtook = false;
     }
