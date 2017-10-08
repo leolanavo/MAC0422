@@ -62,4 +62,10 @@ typedef struct {
     uint ncomp;
 } race;
 
+typedef struct {
+    int counter;
+    int flag;
+    pthread_mutex_t lock;
+} barrier;
+
 #endif
