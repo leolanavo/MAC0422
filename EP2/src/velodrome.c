@@ -5,12 +5,11 @@
 #include "types.h"
 #include "cyclist.h"
 
-#define TRACKS 10
 
-void print_tracks (uint length, velodrome* v, cyclist** comp) {
+void print_tracks (uint length, velodrome* v) {
     printf("--------------------\n");
-    for (int i = 0; i < length; i++){
-        for (int j = 0; j < TRACKS; j++)
+    for (uint i = 0; i < length; i++){
+        for (uint j = 0; j < TRACKS; j++)
             printf("|%u|", v->tracks[i][j]);
         printf("--------------------\n");
     }
@@ -26,16 +25,21 @@ velodrome* construct_velodrome (uint length, uint ncomp, cyclist** comp) {
     for (uint i = 0; i < length; i++)
         v->tracks[i] = malloc(TRACKS * sizeof(uint));
 
-    for (int i = 0; i < length; i++)
-        for (int j = 0; j < TRACKS; j++)
+    for (uint i = 0; i < length; i++) {
+        for (int j = 0; j < TRACKS; j++) {
             v->tracks[i][j] = -1;
+            //init thread
+        }
+    }
 
-    int tmp = 0;
-    int i = length - 1;
+    uint tmp = 0;
+    uint i = length - 1;
     while (tmp < ncomp) {
         for (int j = 0; j < TRACKS; j++) {
             v->tracks[i][j] = tmp;
             comp[tmp]->dist = i - length;
+            comp[tmp]->row = i;
+            comp[tmp]->col = j;
             tmp++;
         }
         i--;
@@ -48,7 +52,7 @@ velodrome* construct_velodrome (uint length, uint ncomp, cyclist** comp) {
 cyclist** construct_competitors (uint ncomp) {
     cyclist** competitors = malloc(ncomp*sizeof(cyclist*));
     for (uint i = 0; i < ncomp; i++) {
-        competitors[i] = init_cyclist();
+        competitors[i] = init_cyclist(i);
     }
     return competitors;
 }
