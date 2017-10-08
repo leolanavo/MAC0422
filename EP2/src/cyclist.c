@@ -32,28 +32,36 @@ void change_speed_90 (cyclist* c) {
 
 /* Initialize a cyclist pointer with the standar value of which
  * parameter */
-cyclist* init_cyclist () {
+cyclist* init_cyclist (int id) {
     cyclist* c = malloc(sizeof(cyclist));
     c->speed = 30;
     c->score = 0;
+    c->lap = 0;
+    c->id = id;
+    c->overtook = false;
     return c;
 }
 
 void break_cyclist (cyclist* c, velodrome* v, race* r) {
     uint prob = (uint)rand()%100;
     if (prob < prob_break) {
-        uint id = v->tracks[c->row][c->col];
+        int id = v->tracks[c->row][c->col];
         v->tracks[c->row][c->col] = -1;
-        // Destory thread;
     }
+}
+
+bool validate_pos(uint row, uint col, uint length) {
+    if (row < length && col < TRACKS)
+        return true;
+    return false;
 }
 
 /* Change the position of the cyclist in the velodrome matrix */
 void move_cyclist (cyclist* c, velodrome* v,cyclist** comp, uint length) {
-    bool empty_front = v->tracks[(c->row+1)%length][c->col] == -1? true : false;
-    bool empty_right = v->tracks[c->row][c->col+1] == -1? true : false;
-    bool empty_diagr = v->tracks[(c->row+1)%length][c->col+1] == -1? true : false;
-    bool empty_diagl = v->tracks[(c->row+1)%length][c->col-1] == -1? true : false;
+    bool empty_front = v->tracks[(c->row+1)%length][c->col] == -1? true : false : false;
+    bool empty_right = c->col+1 < TRACKS? v->tracks[c->row][c->col+1] == -1? true : false : false;
+    bool empty_diagr = c->col+1 < TRACKS? v->tracks[(c->row+1)%length][c->col+1] == -1? true : false : false;
+    bool empty_diagl = c->col-1 >= 0? v->tracks[(c->row+1)%length][c->col-1] == -1? true : false : false;
 
     uint v_front = empty_front? comp[v->tracks[c->row+1][c->col]]->speed : INT_MAX;
 
