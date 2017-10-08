@@ -37,22 +37,21 @@ void* thread_cyclist (void *arg) {
     int local_continue = 0;
     cyclist* c = (cyclist*) arg;
 
-    while (c->lap < r->nlaps) {
+    while (c->lap <= r->nlaps) {
+        
+        pthread_mutex_lock(&track_lock);
         
         if (c->lap != c->dist/r->v->length) {
             c->lap++;
             
-            if (c->lap >= (r->nlaps - 2) && !r->set_20ms && c->id == r->raffle[0])
-                change_speed_90(r, r->raffle[0]);
-
-            else if (c->lap >= (r->nlaps - 1) && !r->set_20ms && c->id == r->raffle[1])
-                change_speed_90(r, r->raffle[1]);
+            if (c->lap == (r->nlaps - 2) && c->id == r->sprinter)
+                change_speed_90(r->sprinter, r);
             
             else 
-                change_speed(c);
+                change_speed(c->id, r);
         }
 
-        pthread_mutex_lock(&track_lock);
+        
         move_cyclist(c, r->v, r->comp, r->v->length);
         pthread_mutex_unlock(&track_lock);
 
@@ -76,16 +75,10 @@ race* construct_race (uint length, uint ncomp, uint laps) {
     r->v = construct_velodrome(length);
     r->th_comp = malloc(ncomp * sizeof(pthread_t));
     r->set_20ms = false;
-    r->raffle[0] = 0;
-    r->raffle[1] = 0;
+    r->sprinter = (int)(rand() % r->ncomp);
     r->nlaps = laps;
     r->ncomp = ncomp;
     return r;
-}
-
-void sortition (int s[]) {
-    s[0] = (int)rand % r->ncomp;
-    while (s[1] = (int)rand)
 }
 
 barrier* construct_barrier () {

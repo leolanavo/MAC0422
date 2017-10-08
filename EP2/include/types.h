@@ -64,7 +64,7 @@ typedef struct {
     velodrome* v;
     pthread_t* th_comp;
     bool set_20ms;
-    int raffle[2];
+    int sprinter;
     uint nlaps;
     uint ncomp;
 } race;
