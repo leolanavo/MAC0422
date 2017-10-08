@@ -70,8 +70,42 @@ void break_cyclist (cyclist* c, race* r, LinkedList* l) {
     }
 }
 
+void change_pos(cyclist* c, race* r, char move_id) {
+
+    r->v->tracks[c->row][c->col] = -1;
+    c->row = (c->row + 1) % r->v->length;
+
+    if (move_id == 1) c->col++;
+    else if (move_id == 2) c->col--;
+
+    r->v->tracks[c->row][c->col] = c->id;
+}
+
+void counter_cyclist(cyclist* c, race* r, char move_id) {
+    if (!r->set_20ms && (
+                (c->speed == 60 && c->move == 1) ||
+                (c->speed == 30 && c->move == 2))) {
+        c->dist++;
+        c->move = 0;
+        change_pos(c, r, move_id);
+    }
+    else if (r->set_20ms && (
+                (c->speed == 90 && c->move == 1) ||
+                (c->speed == 60 && c->move == 3) ||
+                (c->speed == 30 && c->move == 6))) {
+        c->dist++;
+        c->move = 0;
+        change_pos(c, r, move_id);
+    }
+}
+
 /* Change the position of the cyclist in the velodrome matrix */
-void move_cyclist (cyclist* c, velodrome* v,cyclist** comp, uint length) {
+void move_cyclist (cyclist* c, race* r) {
+    velodrome* v = r->v;
+    cyclist** comp = r->comp;
+    uint length = v->length;
+    char move_id = 0;
+
     bool empty_front = v->tracks[(c->row + 1) % length][c->col] == -1? true : false;
 
     bool empty_right = c->col + 1 < TRACKS?
@@ -86,29 +120,21 @@ void move_cyclist (cyclist* c, velodrome* v,cyclist** comp, uint length) {
         v->tracks[(c->row+1) % length][c->col-1] == -1? true : false :
         false;
 
-    uint v_front = empty_front?
+    uint s_front = empty_front?
         comp[v->tracks[(c->row + 1) % length][c->col]]->speed :
         INT_MAX;
 
-    if (v_front < c->speed && empty_right && empty_diagr) {
-        v->tracks[(c->row + 1) % length][c->col+1] = v->tracks[c->row][c->col];
-        v->tracks[c->row][c->col] = -1;
-        c->dist++;
+    c->overtook = false;
+
+    if (s_front < c->speed && empty_right && empty_diagr) {
         c->overtook = true;
+        move_id = 1;
     }
-    else if (c->overtook && empty_diagl) {
-        v->tracks[(c->row+1) % length][c->col-1] = v->tracks[c->row][c->col];
-        v->tracks[c->row][c->col] = -1;
-        c->dist++;
-        c->overtook = false;
-    }
-    else if (empty_front) {
-        v->tracks[(c->row+1) % length][c->col] = v->tracks[c->row][c->col];
-        v->tracks[c->row][c->col] = -1;
-        c->dist++;
-        c->overtook = false;
-    }
-    else if (v_front < c->speed && (!empty_right || !empty_diagr)){
-        c->speed = v_front;
-    }
+    else if (c->overtook && empty_diagl)
+        move_id = 2;
+    else if (!empty_front && (!empty_right || !empty_diagr))
+        adequate_speed(c->id, r);
+
+    c->move++;
+    counter_cyclist(c, r, move_id);
 }
