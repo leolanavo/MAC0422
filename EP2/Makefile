@@ -59,6 +59,7 @@ nothing:
 	@echo $(LDFLAGS)
 	@echo $(CFLAGS)
 	@echo $(ROOT)
+	@echo $(ep2.SRC)
 
 # Compile each one of the binaries
 define bin-factory
