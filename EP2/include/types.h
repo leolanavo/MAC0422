@@ -23,7 +23,8 @@ typedef char bool;
  *   @param score:    the current score of a cyclist             *
  *   @param row:      the current row of a cyclist               *
  *   @param col:      the current column of a cyclist            *
- *   @param overtook: mark if the cyclist tried to overtake in   *
+ *   @param move:     marks if the cyclist can or cannot move    *
+ *   @param overtook: marks if the cyclist tried to overtake in  *
  *                    the previous iteration                     *
  *****************************************************************/
 typedef struct {
@@ -34,6 +35,7 @@ typedef struct {
     uint score;
     uint row;
     uint col;
+    uint move;
     bool overtook;
 } cyclist;
 
@@ -73,4 +75,15 @@ typedef struct {
     pthread_mutex_t lock;
 } barrier;
 
+struct cell {
+    int id;
+    uint lap;
+    struct cell* next;
+};
+
+typedef struct cell node;
+
+typedef struct {
+    node* head;
+} LinkedList;
 #endif
