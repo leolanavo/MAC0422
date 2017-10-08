@@ -7,9 +7,11 @@ typedef unsigned int uint;
 typedef short unsigned int suint;
 
 // Define the boolean type
-typedef suint bool;
+typedef char bool;
 #define true 1
 #define false 0
+
+#define TRACKS 10
 
 /*****************************************************************
  * Struct: cyclist                                               *
@@ -28,7 +30,7 @@ typedef struct {
     uint speed;
     int dist;
     uint lap;
-    uint id;
+    int id;
     uint score;
     uint row;
     uint col;
@@ -44,7 +46,7 @@ typedef struct {
  *************************************************************/
 typedef struct {
     uint length;
-    uint** tracks;
+    int** tracks;
 } velodrome;
 
 /*************************************************************
@@ -58,6 +60,7 @@ typedef struct {
 typedef struct {
     cyclist** comp;
     velodrome* v;
+    pthread_t* th_comp;
     uint nlaps;
     uint ncomp;
 } race;
