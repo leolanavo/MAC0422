@@ -61,6 +61,8 @@ typedef struct {
     cyclist** comp;
     velodrome* v;
     pthread_t* th_comp;
+    bool set_20ms;
+    int raffle[2];
     uint nlaps;
     uint ncomp;
 } race;
