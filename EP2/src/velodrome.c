@@ -25,12 +25,9 @@ velodrome* construct_velodrome (uint length, uint ncomp, cyclist** comp) {
     for (uint i = 0; i < length; i++)
         v->tracks[i] = malloc(TRACKS * sizeof(uint));
 
-    for (uint i = 0; i < length; i++) {
-        for (int j = 0; j < TRACKS; j++) {
+    for (uint i = 0; i < length; i++)
+        for (int j = 0; j < TRACKS; j++)
             v->tracks[i][j] = -1;
-            //init thread
-        }
-    }
 
     uint tmp = 0;
     uint i = length - 1;
@@ -50,11 +47,11 @@ velodrome* construct_velodrome (uint length, uint ncomp, cyclist** comp) {
 /* Construct a cyclist** with ncomp cyclist*, each cyclist is created
  * according to the standard initial values */
 cyclist** construct_competitors (uint ncomp) {
-    cyclist** competitors = malloc(ncomp*sizeof(cyclist*));
-    for (uint i = 0; i < ncomp; i++) {
-        competitors[i] = init_cyclist(i);
-    }
-    return competitors;
+    cyclist** comp = malloc(ncomp*sizeof(cyclist*));
+    for (uint i = 0; i < ncomp; i++)
+        comp[i] = init_cyclist(i);
+
+    return comp;
 }
 
 /* Frees the matrix that represents the velodrome */
