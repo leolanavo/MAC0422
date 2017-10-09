@@ -21,6 +21,21 @@ void print_linkedlist (LinkedList* l) {
     }
 }
 
+bool in_linkedlist (LinkedList* l, int id) {
+    
+    if (l->head != NULL) { 
+        node* aux = l->head;
+        while (aux->next != NULL) {
+            if (aux->id == id)
+                return true;
+
+            aux = aux->next;
+        }
+    }   
+
+    return false;
+}
+
 /* Receives an id, a lap, and a LinkedList*. Inserts a new node with the
  * given id and lap at the end of the LinkedList* */
 void insert_linkedlist(int id, uint lap, LinkedList* l) {

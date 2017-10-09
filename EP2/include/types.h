@@ -33,8 +33,8 @@ typedef struct {
     uint lap;
     int id;
     uint score;
-    uint row;
-    uint col;
+    int row;
+    int col;
     uint move;
     bool overtook;
 } cyclist;
@@ -51,6 +51,18 @@ typedef struct {
     int** tracks;
 } velodrome;
 
+struct cell {
+    int id;
+    uint lap;
+    struct cell* next;
+};
+
+typedef struct cell node;
+
+typedef struct {
+    node* head;
+} LinkedList;
+
 /*************************************************************
  * Struct: race                                              *
  * ------------                                              *
@@ -63,7 +75,7 @@ typedef struct {
     cyclist** comp;
     velodrome* v;
     pthread_t* th_comp;
-    bool set_20ms;
+    LinkedList* broken_comp;
     int sprinter;
     uint nlaps;
     uint ncomp;
@@ -74,16 +86,4 @@ typedef struct {
     int flag;
     pthread_mutex_t lock;
 } barrier;
-
-struct cell {
-    int id;
-    uint lap;
-    struct cell* next;
-};
-
-typedef struct cell node;
-
-typedef struct {
-    node* head;
-} LinkedList;
 #endif

@@ -42,11 +42,21 @@ void change_speed (int id, race* r) {
 /* Change the speed of a cyclist to 90Km/h if the drawn number is
  * smaller than 10, this number follow an uniform distribution
  * between 0 and 1 */
-void change_speed_90 (int id, race* r) {
-    uint prob = (uint)rand() % 100;
-    if (prob < prob_to_90) {
-        r->comp[id]->speed = 90;
-        r->set_20ms = true;
+void change_speed_90 (race* r) {
+    
+    if (r->sprinter == -1) {
+        int id = (int)(rand() % r->ncomp);
+        uint prob = (uint)rand() % 100;
+
+        while (in_linkedlist(r->broken_comp, id))
+            id = (int)(rand() % r->ncomp);
+
+        if (prob < prob_to_90) {
+            r->sprinter = id;
+            r->comp[id]->speed = 90;
+        }
+        else
+            r->sprinter = -2;
     }
 }
 
@@ -62,12 +72,14 @@ cyclist* init_cyclist (int id) {
     return c;
 }
 
-void break_cyclist (cyclist* c, race* r, LinkedList* l) {
+bool break_cyclist (cyclist* c, race* r) {
     uint prob = (uint)rand()%100;
-    if (prob < prob_break) {
-        r->v->tracks[c->row][c->col] = -1;
-        insert_linkedlist(c->id, c->lap, l);
-    }
+    if (prob > prob_break)
+        return false;
+    r->v->tracks[c->row][c->col] = -1;
+    insert_linkedlist(c->id, c->lap, r->broken_comp);
+    c->speed = 0;
+    return true;
 }
 
 void change_pos(cyclist* c, race* r, char move_id) {
@@ -82,14 +94,14 @@ void change_pos(cyclist* c, race* r, char move_id) {
 }
 
 void counter_cyclist(cyclist* c, race* r, char move_id) {
-    if (!r->set_20ms && (
+    if (r->sprinter < 0 && (
                 (c->speed == 60 && c->move == 1) ||
                 (c->speed == 30 && c->move == 2))) {
         c->dist++;
         c->move = 0;
         change_pos(c, r, move_id);
     }
-    else if (r->set_20ms && (
+    else if (r->sprinter >= 0 && (
                 (c->speed == 90 && c->move == 1) ||
                 (c->speed == 60 && c->move == 3) ||
                 (c->speed == 30 && c->move == 6))) {
@@ -101,6 +113,7 @@ void counter_cyclist(cyclist* c, race* r, char move_id) {
 
 /* Change the position of the cyclist in the velodrome matrix */
 void move_cyclist (cyclist* c, race* r) {
+    
     velodrome* v = r->v;
     cyclist** comp = r->comp;
     uint length = v->length;
@@ -116,11 +129,11 @@ void move_cyclist (cyclist* c, race* r) {
         v->tracks[(c->row + 1) % length][c->col + 1] == -1? true : false :
         false;
 
-    bool empty_diagl = c->col-1 >= 0?
+    bool empty_diagl = c->col - 1 >= 0?
         v->tracks[(c->row+1) % length][c->col-1] == -1? true : false :
         false;
 
-    uint s_front = empty_front?
+    uint s_front = !empty_front?
         comp[v->tracks[(c->row + 1) % length][c->col]]->speed :
         INT_MAX;
 
