@@ -113,7 +113,6 @@ void counter_cyclist(cyclist* c, race* r, char move_id) {
 
 /* Change the position of the cyclist in the velodrome matrix */
 void move_cyclist (cyclist* c, race* r) {
-    
     velodrome* v = r->v;
     cyclist** comp = r->comp;
     uint length = v->length;

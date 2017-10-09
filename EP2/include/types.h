@@ -84,6 +84,8 @@ typedef struct {
 typedef struct {
     int counter;
     int flag;
-    pthread_mutex_t lock;
+    pthread_mutex_t op_lock;
+    pthread_mutex_t cond_lock;
+    pthread_cond_t cond;
 } barrier;
 #endif

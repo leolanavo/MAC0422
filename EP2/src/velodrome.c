@@ -28,11 +28,11 @@ velodrome* construct_velodrome (uint length, uint ncomp, cyclist** comp) {
     for (uint i = 0; i < length; i++)
         for (int j = 0; j < TRACKS; j++)
             v->tracks[i][j] = -1;
-
+    
     uint tmp = 0;
     uint i = length - 1;
     while (tmp < ncomp) {
-        for (int j = 0; j < TRACKS; j++) {
+        for (int j = 0; j < TRACKS && tmp < ncomp; j++) {
             v->tracks[i][j] = tmp;
             comp[tmp]->dist = i - length;
             comp[tmp]->row = i;

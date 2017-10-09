@@ -10,7 +10,7 @@
 
 /* Construct a velodrome*, with a matrix length X 10 as the velodrome
  * matrix */
-velodrome* construct_velodrome (uint length);
+velodrome* construct_velodrome (uint length, uint ncomp, cyclist** comp);
 
 /* Construct a cyclist** with ncomp cyclist*, each cyclist is created
  * according to the standard initial values */
