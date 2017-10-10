@@ -38,10 +38,11 @@ bool in_linkedlist (LinkedList* l, int id) {
 
 /* Receives an id, a lap, and a LinkedList*. Inserts a new node with the
  * given id and lap at the end of the LinkedList* */
-void insert_linkedlist(int id, uint lap, LinkedList* l) {
+void insert_linkedlist(int id, int lap, LinkedList* l) {
     node* n = malloc(sizeof(node));
     n->id = id;
     n->lap = lap;
+    n->check = false;
 
     if (l->head == NULL) {
         l->head = n;

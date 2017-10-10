@@ -13,8 +13,8 @@
 #define prob_break 1
 
 void adequate_speed(int id, race* r) {
-    uint row = r->comp[id]->row;
-    uint col = r->comp[id]->col;
+    int row = r->comp[id]->row;
+    int col = r->comp[id]->col;
     bool need_break = false;
 
     do {
@@ -32,7 +32,7 @@ void adequate_speed(int id, race* r) {
 /* Change the speed of a cyclist according to the rules defined in
  * the assignment. */
 void change_speed (int id, race* r) {
-    uint prob = (uint)rand() % 100;
+    int prob = (int)rand() % 100;
     if (r->comp[id]->speed == 30 && prob < prob_to_60)
         r->comp[id]->speed = 60;
     else if (r->comp[id]->speed == 60 && prob < prob_to_30)
@@ -46,7 +46,7 @@ void change_speed_90 (race* r) {
     
     if (r->sprinter == -1) {
         int id = (int)(rand() % r->ncomp);
-        uint prob = (uint)rand() % 100;
+        int prob = (int)rand() % 100;
 
         while (in_linkedlist(r->broken_comp, id))
             id = (int)(rand() % r->ncomp);
@@ -73,13 +73,32 @@ cyclist* init_cyclist (int id) {
 }
 
 bool break_cyclist (cyclist* c, race* r) {
-    uint prob = (uint)rand()%100;
+    int prob = (int)rand()%100;
     if (prob > prob_break)
         return false;
     r->v->tracks[c->row][c->col] = -1;
     insert_linkedlist(c->id, c->lap, r->broken_comp);
     c->speed = 0;
     return true;
+}
+
+int has_cyclist (LinkedList* l) {
+
+    int count = 0;
+
+    if (l->head != NULL) { 
+        node* aux = l->head;
+        while (aux->next != NULL) {
+            if (!aux->check){
+                count++;
+                aux->check = true;
+            }
+
+            aux = aux->next;
+        }
+    }   
+
+    return count;
 }
 
 void change_pos(cyclist* c, race* r, char move_id) {
@@ -115,7 +134,7 @@ void counter_cyclist(cyclist* c, race* r, char move_id) {
 void move_cyclist (cyclist* c, race* r) {
     velodrome* v = r->v;
     cyclist** comp = r->comp;
-    uint length = v->length;
+    int length = v->length;
     char move_id = 0;
 
     bool empty_front = v->tracks[(c->row + 1) % length][c->col] == -1? true : false;
@@ -132,7 +151,7 @@ void move_cyclist (cyclist* c, race* r) {
         v->tracks[(c->row+1) % length][c->col-1] == -1? true : false :
         false;
 
-    uint s_front = !empty_front?
+    int s_front = !empty_front?
         comp[v->tracks[(c->row + 1) % length][c->col]]->speed :
         INT_MAX;
 
