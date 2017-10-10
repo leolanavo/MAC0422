@@ -16,7 +16,7 @@ barrier* b;
 //uint timer;
 pthread_mutex_t track_lock;
 
-void hold (int lc_continue, cyclist* c) {
+int hold (int lc_continue, cyclist* c) {
     lc_continue = (lc_continue == 0) ? 1 : 0;
     
     pthread_mutex_lock(&b->op_lock);
@@ -29,28 +29,33 @@ void hold (int lc_continue, cyclist* c) {
             print_scoreboard(run, true);
 
         pthread_mutex_unlock(&b->op_lock);
+        
+        uint broke = has_cyclist(run->broken_comp);
+        run->ncomp = run->ncomp - broke;
+
         b->counter = 0;
         b->flag =  lc_continue;
-        
-        pthread_cond_broadcast(&b->cond);
-        pthread_mutex_unlock(&b->cond_lock);
 
-        if (in_linkedlist(run->broken_comp, c->id))
-            /*pthread_exit(NULL);*/ printf("broken cyc\n");
+        if (in_linkedlist(run->broken_comp, c->id)) {
+            printf("broken cyc\n");
+            pthread_exit(NULL); 
+        }
     }
 
     else {
         printf("hold while %d\n", c->id);
-        if (in_linkedlist(run->broken_comp, c->id))
-            /*pthread_exit(NULL);*/ printf("broken cyc\n");
         pthread_mutex_unlock(&b->op_lock);
 
-        pthread_mutex_lock(&b->cond_lock);
-        while (b->flag != lc_continue) {
-            pthread_cond_wait(&b->cond, &b->cond_lock);
-            sleep(1);
+        if (in_linkedlist(run->broken_comp, c->id)) {
+            printf("broken cyc\n");
+            pthread_exit(NULL);
         }
+
+        while (b->flag != lc_continue) sleep(1);
+       
     }
+
+    return lc_continue; 
 }
 
 void* thread_cyclist (void *arg) {
@@ -65,8 +70,8 @@ void* thread_cyclist (void *arg) {
         pthread_mutex_unlock(&track_lock);
         
         if (c->lap < c->dist/run->v->length) {
+            
             c->lap++;
-
             bool broken = false;
 
             if (c->lap % 15 == 1)
@@ -76,15 +81,13 @@ void* thread_cyclist (void *arg) {
             
                 if (c->lap == (run->nlaps - 2) && run->sprinter == -1)
                     change_speed_90(run);  
-                
-
                 else 
                     change_speed(c->id, run);
             }
             printf("thread_cyclist %d\n", c->id);
         }
 
-        hold(local_continue, c);    
+        local_continue = hold(local_continue, c);    
     }
     return NULL;
 }
