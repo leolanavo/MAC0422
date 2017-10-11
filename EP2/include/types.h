@@ -10,6 +10,8 @@ typedef char bool;
 
 #define TRACKS 10
 
+int points[] = {5, 3, 2, 1};
+
 /* colors*/
 #define RED          "\033[31m"
 #define GREEN        "\033[32m"
