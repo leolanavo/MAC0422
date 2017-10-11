@@ -18,8 +18,10 @@ cyclist* init_cyclist (int id);
 
 bool break_cyclist (cyclist* c, race* r);
 
+int has_cyclist (LinkedList* l);
+
 /* Change the position of the cyclist in the velodrome matrix */
-void position_cyclist (cyclist* c, uint lin, uint row, uint length);
+void position_cyclist (cyclist* c, int lin, int row, int length);
 
 void move_cyclist (cyclist* c, race* r);
 

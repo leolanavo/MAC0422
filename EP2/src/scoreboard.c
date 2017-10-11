@@ -12,11 +12,11 @@ int compareScore(const void* a, const void* b) {
 
 void print_scoreboard(race* r, bool verbose) {
     cyclist** caux = malloc(r->ncomp * sizeof(cyclist*));
-    for (uint i = 0; i < r->ncomp; i++)
+    for (int i = 0; i < r->ncomp; i++)
         caux[i] = r->comp[i];
     qsort(caux, r->ncomp, sizeof(cyclist*), compareScore);
 
-    for (uint i = 0; i < r->ncomp; i++)
+    for (int i = 0; i < r->ncomp; i++)
         if (verbose)
             printf("%u - %d - %u\n", i, caux[i]->id, caux[i]->score);
         else

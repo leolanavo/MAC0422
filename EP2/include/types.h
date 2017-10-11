@@ -3,9 +3,6 @@
 
 #include <pthread.h>
 
-typedef unsigned int uint;
-typedef short unsigned int suint;
-
 // Define the boolean type
 typedef char bool;
 #define true 1
@@ -14,6 +11,21 @@ typedef char bool;
 #define TRACKS 10
 
 int points[] = {5, 3, 2, 1};
+
+/* colors*/
+#define RED          "\033[31m"
+#define GREEN        "\033[32m"
+#define YELLOW       "\033[33m"
+#define BLUE         "\033[34m"
+#define MAGENTA      "\033[35m"
+#define CYAN         "\033[36m"
+#define RED_BOLD     "\033[31;1m"
+#define GREEN_BOLD   "\033[32;1m"
+#define YELLOW_BOLD  "\033[33;1m"
+#define BLUE_BOLD    "\033[34;1m"
+#define MAGENTA_BOLD "\033[35;1m"
+#define CYAN_BOLD    "\033[36;1m"
+#define RESET        "\033[0m"
 
 /*****************************************************************
  * Struct: cyclist                                               *
@@ -30,14 +42,14 @@ int points[] = {5, 3, 2, 1};
  *                    the previous iteration                     *
  *****************************************************************/
 typedef struct {
-    uint speed;
+    int speed;
     int dist;
-    uint lap;
+    int lap;
     int id;
-    uint score;
+    int score;
     int row;
     int col;
-    uint move;
+    int move;
     bool overtook;
 } cyclist;
 
@@ -49,13 +61,14 @@ typedef struct {
  *                  the cyclists are                         *
  *************************************************************/
 typedef struct {
-    uint length;
+    int length;
     int** tracks;
 } velodrome;
 
 struct cell {
     int id;
-    uint lap;
+    int lap;
+    bool check;
     struct cell* next;
 };
 
@@ -79,13 +92,14 @@ typedef struct {
     pthread_t* th_comp;
     LinkedList* broken_comp;
     int sprinter;
-    uint nlaps;
-    uint ncomp;
+    int exit;
+    int nlaps;
+    int ncomp;
 } race;
 
 typedef struct {
     int counter;
     int flag;
-    pthread_mutex_t lock;
+    pthread_mutex_t op_lock;
 } barrier;
 #endif
