@@ -15,17 +15,6 @@ void print_tracks (velodrome* v) {
     }
 }
 
-void print_tracks_animated (velodrome* v, int nlaps) {
-    for (int k = 0; k < nlaps; k++) {
-        for (int i = 0; i < v->length; i++) {
-            for (int j = 0; j < TRACKS; j++)
-                printf("--|%d|--", v->tracks[i][j]);
-            printf("\n");
-        }
-        fflush(stdout);
-    }
-}
-
 /* Construct a velodrome*, with a matrix length X 10 as the velodrome
  * matrix */
 velodrome* construct_velodrome (int length, int ncomp, cyclist** comp) {
@@ -39,7 +28,7 @@ velodrome* construct_velodrome (int length, int ncomp, cyclist** comp) {
     for (int i = 0; i < length; i++)
         for (int j = 0; j < TRACKS; j++)
             v->tracks[i][j] = -1;
-    
+
     int tmp = 0;
     int i = length - 1;
     while (tmp < ncomp) {
