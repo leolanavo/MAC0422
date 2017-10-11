@@ -97,9 +97,10 @@ cyclist* kthselect(cyclist** comp, int l, int r, int k) {
 void addScore (cyclist** comp, int ncomp, int k) {
     if (k >= 5) return;
 
+    int aaaa[] = {5, 3, 2, 1};
     cyclist** caux = malloc(ncomp * sizeof(cyclist*));
     for (int i = 0; i < ncomp; i++)
         caux[i] = comp[i];
     cyclist* c = kthselect(caux, 0, ncomp, k);
-    c->score += points[k];
+    c->score += aaaa[k];
 }

@@ -49,7 +49,7 @@ void change_speed (int id, race* r) {
  * smaller than 10, this number follow an uniform distribution
  * between 0 and 1 */
 void change_speed_90 (race* r) {
-    
+
     if (r->sprinter == -1) {
         int id = (int)(rand() % r->ncomp);
         int prob = (int)rand() % 100;
@@ -92,7 +92,7 @@ int has_cyclist (LinkedList* l) {
 
     int count = 0;
 
-    if (l->head != NULL) { 
+    if (l->head != NULL) {
         node* aux = l->head;
         while (aux != NULL) {
             if (!aux->check){
@@ -102,7 +102,7 @@ int has_cyclist (LinkedList* l) {
 
             aux = aux->next;
         }
-    }   
+    }
 
     return count;
 }
@@ -117,7 +117,7 @@ void change_pos(cyclist* c, race* r, char move_id) {
     else if (move_id == 2) c->col--;
 
     r->v->tracks[c->row][c->col] = c->id;
-    
+
     pthread_mutex_unlock(&move_lock);
 }
 

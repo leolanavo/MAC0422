@@ -19,13 +19,13 @@ struct timespec ts;
 
 int hold (int lc_continue, cyclist* c) {
     lc_continue = (lc_continue == 0) ? 1 : 0;
-    
+
     pthread_mutex_lock(&b->op_lock);
     int arrived = ++(b->counter);
 
     if (c->lap == run->nlaps + 1)
         	run->exit++;
-    
+
 
     if (arrived == run->ncomp) {
         printf(YELLOW "FINAL HOLDER LAP: %d ID: %d" RESET "\n", c->lap, c->id);
@@ -33,7 +33,7 @@ int hold (int lc_continue, cyclist* c) {
 
         //if (c->lap % 10 == 0)
             /*print_scoreboard(run, true);*/
-        
+
         int broke = has_cyclist(run->broken_comp);
 
         if (broke != 0)
@@ -54,7 +54,7 @@ int hold (int lc_continue, cyclist* c) {
 
         if (in_linkedlist(run->broken_comp, c->id)) {
             printf("BROKEN CYC\n");
-            pthread_exit(NULL); 
+            pthread_exit(NULL);
         }
     }
 
@@ -70,22 +70,24 @@ int hold (int lc_continue, cyclist* c) {
             printf("broken cyc id %d\n", c->id);
             pthread_exit(NULL);
         }
+
+        while (b->flag != lc_continue) nanosleep(&ts, NULL);
     }
 
-    return lc_continue; 
+    return lc_continue;
 }
 
 void* thread_cyclist (void *arg) {
 
     int local_continue = 0;
     cyclist* c = (cyclist*) arg;
-    
+
     while (c->lap <= run->nlaps) {
 
         move_cyclist(c, run);
         //printf( CYAN "ID: %d DIST: %d FRACTION: %d " RESET "\n", c->id, c->dist, c->dist/run->v->length);
 
-        
+
         if (c->lap < c->dist/run->v->length) {
             c->lap++;
             bool broken = false;
@@ -96,17 +98,17 @@ void* thread_cyclist (void *arg) {
                 pthread_mutex_unlock(&track_lock);
 
             }
-            
+
             if (!broken) {
-            
+
                 if (c->lap == (run->nlaps - 2) && run->sprinter == -1)
-                    change_speed_90(run);  
-                else 
+                    change_speed_90(run);
+                else
                     change_speed(c->id, run);
             }
         }
 
-        local_continue = hold(local_continue, c);    
+        local_continue = hold(local_continue, c);
     }
     return NULL;
 }
@@ -119,7 +121,7 @@ void init_race () {
     for (int i = 0; i < run->ncomp; i++) {
         pthread_join(run->th_comp[i], NULL);
     }
-    
+
     printf("threads created\n");
 }
 
@@ -147,7 +149,7 @@ barrier* construct_barrier () {
     return b;
 }
 
-/* Free the race* and its fields 
+/* Free the race* and its fields
 void destroy_race (race* r) {
     destroy_velodrome(r->v);
     destroy_competitors(r->comp, r->ncomp);
@@ -174,6 +176,6 @@ int main (int argc, char** argv) {
     run = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
     init_race();
     pthread_mutex_destroy(&track_lock);
-    
+
     return 0;
 }

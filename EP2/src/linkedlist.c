@@ -22,8 +22,8 @@ void print_linkedlist (LinkedList* l) {
 }
 
 bool in_linkedlist (LinkedList* l, int id) {
-    
-    if (l->head != NULL) { 
+
+    if (l->head != NULL) {
         node* aux = l->head;
         while (aux != NULL) {
             if (aux->id == id && aux->check == false){
@@ -33,7 +33,7 @@ bool in_linkedlist (LinkedList* l, int id) {
 
             aux = aux->next;
         }
-    }   
+    }
 
     return false;
 }
