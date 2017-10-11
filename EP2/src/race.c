@@ -15,6 +15,7 @@ barrier* b;
 //int interval;
 //int timer;
 pthread_mutex_t track_lock;
+struct timespec ts;
 
 int hold (int lc_continue, cyclist* c) {
     lc_continue = (lc_continue == 0) ? 1 : 0;
@@ -22,28 +23,28 @@ int hold (int lc_continue, cyclist* c) {
     pthread_mutex_lock(&b->op_lock);
     int arrived = ++(b->counter);
 
-    if (c->lap == run->nlaps + 1) {
-        	//printf(RED "FINISHED" RESET "\n");
+    if (c->lap == run->nlaps + 1)
         	run->exit++;
-    }
+    
 
     if (arrived == run->ncomp) {
-        printf(YELLOW "LAP: %d" RESET "\n", c->lap);
+        printf(YELLOW "FINAL HOLDER LAP: %d" RESET "\n", c->lap);
         //print_tracks(run->v);
 
         //if (c->lap % 10 == 0)
             /*print_scoreboard(run, true);*/
-            //printf("LAP ID %d %d\n", c->lap, c->id);
         
         int broke = has_cyclist(run->broken_comp);
+        print_linkedlist(run->broken_comp);
+
+        if (broke != 0)
+            printf(" number of broken cyc %d\n", broke);
         run->ncomp = run->ncomp - broke;
 
         if (run->exit != 0) {
         	run->ncomp = run->ncomp - run->exit;
         	run->exit = 0;
         }
-
-        //printf( BLUE "NCOMP %d" RESET "\n", run->ncomp);
 
         pthread_mutex_unlock(&b->op_lock);
 
@@ -57,16 +58,15 @@ int hold (int lc_continue, cyclist* c) {
     }
 
     else {
-        //printf("hold while %d\n", c->id);
-        //printf(MAGENTA "WHILE THREAD LAP: %d ID: %d" RESET "\n", c->lap, c->id);
+
         pthread_mutex_unlock(&b->op_lock);
 
         if (in_linkedlist(run->broken_comp, c->id)) {
             printf("broken cyc\n");
             pthread_exit(NULL);
         }
-
-        while (b->flag != lc_continue) sleep(1);
+        
+        while (b->flag != lc_continue) nanosleep(&ts, NULL);
        
     }
 
@@ -80,18 +80,20 @@ void* thread_cyclist (void *arg) {
     
     while (c->lap <= run->nlaps) {
 
-        pthread_mutex_lock(&track_lock);
         move_cyclist(c, run);
         //printf( CYAN "ID: %d DIST: %d FRACTION: %d " RESET "\n", c->id, c->dist, c->dist/run->v->length);
 
-        pthread_mutex_unlock(&track_lock);
         
         if (c->lap < c->dist/run->v->length) {
             c->lap++;
             bool broken = false;
 
-            if (c->lap % 15 == 1)
+            if (c->lap % 15 == 1) {
+                pthread_mutex_lock(&track_lock);
                 broken = break_cyclist(c, run);
+                pthread_mutex_unlock(&track_lock);
+
+            }
             
             if (!broken) {
             
@@ -161,7 +163,11 @@ int main (int argc, char** argv) {
 
     //interval = 60;
     //timer = 0;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 600;
+
     pthread_mutex_init(&track_lock, NULL);
+    init_mutex();
     b = construct_barrier();
     run = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
     init_race();

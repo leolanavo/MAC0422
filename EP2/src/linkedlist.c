@@ -26,8 +26,10 @@ bool in_linkedlist (LinkedList* l, int id) {
     if (l->head != NULL) { 
         node* aux = l->head;
         while (aux->next != NULL) {
-            if (aux->id == id)
+            if (aux->id == id && aux->check == false){
+                aux->check = true;
                 return true;
+            }
 
             aux = aux->next;
         }

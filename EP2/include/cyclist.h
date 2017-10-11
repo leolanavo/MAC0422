@@ -1,6 +1,8 @@
 #ifndef CYCLIST_H
 #define CYCLIST_H
 
+void init_mutex ();
+
 void adequate_speed(int id, race* r);
 
 /* Change the speed of a cyclist according to the rules defined in

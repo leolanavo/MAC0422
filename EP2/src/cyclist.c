@@ -12,6 +12,12 @@
 #define prob_to_90 10
 #define prob_break 1
 
+pthread_mutex_t move_lock;
+
+void init_mutex () {
+    pthread_mutex_init(&move_lock, NULL);
+}
+
 void adequate_speed(int id, race* r) {
     int row = r->comp[id]->row;
     int col = r->comp[id]->col;
@@ -102,6 +108,7 @@ int has_cyclist (LinkedList* l) {
 }
 
 void change_pos(cyclist* c, race* r, char move_id) {
+    pthread_mutex_lock(&move_lock);
 
     r->v->tracks[c->row][c->col] = -1;
     c->row = (c->row + 1) % r->v->length;
@@ -110,6 +117,8 @@ void change_pos(cyclist* c, race* r, char move_id) {
     else if (move_id == 2) c->col--;
 
     r->v->tracks[c->row][c->col] = c->id;
+    
+    pthread_mutex_unlock(&move_lock);
 }
 
 void counter_cyclist(cyclist* c, race* r, char move_id) {
