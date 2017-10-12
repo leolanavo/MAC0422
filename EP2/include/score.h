@@ -64,4 +64,5 @@ cyclist* kthselect(cyclist** comp, int l, int r, int k);
  **********************************************************/
 void addScore (cyclist** comp, int ncomp, int k);
 
+void addScoreSpecial (cyclist** comp, int ncomp);
 #endif

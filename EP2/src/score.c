@@ -97,10 +97,20 @@ cyclist* kthselect(cyclist** comp, int l, int r, int k) {
 void addScore (cyclist** comp, int ncomp, int k) {
     if (k >= 5) return;
 
-    int aaaa[] = {5, 3, 2, 1};
+    int scores[] = {5, 3, 2, 1};
     cyclist** caux = malloc(ncomp * sizeof(cyclist*));
     for (int i = 0; i < ncomp; i++)
         caux[i] = comp[i];
     cyclist* c = kthselect(caux, 0, ncomp, k);
-    c->score += aaaa[k];
+    c->score += scores[k];
+}
+
+void addScoreSpecial (cyclist** comp, int ncomp) {
+    cyclist** caux = malloc(ncomp * sizeof(cyclist*));
+    for (int i = 0; i < ncomp; i++)
+        caux[i] = comp[i];
+    cyclist* a = kthselect(caux, 0, ncomp, 0);
+    cyclist* b = kthselect(caux, 0, ncomp, 1);
+    if (b->lap + 1 >= a->lap)
+        a->score += 20;
 }
