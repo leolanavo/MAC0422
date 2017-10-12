@@ -8,12 +8,15 @@
 #include "cyclist.h"
 #include "velodrome.h"
 #include "linkedlist.h"
+#include "score.h"
 #include "scoreboard.h"
 
 race* run;
 barrier* b;
-//int interval;
-//int timer;
+int lap_counter;
+int k_counter;
+double interval;
+double timer;
 pthread_mutex_t track_lock;
 struct timespec ts;
 
@@ -28,19 +31,20 @@ int hold (int lc_continue, cyclist* c) {
 
 
     if (arrived == run->ncomp) {
-        printf(YELLOW "FINAL HOLDER LAP: %d ID: %d" RESET "\n", c->lap, c->id);
+
+        timer = timer + interval;
+        printf("tempo %f min\n", timer/60000);
         //print_tracks(run->v);
 
-        //if (c->lap % 10 == 0)
-            /*print_scoreboard(run, true);*/
+        if (c->lap % 10 == lap_counter) {
+            printf("counter %d\n", lap_counter);
+            print_scoreboard(run, true);
+            lap_counter++;
+        }
 
         int broke = has_cyclist(run->broken_comp);
-
         if (broke != 0)
-            printf(" number of broken cyc %d\n", broke);
-        run->ncomp = run->ncomp - broke;
-
-        print_linkedlist(run->broken_comp);
+            run->ncomp = run->ncomp - broke;
 
         if (run->exit != 0) {
         	run->ncomp = run->ncomp - run->exit;
@@ -49,29 +53,28 @@ int hold (int lc_continue, cyclist* c) {
 
         pthread_mutex_unlock(&b->op_lock);
 
+        k_counter = 0;
         b->counter = 0;
         b->flag =  lc_continue;
 
-        if (in_linkedlist(run->broken_comp, c->id)) {
-            printf("BROKEN CYC\n");
+        if (in_linkedlist(run->broken_comp, c->id))
             pthread_exit(NULL);
-        }
     }
 
     else {
 
+        if (c->lap % 10 == lap_counter && k_counter < 4) {
+            addScore (run->comp, run->ncomp, k_counter);
+            k_counter++;
+        }            
+
         pthread_mutex_unlock(&b->op_lock);
         
-        while (b->flag != lc_continue){
+        while (b->flag != lc_continue)
             nanosleep(&ts, NULL);
-        }
 
-        if (in_linkedlist(run->broken_comp, c->id)) {
-            printf("broken cyc id %d\n", c->id);
+        if (in_linkedlist(run->broken_comp, c->id))
             pthread_exit(NULL);
-        }
-
-        while (b->flag != lc_continue) nanosleep(&ts, NULL);
     }
 
     return lc_continue;
@@ -85,8 +88,6 @@ void* thread_cyclist (void *arg) {
     while (c->lap <= run->nlaps) {
 
         move_cyclist(c, run);
-        //printf( CYAN "ID: %d DIST: %d FRACTION: %d " RESET "\n", c->id, c->dist, c->dist/run->v->length);
-
 
         if (c->lap < c->dist/run->v->length) {
             c->lap++;
@@ -121,8 +122,6 @@ void init_race () {
     for (int i = 0; i < run->ncomp; i++) {
         pthread_join(run->th_comp[i], NULL);
     }
-
-    printf("threads created\n");
 }
 
 /* Construct a race with a velodrome* with length as its length,
@@ -165,8 +164,10 @@ int main (int argc, char** argv) {
 
     srand(time(NULL));
 
-    //interval = 60;
-    //timer = 0;
+    interval = 60.;
+    timer = 0.;
+    lap_counter = 0;
+    k_counter = 0;
     ts.tv_sec = 0;
     ts.tv_nsec = 600;
 
