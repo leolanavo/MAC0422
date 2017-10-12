@@ -94,7 +94,7 @@ int has_cyclist (LinkedList* l) {
 
     if (l->head != NULL) {
         node* aux = l->head;
-        while (aux->next != NULL) {
+        while (aux != NULL) {
             if (!aux->check){
                 count++;
                 aux->check = true;

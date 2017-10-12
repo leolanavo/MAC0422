@@ -28,18 +28,19 @@ int hold (int lc_continue, cyclist* c) {
 
 
     if (arrived == run->ncomp) {
-        printf(YELLOW "FINAL HOLDER LAP: %d" RESET "\n", c->lap);
+        printf(YELLOW "FINAL HOLDER LAP: %d ID: %d" RESET "\n", c->lap, c->id);
         //print_tracks(run->v);
 
         //if (c->lap % 10 == 0)
             /*print_scoreboard(run, true);*/
 
         int broke = has_cyclist(run->broken_comp);
-        print_linkedlist(run->broken_comp);
 
         if (broke != 0)
             printf(" number of broken cyc %d\n", broke);
         run->ncomp = run->ncomp - broke;
+
+        print_linkedlist(run->broken_comp);
 
         if (run->exit != 0) {
         	run->ncomp = run->ncomp - run->exit;
@@ -60,14 +61,17 @@ int hold (int lc_continue, cyclist* c) {
     else {
 
         pthread_mutex_unlock(&b->op_lock);
+        
+        while (b->flag != lc_continue){
+            nanosleep(&ts, NULL);
+        }
 
         if (in_linkedlist(run->broken_comp, c->id)) {
-            printf("broken cyc\n");
+            printf("broken cyc id %d\n", c->id);
             pthread_exit(NULL);
         }
 
         while (b->flag != lc_continue) nanosleep(&ts, NULL);
-
     }
 
     return lc_continue;
