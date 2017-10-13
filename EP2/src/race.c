@@ -42,7 +42,6 @@ int hold (int lc_continue, cyclist* c) {
     if (arrived == run->ncomp) {
 
         timer = timer + interval;
-        //printf("tempo %f min\n", timer/60000);
         //print_tracks(run->v);
 
         int broke = has_cyclist(run->broken_comp);
@@ -64,8 +63,11 @@ int hold (int lc_continue, cyclist* c) {
         b->counter = 0;
         b->flag =  lc_continue;
 
-        if (in_linkedlist(run->broken_comp, c->id))
+        if (in_linkedlist(run->broken_comp, c->id)){
+            printf("leaving %d\n", c->id);
+            
             pthread_exit(NULL);
+        }
     }
 
     else {
@@ -77,7 +79,8 @@ int hold (int lc_continue, cyclist* c) {
         } 
 
         else if (k_counter == 4) {
-            print_scoreboard(run, true);
+            printf("SCOREBOARD LAP: %d\n", lap_counter);
+            print_scoreboard(run, true, -1);
             printf("\n");
             
             for (int i = 0; i < 4; i++)
@@ -92,8 +95,10 @@ int hold (int lc_continue, cyclist* c) {
         while (b->flag != lc_continue)
             nanosleep(&ts, NULL);
 
-        if (in_linkedlist(run->broken_comp, c->id))
+        if (in_linkedlist(run->broken_comp, c->id)){
+            printf("leaving %d\n", c->id);
             pthread_exit(NULL);
+        }
     }
 
     return lc_continue;
@@ -126,9 +131,12 @@ void* thread_cyclist (void *arg) {
 
             if (c->lap % 15 == 1) {
                 pthread_mutex_lock(&break_lock);
+                
                 broken = break_cyclist(c, run);
+                if (broken)
+                    print_scoreboard(run, true, c->id);
+                
                 pthread_mutex_unlock(&break_lock);
-
             }
 
             if (!broken) {
