@@ -57,10 +57,9 @@ void change_speed_90 (race* r) {
         while (in_linkedlist(r->broken_comp, id))
             id = (int)(rand() % r->ncomp);
 
-        if (prob < prob_to_90) {
+        if (prob < prob_to_90)
             r->sprinter = id;
-            r->comp[id]->speed = 90;
-        }
+        
         else
             r->sprinter = -2;
     }
@@ -80,7 +79,7 @@ cyclist* init_cyclist (int id) {
 
 bool break_cyclist (cyclist* c, race* r) {
     int prob = (int)rand()%100;
-    if (prob > prob_break)
+    if (prob > prob_break || r->ncomp <= 5 || r->sprinter == c->id)
         return false;
     r->v->tracks[c->row][c->col] = -1;
     insert_linkedlist(c->id, c->lap, r->broken_comp);
@@ -108,7 +107,6 @@ int has_cyclist (LinkedList* l) {
 }
 
 void change_pos(cyclist* c, race* r, char move_id) {
-    pthread_mutex_lock(&move_lock);
 
     r->v->tracks[c->row][c->col] = -1;
     c->row = (c->row + 1) % r->v->length;
@@ -118,18 +116,20 @@ void change_pos(cyclist* c, race* r, char move_id) {
 
     r->v->tracks[c->row][c->col] = c->id;
 
-    pthread_mutex_unlock(&move_lock);
 }
 
 void counter_cyclist(cyclist* c, race* r, char move_id) {
-    if (r->sprinter < 0 && (
+    
+    int id = r->sprinter;
+
+    if ((id < 0 || r->comp[id]->speed != 90) && (
                 (c->speed == 60 && c->move == 1) ||
                 (c->speed == 30 && c->move == 2))) {
         c->dist++;
         c->move = 0;
         change_pos(c, r, move_id);
     }
-    else if (r->sprinter >= 0 && (
+    else if (id >= 0 && r->comp[id]->speed == 90 && (
                 (c->speed == 90 && c->move == 1) ||
                 (c->speed == 60 && c->move == 3) ||
                 (c->speed == 30 && c->move == 6))) {
@@ -160,7 +160,7 @@ void move_cyclist (cyclist* c, race* r) {
         v->tracks[(c->row+1) % length][c->col-1] == -1? true : false :
         false;
 
-    int s_front = !empty_front?
+    int s_front = empty_front == false?
         comp[v->tracks[(c->row + 1) % length][c->col]]->speed :
         INT_MAX;
 

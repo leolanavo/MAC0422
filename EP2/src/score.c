@@ -95,13 +95,15 @@ cyclist* kthselect(cyclist** comp, int l, int r, int k) {
  *  @return:    void function                             *
  **********************************************************/
 void addScore (cyclist** comp, int ncomp, int k) {
-    if (k >= 5) return;
-
     int scores[] = {5, 3, 2, 1};
     cyclist** caux = malloc(ncomp * sizeof(cyclist*));
-    for (int i = 0; i < ncomp; i++)
-        caux[i] = comp[i];
-    cyclist* c = kthselect(caux, 0, ncomp, k);
+    for (int i = 0; i < ncomp; i++){
+        caux[i] = malloc(sizeof(cyclist));
+        *caux[i] = *comp[i];
+    }
+    cyclist* c = kthselect(caux, 0, ncomp, (ncomp - k - 1));
+    printf("passou\n");
+        
     c->score += scores[k];
 }
 

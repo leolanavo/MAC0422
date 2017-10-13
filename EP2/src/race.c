@@ -13,12 +13,21 @@
 
 race* run;
 barrier* b;
-int lap_counter;
-int k_counter;
-double interval;
-double timer;
-pthread_mutex_t track_lock;
+int lap_counter, k_counter, comp_counter, sp_counter;
+double interval, timer;
+pthread_mutex_t track_lock, break_lock, special_lock;
 struct timespec ts;
+
+int scores[] = {5, 3, 2, 1};
+int scored[4];
+
+bool contains (int id) {
+    for (int i = 0; i < 4; i++)
+        if (id == scored[i])
+            return true;
+    
+    return false;       
+}
 
 int hold (int lc_continue, cyclist* c) {
     lc_continue = (lc_continue == 0) ? 1 : 0;
@@ -33,14 +42,8 @@ int hold (int lc_continue, cyclist* c) {
     if (arrived == run->ncomp) {
 
         timer = timer + interval;
-        printf("tempo %f min\n", timer/60000);
+        //printf("tempo %f min\n", timer/60000);
         //print_tracks(run->v);
-
-        if (c->lap % 10 == lap_counter) {
-            printf("counter %d\n", lap_counter);
-            print_scoreboard(run, true);
-            lap_counter++;
-        }
 
         int broke = has_cyclist(run->broken_comp);
         if (broke != 0)
@@ -51,9 +54,13 @@ int hold (int lc_continue, cyclist* c) {
         	run->exit = 0;
         }
 
+        if (run->sprinter >= 0 && run->comp[run->sprinter]->lap == run->nlaps - 1) {
+            run->comp[run->sprinter]->speed = 90;
+            interval = 20;
+        }
+
         pthread_mutex_unlock(&b->op_lock);
 
-        k_counter = 0;
         b->counter = 0;
         b->flag =  lc_continue;
 
@@ -63,10 +70,22 @@ int hold (int lc_continue, cyclist* c) {
 
     else {
 
-        if (c->lap % 10 == lap_counter && k_counter < 4) {
-            addScore (run->comp, run->ncomp, k_counter);
+        if (c->lap == lap_counter && k_counter < 4 && !contains(c->id)) {
+            scored[k_counter] = c->id;
+            c->score += scores[k_counter];
             k_counter++;
-        }            
+        } 
+
+        else if (k_counter == 4) {
+            print_scoreboard(run, true);
+            printf("\n");
+            
+            for (int i = 0; i < 4; i++)
+                scored[i] = -1;
+
+            lap_counter += 10;
+            k_counter = 0;
+        }           
 
         pthread_mutex_unlock(&b->op_lock);
         
@@ -86,17 +105,29 @@ void* thread_cyclist (void *arg) {
     cyclist* c = (cyclist*) arg;
 
     while (c->lap <= run->nlaps) {
-
+        
+        pthread_mutex_lock(&track_lock);
         move_cyclist(c, run);
+        pthread_mutex_unlock(&track_lock);
+
 
         if (c->lap < c->dist/run->v->length) {
             c->lap++;
+            
+            pthread_mutex_lock(&special_lock);
+            if (c->lap == sp_counter) {
+                specialPoints(run);
+                sp_counter++;
+            }
+            pthread_mutex_unlock(&special_lock);
+
+
             bool broken = false;
 
             if (c->lap % 15 == 1) {
-                pthread_mutex_lock(&track_lock);
+                pthread_mutex_lock(&break_lock);
                 broken = break_cyclist(c, run);
-                pthread_mutex_unlock(&track_lock);
+                pthread_mutex_unlock(&break_lock);
 
             }
 
@@ -166,15 +197,22 @@ int main (int argc, char** argv) {
 
     interval = 60.;
     timer = 0.;
-    lap_counter = 0;
-    k_counter = 0;
+    lap_counter = 10;
+    sp_counter = 3;
+    comp_counter = k_counter = 0;
     ts.tv_sec = 0;
     ts.tv_nsec = 600;
 
     pthread_mutex_init(&track_lock, NULL);
+    pthread_mutex_init(&break_lock, NULL);
+    pthread_mutex_init(&special_lock, NULL);
+
     init_mutex();
     b = construct_barrier();
     run = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
+    for (int i = 0; i < 4; i++)
+        scored[i] = -1;
+
     init_race();
     pthread_mutex_destroy(&track_lock);
 
