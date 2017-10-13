@@ -18,6 +18,13 @@ void init_mutex () {
     pthread_mutex_init(&move_lock, NULL);
 }
 
+cyclist** copy_array (cyclist** comp, int ncomp) {
+    cyclist** caux = malloc(r->ncomp * sizeof(cyclist*));
+    for (int i = 0; i < r->ncomp; i++)
+        caux[i] = r->comp[i];
+    return caux;
+}
+
 void adequate_speed(int id, race* r) {
     int row = r->comp[id]->row;
     int col = r->comp[id]->col;

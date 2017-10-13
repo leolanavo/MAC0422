@@ -11,9 +11,8 @@ int compareScore(const void* a, const void* b) {
 }
 
 void print_scoreboard(race* r, bool verbose, int break_id) {
-    cyclist** caux = malloc(r->ncomp * sizeof(cyclist*));
-    for (int i = 0; i < r->ncomp; i++)
-        caux[i] = r->comp[i];
+
+    cyclist** caux = copy_array(r->comp, r->ncomp);
     qsort(caux, r->ncomp, sizeof(cyclist*), compareScore);
 
     if (break_id >= 0) {
@@ -46,9 +45,7 @@ int compareDist(const void* a, const void* b) {
 }
 
 void specialPoints(race* r) {
-    cyclist** caux = malloc(r->ncomp * sizeof(cyclist*));
-    for (int i = 0; i < r->ncomp; i++)
-        caux[i] = r->comp[i];
+    cyclist** caux = copy_array(r->comp, r->ncomp);
     qsort(caux, r->ncomp, sizeof(cyclist*), compareDist);
 
     if (caux[0]->lap >= caux[1]->lap + 2)

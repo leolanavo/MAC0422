@@ -5,6 +5,8 @@ void init_mutex ();
 
 void adequate_speed(int id, race* r);
 
+cyclist** copy_array (cyclist** comp, int ncomp);
+
 /* Change the speed of a cyclist according to the rules defined in
  * the assignment. */
 void change_speed (int id, race* r);
