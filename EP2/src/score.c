@@ -94,8 +94,7 @@ cyclist* kthselect(cyclist** comp, int l, int r, int k) {
  *                                                        *
  *  @return:    void function                             *
  **********************************************************/
-void addScore (cyclist** comp, int ncomp, int k) {
-    int scores[] = {5, 3, 2, 1};
+void getPos (cyclist** comp, int ncomp, int k) {
     cyclist** caux = malloc(ncomp * sizeof(cyclist*));
     for (int i = 0; i < ncomp; i++){
         caux[i] = malloc(sizeof(cyclist));
