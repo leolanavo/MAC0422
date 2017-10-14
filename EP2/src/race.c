@@ -191,7 +191,6 @@ race* construct_race (int length, int ncomp, int laps) {
     race* r = malloc(sizeof(race));
     r->comp = construct_competitors(ncomp);
     r->v = construct_velodrome(length, ncomp, r->comp);
-    r->th_comp = malloc(ncomp * sizeof(pthread_t));
     r->sprinter = -1;
     r->broken_comp = construct_linkedlist();
     r->exit = 0;

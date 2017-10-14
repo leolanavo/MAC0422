@@ -6,6 +6,7 @@
 
 #include "types.h"
 #include "linkedlist.h"
+#include "race.h"
 
 #define prob_to_60 70
 #define prob_to_30 50
@@ -87,6 +88,7 @@ cyclist* init_cyclist (int id) {
     c->id = id;
     c->overtook = false;
     c->ftime = 0;
+    c->th = pthread_create(&c->th, NULL, thread_cyclist, (void*)c);
     return c;
 }
 

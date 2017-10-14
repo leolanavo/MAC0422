@@ -40,6 +40,7 @@ typedef char bool;
  *                    the previous iteration                     *
  *****************************************************************/
 typedef struct {
+    pthread_t th;
     int speed;
     int dist;
     int lap;
@@ -89,7 +90,6 @@ typedef struct {
 typedef struct {
     cyclist** comp;
     velodrome* v;
-    pthread_t* th_comp;
     LinkedList* broken_comp;
     int sprinter;
     int exit;
