@@ -49,6 +49,7 @@ typedef struct {
     int col;
     int move;
     bool overtook;
+    double ftime;
 } cyclist;
 
 /*************************************************************
@@ -74,6 +75,7 @@ typedef struct cell node;
 
 typedef struct {
     node* head;
+    int size;
 } LinkedList;
 
 /*************************************************************
@@ -93,6 +95,7 @@ typedef struct {
     int exit;
     int nlaps;
     int ncomp;
+    int fixed_ncomp;
 } race;
 
 typedef struct {

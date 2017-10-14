@@ -7,16 +7,17 @@
 LinkedList* construct_linkedlist() {
     LinkedList* l = malloc(sizeof(LinkedList));
     l->head = NULL;
+    l->size = 0;
     return l;
 }
 
 /* Receives a LinkedList*. Prints it according to the specification. */
 void print_linkedlist (LinkedList* l) {
+    printf(RED "Ciclistas quebrados" RESET "\n");
     node* aux;
     aux = l->head;
     while (aux != NULL) {
-        printf("\n");
-        printf("O ciclista %d quebrou na volta %u\n", aux->id, aux->lap);
+        printf(RED"\tO ciclista %d quebrou na volta %u"RESET"\n", aux->id, aux->lap);
         aux = aux->next;
     }
 }
@@ -64,7 +65,6 @@ void destroy_linkedlist(LinkedList* l) {
         aux = l->head;
         l->head = l->head->next;
         free(aux);
-        aux = NULL;
     }
     free(l);
 }

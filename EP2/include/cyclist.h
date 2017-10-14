@@ -1,11 +1,11 @@
 #ifndef CYCLIST_H
 #define CYCLIST_H
 
-void init_mutex ();
-
 void adequate_speed(int id, race* r);
 
-cyclist** copy_array (cyclist** comp, int ncomp);
+cyclist** copy_array (race* r);
+
+void destroy_array (cyclist** comp, int size);
 
 /* Change the speed of a cyclist according to the rules defined in
  * the assignment. */

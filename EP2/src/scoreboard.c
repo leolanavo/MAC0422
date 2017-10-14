@@ -3,6 +3,7 @@
 #include <time.h>
 
 #include "types.h"
+#include "cyclist.h"
 
 int compareScore(const void* a, const void* b) {
     if ((**(cyclist**)a).score > (**(cyclist**)b).score) return -1;
@@ -10,32 +11,46 @@ int compareScore(const void* a, const void* b) {
     return 1;
 }
 
-void print_scoreboard(race* r, bool verbose, int break_id) {
+void print_scoreboard(race* r, int verbose, int break_id) {
 
-    cyclist** caux = copy_array(r->comp, r->ncomp);
-    qsort(caux, r->ncomp, sizeof(cyclist*), compareScore);
+    cyclist** caux = copy_array(r);
+    qsort(caux, r->fixed_ncomp, sizeof(cyclist*), compareScore);
 
     if (break_id >= 0) {
         int c;
         for (c = 0; c < r->ncomp && caux[c]->id != break_id; c++);
 
-        printf("Broken cyclist: %d Lap: %d Position: %d\n", break_id, r->comp[break_id]->lap, c + 1);
+        printf(RED "BROKEN CYCLIST: %d LAP: %d POSITION: %d" RESET "\n", 
+               break_id, r->comp[break_id]->lap, c + 1);
+        return;
     }
 
+    if (verbose == 1)
+        printf(BLUE "POSITION     ID     SCORE" RESET "\n");
+    else if (verbose == 0)
+        printf(YELLOW "POSITION     ID" RESET "\n");
+    else
+        printf(CYAN "ID     POSITION     TIME(min)     SCORE" RESET "\n");
 
-    printf("POSITION     ID     SCORE\n");
-    int ncomp = r->ncomp;
-
-    for (int i = 0; i < ncomp; i++) {
-        if (caux[i]->speed == 0) ncomp++;
+    int offset = 0;
+    for (int i = 0; i < r->fixed_ncomp; i++) {
         
-        else {
-            if (verbose)
-                printf("   %d     -   %d  -    %d\n", i + 1, caux[i]->id, caux[i]->score);
+        if (caux[i]->speed != 0) {
+            if (verbose == 1)
+                printf(BLUE "   %d     -   %d  -    %d" RESET "\n", 
+                      (i + 1 - offset), caux[i]->id, caux[i]->score);
+            else if (verbose == 0)
+                printf(YELLOW "   %d     -     %d" RESET "\n", 
+                      (i + 1 - offset), caux[i]->id);
             else
-                printf("%d - %d\n", i + 1, caux[i]->id);
+                printf(CYAN " %d  -    %d     -     %.2f     -     %d" RESET "\n",
+                    caux[i]->id, (i + 1 - offset), caux[i]->ftime, caux[i]->score);
         }
+        else
+            offset++;
     }
+
+    destroy_array(caux, r->fixed_ncomp);
 }
 
 int compareDist(const void* a, const void* b) {
@@ -45,9 +60,12 @@ int compareDist(const void* a, const void* b) {
 }
 
 void specialPoints(race* r) {
-    cyclist** caux = copy_array(r->comp, r->ncomp);
-    qsort(caux, r->ncomp, sizeof(cyclist*), compareDist);
+    cyclist** caux = copy_array(r);
+    int size = r->fixed_ncomp - r->broken_comp->size;
+    qsort(caux, size, sizeof(cyclist*), compareDist);
 
     if (caux[0]->lap >= caux[1]->lap + 2)
         r->comp[caux[0]->id]->score += 20;
+
+    destroy_array(caux, r->fixed_ncomp);
 }

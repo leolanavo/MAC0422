@@ -7,12 +7,13 @@
 
 
 void print_tracks (velodrome* v) {
-
+    printf(RED_BOLD"DEBUG"RESET"\n");
     for (int i = 0; i < v->length; i++){
         for (int j = 0; j < TRACKS; j++)
-            printf("--|%d|--", v->tracks[i][j]);
+            printf("  |%d|", v->tracks[i][j]);
         printf("\n");
     }
+    printf("\n\n");
 }
 
 /* Construct a velodrome*, with a matrix length X 10 as the velodrome
@@ -56,15 +57,12 @@ cyclist** construct_competitors (int ncomp) {
 
 /* Frees the matrix that represents the velodrome */
 void destroy_velodrome(velodrome* v) {
-    for (int i = 0; i < v->length; i++)
+    for (int i = 0; i < v->length; i++) {
         free(v->tracks[i]);
+        v->tracks[i] = NULL;
+    }
     free(v->tracks);
+    v->tracks = NULL;
     free(v);
-}
-
-/* Frees the array that represents the competitors of the race */
-void destroy_competitors (cyclist** c, int size) {
-    for (int i = 0; i < size; i++)
-        free(c[i]);
-    free(c);
+    v = NULL;
 }

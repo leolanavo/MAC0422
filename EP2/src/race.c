@@ -8,14 +8,14 @@
 #include "cyclist.h"
 #include "velodrome.h"
 #include "linkedlist.h"
-#include "score.h"
 #include "scoreboard.h"
 
 race* run;
 barrier* b;
+bool debug;
 int lap_counter, k_counter, comp_counter, sp_counter;
 double interval, timer;
-pthread_mutex_t track_lock, break_lock, special_lock;
+pthread_mutex_t track_lock, break_lock, special_lock, time_lock;
 struct timespec ts;
 
 int scores[] = {5, 3, 2, 1};
@@ -41,12 +41,15 @@ int hold (int lc_continue, cyclist* c) {
 
     if (arrived == run->ncomp) {
 
+        if (debug) print_tracks(run->v);
+
         timer = timer + interval;
-        //print_tracks(run->v);
 
         int broke = has_cyclist(run->broken_comp);
-        if (broke != 0)
+        if (broke != 0) {
+            run->broken_comp->size += broke;
             run->ncomp = run->ncomp - broke;
+        }
 
         if (run->exit != 0) {
         	run->ncomp = run->ncomp - run->exit;
@@ -63,11 +66,8 @@ int hold (int lc_continue, cyclist* c) {
         b->counter = 0;
         b->flag =  lc_continue;
 
-        if (in_linkedlist(run->broken_comp, c->id)){
-            printf("leaving %d\n", c->id);
-            
+        if (in_linkedlist(run->broken_comp, c->id))            
             pthread_exit(NULL);
-        }
     }
 
     else {
@@ -79,8 +79,8 @@ int hold (int lc_continue, cyclist* c) {
         } 
 
         else if (k_counter == 4) {
-            printf("SCOREBOARD LAP: %d\n", lap_counter);
-            print_scoreboard(run, true, -1);
+            printf(BLUE "SCOREBOARD LAP: %d" RESET "\n", lap_counter);
+            print_scoreboard(run, 1, -1);
             printf("\n");
             
             for (int i = 0; i < 4; i++)
@@ -95,10 +95,8 @@ int hold (int lc_continue, cyclist* c) {
         while (b->flag != lc_continue)
             nanosleep(&ts, NULL);
 
-        if (in_linkedlist(run->broken_comp, c->id)){
-            printf("leaving %d\n", c->id);
+        if (in_linkedlist(run->broken_comp, c->id))
             pthread_exit(NULL);
-        }
     }
 
     return lc_continue;
@@ -121,7 +119,10 @@ void* thread_cyclist (void *arg) {
             
             pthread_mutex_lock(&special_lock);
             if (c->lap == sp_counter) {
-                specialPoints(run);
+                printf(YELLOW "SCORE PER LAP: %d" RESET "\n", sp_counter);
+                print_scoreboard(run, 0, -1);
+                if (sp_counter >= 3)
+                    specialPoints(run);
                 sp_counter++;
             }
             pthread_mutex_unlock(&special_lock);
@@ -134,7 +135,7 @@ void* thread_cyclist (void *arg) {
                 
                 broken = break_cyclist(c, run);
                 if (broken)
-                    print_scoreboard(run, true, c->id);
+                    print_scoreboard(run, 1, c->id);
                 
                 pthread_mutex_unlock(&break_lock);
             }
@@ -150,17 +151,31 @@ void* thread_cyclist (void *arg) {
 
         local_continue = hold(local_continue, c);
     }
+    pthread_mutex_lock(&time_lock);
+    c->ftime = timer/60000;
+    pthread_mutex_unlock(&time_lock);
+    
     return NULL;
 }
 
 void init_race () {
-    for (int i = 0; i < run->ncomp; i++) {
+    for (int i = 0; i < run->ncomp; i++)
         pthread_create(&run->th_comp[i], NULL, thread_cyclist, (void*)run->comp[i]);
+
+    for (int i = 0; i < run->ncomp; i++)
+        pthread_join(run->th_comp[i], NULL);
+
+    for (int i = 0; i < run->fixed_ncomp; i++) {
+        bool p = false;
+        while (run->comp[i]->speed != 0 && run->comp[i]->ftime == 0)
+            if (!p) {
+                printf("%d %d %d %.2f %d\n", 
+                      i, run->comp[i]->speed, run->comp[i]->lap, run->comp[i]->ftime,
+                      run->comp[i]->dist/run->v->length);
+                p = true;
+            }
     }
 
-    for (int i = 0; i < run->ncomp; i++) {
-        pthread_join(run->th_comp[i], NULL);
-    }
 }
 
 /* Construct a race with a velodrome* with length as its length,
@@ -176,6 +191,7 @@ race* construct_race (int length, int ncomp, int laps) {
     r->exit = 0;
     r->nlaps = laps;
     r->ncomp = ncomp;
+    r->fixed_ncomp = ncomp;
     return r;
 }
 
@@ -187,26 +203,34 @@ barrier* construct_barrier () {
     return b;
 }
 
-/* Free the race* and its fields
-void destroy_race (race* r) {
-    destroy_velodrome(r->v);
-    destroy_competitors(r->comp, r->ncomp);
-    free(r);
+void destroy_barrier() {
+    pthread_mutex_destroy(&b->op_lock);
+    free(b);
 }
-*/
+
+/* Free the race* and its fields */
+void destroy_race () {
+    destroy_array(run->comp, run->fixed_ncomp);
+    destroy_velodrome(run->v);
+    destroy_linkedlist(run->broken_comp);
+    free(run->th_comp);
+    free(run);
+}
 
 int main (int argc, char** argv) {
-    if (argc != 4) {
+    if (argc < 4) {
         printf("Insufficient number of arguments\n");
         exit(-1);
     }
 
+    debug = argc == 5? true: false;
+
     srand(time(NULL));
 
-    interval = 60.;
-    timer = 0.;
+    interval = 60.0;
+    timer = 0.0;
     lap_counter = 10;
-    sp_counter = 3;
+    sp_counter = 2;
     comp_counter = k_counter = 0;
     ts.tv_sec = 0;
     ts.tv_nsec = 600;
@@ -214,15 +238,23 @@ int main (int argc, char** argv) {
     pthread_mutex_init(&track_lock, NULL);
     pthread_mutex_init(&break_lock, NULL);
     pthread_mutex_init(&special_lock, NULL);
+    pthread_mutex_init(&time_lock, NULL);
 
-    init_mutex();
     b = construct_barrier();
     run = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
     for (int i = 0; i < 4; i++)
         scored[i] = -1;
 
     init_race();
+    print_scoreboard(run, 2, -1);
+    print_linkedlist(run->broken_comp);
+
+    destroy_race();
+    destroy_barrier();
     pthread_mutex_destroy(&track_lock);
+    pthread_mutex_destroy(&special_lock);
+    pthread_mutex_destroy(&break_lock);
+    pthread_mutex_destroy(&time_lock);
 
     return 0;
 }

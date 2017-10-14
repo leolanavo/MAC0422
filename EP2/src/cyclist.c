@@ -12,17 +12,22 @@
 #define prob_to_90 10
 #define prob_break 1
 
-pthread_mutex_t move_lock;
 
-void init_mutex () {
-    pthread_mutex_init(&move_lock, NULL);
+cyclist** copy_array (race* r) {
+    
+    cyclist** caux = malloc(r->fixed_ncomp * sizeof(cyclist*));
+    
+    for (int i = 0; i < r->fixed_ncomp; i++) {
+        caux[i] = malloc(sizeof(cyclist));
+        *caux[i] = *r->comp[i];
+    }
+    return caux;
 }
 
-cyclist** copy_array (cyclist** comp, int ncomp) {
-    cyclist** caux = malloc(r->ncomp * sizeof(cyclist*));
-    for (int i = 0; i < r->ncomp; i++)
-        caux[i] = r->comp[i];
-    return caux;
+void destroy_array (cyclist** comp, int size) {
+    for (int i = 0; i < size; i++)
+        free(comp[i]);
+    free(comp);
 }
 
 void adequate_speed(int id, race* r) {
@@ -81,6 +86,7 @@ cyclist* init_cyclist (int id) {
     c->lap = 1;
     c->id = id;
     c->overtook = false;
+    c->ftime = 0;
     return c;
 }
 
