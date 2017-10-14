@@ -119,7 +119,7 @@ int has_cyclist (LinkedList* l) {
     return count;
 }
 
-void change_pos(cyclist* c, race* r, char move_id) {
+void change_pos(cyclist* c, race* r, int move_id) {
 
     r->v->tracks[c->row][c->col] = -1;
     c->row = (c->row + 1) % r->v->length;
@@ -131,21 +131,23 @@ void change_pos(cyclist* c, race* r, char move_id) {
 
 }
 
-void counter_cyclist(cyclist* c, race* r, char move_id) {
+void counter_cyclist(cyclist* c, race* r, int move_id) {
     
     int id = r->sprinter;
 
     if ((id < 0 || r->comp[id]->speed != 90) && (
-                (c->speed == 60 && c->move == 1) ||
-                (c->speed == 30 && c->move == 2))) {
+                (c->speed == 60 && c->move >= 1) ||
+                (c->speed == 30 && c->move >= 2))) {
+
         c->dist++;
         c->move = 0;
         change_pos(c, r, move_id);
     }
     else if (id >= 0 && r->comp[id]->speed == 90 && (
-                (c->speed == 90 && c->move == 1) ||
-                (c->speed == 60 && c->move == 3) ||
-                (c->speed == 30 && c->move == 6))) {
+                (c->speed == 90 && c->move >= 1) ||
+                (c->speed == 60 && c->move >= 3) ||
+                (c->speed == 30 && c->move >= 6))) {
+
         c->dist++;
         c->move = 0;
         change_pos(c, r, move_id);
@@ -157,7 +159,6 @@ void move_cyclist (cyclist* c, race* r) {
     velodrome* v = r->v;
     cyclist** comp = r->comp;
     int length = v->length;
-    char move_id = 0;
 
     bool empty_front = v->tracks[(c->row + 1) % length][c->col] == -1? true : false;
 
@@ -178,6 +179,7 @@ void move_cyclist (cyclist* c, race* r) {
         INT_MAX;
 
     c->overtook = false;
+    int move_id = 0;
 
     if (s_front < c->speed && empty_right && empty_diagr) {
         c->overtook = true;
@@ -187,7 +189,7 @@ void move_cyclist (cyclist* c, race* r) {
         move_id = 2;
     else if (!empty_front && (!empty_right || !empty_diagr))
         adequate_speed(c->id, r);
-
+    
     c->move++;
     counter_cyclist(c, r, move_id);
 }

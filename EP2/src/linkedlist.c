@@ -45,15 +45,15 @@ void insert_linkedlist(int id, int lap, LinkedList* l) {
     n->id = id;
     n->lap = lap;
     n->check = false;
+    n->next = NULL;
 
-    if (l->head == NULL) {
+    if (l->head == NULL)
         l->head = n;
-        l->head->next = NULL;
-    }
+
     else {
         node* aux = l->head;
-        while (aux->next != NULL) aux = aux->next;
-        aux->next = n;
+        while (aux != NULL) aux = aux->next;
+        aux = n;
     }
 }
 
