@@ -93,14 +93,8 @@ int hold (int lc_continue, cyclist* c) {
 
         pthread_mutex_unlock(&b->op_lock);
         
-        bool p = false;
-        while (b->flag != lc_continue) {
+        while (b->flag != lc_continue)
             nanosleep(&ts, NULL);
-            if (!p) {
-                printf("%d %d\n", c->id, c->lap);
-                p = true;
-            }
-        }
 
         if (in_linkedlist(run->broken_comp, c->id))
             pthread_exit(NULL);
@@ -118,7 +112,6 @@ void* thread_cyclist (void *arg) {
         
         pthread_mutex_lock(&track_lock);
         move_cyclist(c, run);
-        printf("moved ID: %d MOVE: %d SPEED: %d\n", c->id, c->move, c->speed);
         pthread_mutex_unlock(&track_lock);
 
 
@@ -164,18 +157,17 @@ void* thread_cyclist (void *arg) {
 }
 
 void init_race () {
+
+    for (int i = 0; i < run->ncomp; i++)
+        pthread_create(&run->comp[i]->th, NULL, thread_cyclist, (void*)run->comp[i]);
+        
+
     for (int i = 0; i < run->ncomp; i++)
         pthread_join(run->comp[i]->th, NULL);
 
     for (int i = 0; i < run->fixed_ncomp; i++) {
-        bool p = false;
         while (run->comp[i]->speed != 0 && run->comp[i]->ftime == 0) {
-            if (!p) {
-                printf("%d %d %d %.2f %d\n", 
-                      i, run->comp[i]->speed, run->comp[i]->lap, run->comp[i]->ftime,
-                      run->comp[i]->lap);
-                p = true;
-            }
+            
             nanosleep(&ts, NULL);
         }
     }

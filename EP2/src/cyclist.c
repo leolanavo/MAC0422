@@ -88,7 +88,6 @@ cyclist* init_cyclist (int id) {
     c->id = id;
     c->overtook = false;
     c->ftime = 0;
-    c->th = pthread_create(&c->th, NULL, thread_cyclist, (void*)c);
     return c;
 }
 

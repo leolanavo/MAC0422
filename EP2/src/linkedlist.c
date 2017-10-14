@@ -52,8 +52,8 @@ void insert_linkedlist(int id, int lap, LinkedList* l) {
 
     else {
         node* aux = l->head;
-        while (aux != NULL) aux = aux->next;
-        aux = n;
+        while (aux->next != NULL) aux = aux->next;
+        aux->next = n;
     }
 }
 
