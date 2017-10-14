@@ -165,10 +165,7 @@ void* thread_cyclist (void *arg) {
 
 void init_race () {
     for (int i = 0; i < run->ncomp; i++)
-        pthread_create(&run->th_comp[i], NULL, thread_cyclist, (void*)run->comp[i]);
-
-    for (int i = 0; i < run->ncomp; i++)
-        pthread_join(run->th_comp[i], NULL);
+        pthread_join(run->comp[i]->th, NULL);
 
     for (int i = 0; i < run->fixed_ncomp; i++) {
         bool p = false;
@@ -218,7 +215,6 @@ void destroy_race () {
     destroy_array(run->comp, run->fixed_ncomp);
     destroy_velodrome(run->v);
     destroy_linkedlist(run->broken_comp);
-    free(run->th_comp);
     free(run);
 }
 
