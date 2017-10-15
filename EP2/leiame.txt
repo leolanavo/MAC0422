@@ -1,0 +1,32 @@
+/*************************************************
+ * Leonardo Lana Violin Oliveira - NUSP: 9793735 *
+ * Beatriz Figuereido Marouelli  - NUSP: 9793652 *
+ *************************************************/
+
+******************
+*** Compilação ***
+******************
+
+Use o comando "make" e o binário deve ser compilado automaticamente e
+colocado na pasta "bin/".
+
+****************
+*** Execução ***
+****************
+
+Para executar o binário use o comando:
+    |--> ./bin/ep2 <comprimento da pista> <número de ciclistas> <número de voltas>
+
+**************
+*** Slides ***
+**************
+
+Os slides estão na pasta report/
+
+************
+*** Nota ***
+************
+
+Nós não conseguimos detectar o motivo, mas existe a pequena chance do programa
+entrar em loop. Em nossos testes o loop acontecia, geralmente, a cada
+60 ou mais execuções.
