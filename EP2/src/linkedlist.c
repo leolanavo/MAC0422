@@ -23,7 +23,6 @@ void print_linkedlist (LinkedList* l) {
 }
 
 bool in_linkedlist (LinkedList* l, int id) {
-
     if (l->head != NULL) {
         node* aux = l->head;
         while (aux != NULL) {

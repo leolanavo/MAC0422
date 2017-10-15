@@ -1,4 +1,7 @@
-#!/bin/zsh
+#!/bin/bash
+i=0
 while true; do
-	time ./bin/ep2 250 15 160
+	i=$((i+1))
+	echo $i
+	memusage ./bin/ep2 250 100 20 > /dev/null
 done

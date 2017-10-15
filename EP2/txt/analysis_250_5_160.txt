@@ -1,0 +1,9 @@
+Media do Uso Total(bytes): 121333.33333333333
+IC:[121240.87588603087; 121425.79078063578]
+Variancia: 61322.29885057471; Mediana: 121408.0
+Media do Pico de Alocação(bytes): 14311.2
+IC:[14263.259305474032; 14359.14069452597]
+Variancia: 16487.06206896552; Mediana: 14208.0
+Média do Pico da Pilha de Execução(bytes): 464
+IC:[464.0; 464.0]
+Variancia: 0; Mediana: 464.0

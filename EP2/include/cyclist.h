@@ -1,6 +1,9 @@
 #ifndef CYCLIST_H
 #define CYCLIST_H
 
+void init_lock_cyclist();
+void destroy_lock_cyclist();
+
 void adequate_speed(int id, race* r);
 
 cyclist** copy_array (race* r);

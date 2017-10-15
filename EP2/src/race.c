@@ -80,9 +80,9 @@ int hold (int lc_continue, cyclist* c) {
         } 
 
         else if (k_counter == 4) {
-            printf(BLUE "SCOREBOARD LAP: %d" RESET "\n", lap_counter);
+            //printf(BLUE "SCOREBOARD LAP: %d" RESET "\n", lap_counter);
             print_scoreboard(run, 1, -1);
-            printf("\n");
+            //printf("\n");
             
             for (int i = 0; i < 4; i++)
                 scored[i] = -1;
@@ -120,7 +120,7 @@ void* thread_cyclist (void *arg) {
             
             pthread_mutex_lock(&special_lock);
             if (c->lap == sp_counter) {
-                printf(YELLOW "SCORE PER LAP: %d" RESET "\n", sp_counter);
+                //printf(YELLOW "SCORE PER LAP: %d" RESET "\n", sp_counter);
                 print_scoreboard(run, 0, -1);
                 if (sp_counter >= 3)
                     specialPoints(run);
@@ -232,6 +232,7 @@ int main (int argc, char** argv) {
     pthread_mutex_init(&break_lock, NULL);
     pthread_mutex_init(&special_lock, NULL);
     pthread_mutex_init(&time_lock, NULL);
+    init_lock_cyclist();
 
     b = construct_barrier();
     run = construct_race(atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
@@ -240,10 +241,11 @@ int main (int argc, char** argv) {
 
     init_race();
     print_scoreboard(run, 2, -1);
-    print_linkedlist(run->broken_comp);
+    //print_linkedlist(run->broken_comp);
 
     destroy_race();
     destroy_barrier();
+    destroy_lock_cyclist();
     pthread_mutex_destroy(&track_lock);
     pthread_mutex_destroy(&special_lock);
     pthread_mutex_destroy(&break_lock);

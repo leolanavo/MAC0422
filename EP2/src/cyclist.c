@@ -13,6 +13,23 @@
 #define prob_to_90 10
 #define prob_break 1
 
+pthread_mutex_t rand_lock;
+
+void init_lock_cyclist() {
+    pthread_mutex_init(&rand_lock, NULL);
+}
+
+void destroy_lock_cyclist() {
+    pthread_mutex_destroy(&rand_lock);
+}
+
+int get_random() {
+    pthread_mutex_lock(&rand_lock);
+    int i = (int)rand();
+    pthread_mutex_unlock(&rand_lock);
+    return i;
+}
+
 
 cyclist** copy_array (race* r) {
     
@@ -51,7 +68,7 @@ void adequate_speed(int id, race* r) {
 /* Change the speed of a cyclist according to the rules defined in
  * the assignment. */
 void change_speed (int id, race* r) {
-    int prob = (int)rand() % 100;
+    int prob = get_random()%100;
     if (r->comp[id]->speed == 30 && prob < prob_to_60)
         r->comp[id]->speed = 60;
     else if (r->comp[id]->speed == 60 && prob < prob_to_30)
@@ -62,13 +79,12 @@ void change_speed (int id, race* r) {
  * smaller than 10, this number follow an uniform distribution
  * between 0 and 1 */
 void change_speed_90 (race* r) {
-
     if (r->sprinter == -1) {
-        int id = (int)(rand() % r->ncomp);
-        int prob = (int)rand() % 100;
+        int id = get_random() % r->fixed_ncomp;
+        int prob = get_random() % 100;
 
         while (in_linkedlist(r->broken_comp, id))
-            id = (int)(rand() % r->ncomp);
+            id = rand() % r->fixed_ncomp;
 
         if (prob < prob_to_90)
             r->sprinter = id;
@@ -92,7 +108,7 @@ cyclist* init_cyclist (int id) {
 }
 
 bool break_cyclist (cyclist* c, race* r) {
-    int prob = (int)rand()%100;
+    int prob = (int)get_random()%100;
     if (prob > prob_break || r->ncomp <= 5 || r->sprinter == c->id)
         return false;
     r->v->tracks[c->row][c->col] = -1;
