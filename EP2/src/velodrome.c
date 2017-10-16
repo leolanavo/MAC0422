@@ -1,3 +1,8 @@
+/*************************************************
+ * Leonardo Lana Violin Oliveira - NUSP: 9793735 *
+ * Beatriz Figuereido Marouelli  - NUSP: 9793652 *
+ *************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>

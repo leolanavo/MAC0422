@@ -1,3 +1,8 @@
+/*************************************************
+ * Leonardo Lana Violin Oliveira - NUSP: 9793735 *
+ * Beatriz Figuereido Marouelli  - NUSP: 9793652 *
+ *************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -32,9 +37,9 @@ int get_random() {
 
 
 cyclist** copy_array (race* r) {
-    
+
     cyclist** caux = malloc(r->fixed_ncomp * sizeof(cyclist*));
-    
+
     for (int i = 0; i < r->fixed_ncomp; i++) {
         caux[i] = malloc(sizeof(cyclist));
         *caux[i] = *r->comp[i];
@@ -88,7 +93,7 @@ void change_speed_90 (race* r) {
 
         if (prob < prob_to_90)
             r->sprinter = id;
-        
+
         else
             r->sprinter = -2;
     }
@@ -149,7 +154,7 @@ void change_pos(cyclist* c, race* r, int move_id) {
 }
 
 void counter_cyclist(cyclist* c, race* r, int move_id) {
-    
+
     int id = r->sprinter;
 
     if ((id < 0 || r->comp[id]->speed != 90) && (
@@ -206,7 +211,7 @@ void move_cyclist (cyclist* c, race* r) {
         move_id = 2;
     else if (!empty_front && (!empty_right || !empty_diagr))
         adequate_speed(c->id, r);
-    
+
     c->move++;
     counter_cyclist(c, r, move_id);
 }

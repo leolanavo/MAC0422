@@ -1,3 +1,8 @@
+/*************************************************
+ * Leonardo Lana Violin Oliveira - NUSP: 9793735 *
+ * Beatriz Figuereido Marouelli  - NUSP: 9793652 *
+ *************************************************/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -20,11 +25,11 @@ void print_scoreboard(race* r, int verbose, int break_id) {
         int c;
         for (c = 0; c < r->ncomp && caux[c]->id != break_id; c++);
 
-        //printf(RED "BROKEN CYCLIST: %d LAP: %d POSITION: %d" RESET "\n", 
+        //printf(RED "BROKEN CYCLIST: %d LAP: %d POSITION: %d" RESET "\n",
                //break_id, r->comp[break_id]->lap, c + 1);
         return;
     }
-    
+
      /*
     if (verbose == 1)
         printf(BLUE "POSITION     ID     SCORE" RESET "\n");
@@ -36,18 +41,18 @@ void print_scoreboard(race* r, int verbose, int break_id) {
 
     int offset = 0;
     for (int i = 0; i < r->fixed_ncomp; i++) {
-        
+
         if (caux[i]->speed != 0) {
             if (verbose == 1) {
                 int debug = 0;
                 debug++;
-                //printf(BLUE "   %d     -   %d  -    %d" RESET "\n", 
+                //printf(BLUE "   %d     -   %d  -    %d" RESET "\n",
                       //(i + 1 - offset), caux[i]->id, caux[i]->score);
             }
             else if (verbose == 0) {
                 int debug = 0;
                 debug++;
-                //printf(YELLOW "   %d     -     %d" RESET "\n", 
+                //printf(YELLOW "   %d     -     %d" RESET "\n",
                       //(i + 1 - offset), caux[i]->id);
             }
             else {

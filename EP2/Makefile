@@ -1,11 +1,7 @@
-# A simple Makefile to automate work.
-# By: Leonardo Lana
-
-#########################################################
-# Quick tip: when you start a project, enter its folder #
-# and type in the terminal: make init.                  #
-#########################################################
-
+#################################################
+# Leonardo Lana Violin Oliveira - NUSP: 9793735 #
+# Beatriz Figuereido Marouelli  - NUSP: 9793652 #
+#################################################
 
 EXECFLAGS := -O2
 TESTFLAGS := -g

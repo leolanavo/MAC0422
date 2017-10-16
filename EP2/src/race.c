@@ -1,3 +1,8 @@
+/*************************************************
+ * Leonardo Lana Violin Oliveira - NUSP: 9793735 *
+ * Beatriz Figuereido Marouelli  - NUSP: 9793652 *
+ *************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -25,8 +30,8 @@ bool contains (int id) {
     for (int i = 0; i < 4; i++)
         if (id == scored[i])
             return true;
-    
-    return false;       
+
+    return false;
 }
 
 int hold (int lc_continue, cyclist* c) {
@@ -67,7 +72,7 @@ int hold (int lc_continue, cyclist* c) {
         b->counter = 0;
         b->flag =  lc_continue;
 
-        if (in_linkedlist(run->broken_comp, c->id))            
+        if (in_linkedlist(run->broken_comp, c->id))
             pthread_exit(NULL);
     }
 
@@ -77,22 +82,22 @@ int hold (int lc_continue, cyclist* c) {
             scored[k_counter] = c->id;
             c->score += scores[k_counter];
             k_counter++;
-        } 
+        }
 
         else if (k_counter == 4) {
             //printf(BLUE "SCOREBOARD LAP: %d" RESET "\n", lap_counter);
             print_scoreboard(run, 1, -1);
             //printf("\n");
-            
+
             for (int i = 0; i < 4; i++)
                 scored[i] = -1;
 
             lap_counter += 10;
             k_counter = 0;
-        }           
+        }
 
         pthread_mutex_unlock(&b->op_lock);
-        
+
         while (b->flag != lc_continue)
             nanosleep(&ts, NULL);
 
@@ -109,7 +114,7 @@ void* thread_cyclist (void *arg) {
     cyclist* c = (cyclist*) arg;
 
     while (c->lap <= run->nlaps) {
-        
+
         pthread_mutex_lock(&track_lock);
         move_cyclist(c, run);
         pthread_mutex_unlock(&track_lock);
@@ -117,7 +122,7 @@ void* thread_cyclist (void *arg) {
 
         if (c->lap < c->dist/run->v->length) {
             c->lap++;
-            
+
             pthread_mutex_lock(&special_lock);
             if (c->lap == sp_counter) {
                 //printf(YELLOW "SCORE PER LAP: %d" RESET "\n", sp_counter);
@@ -133,11 +138,11 @@ void* thread_cyclist (void *arg) {
 
             if (c->lap % 15 == 1) {
                 pthread_mutex_lock(&break_lock);
-                
+
                 broken = break_cyclist(c, run);
                 if (broken)
                     print_scoreboard(run, 1, c->id);
-                
+
                 pthread_mutex_unlock(&break_lock);
             }
 
@@ -152,7 +157,7 @@ void* thread_cyclist (void *arg) {
 
         local_continue = hold(local_continue, c);
     }
-    
+
     return NULL;
 }
 
@@ -160,14 +165,14 @@ void init_race () {
 
     for (int i = 0; i < run->ncomp; i++)
         pthread_create(&run->comp[i]->th, NULL, thread_cyclist, (void*)run->comp[i]);
-        
+
 
     for (int i = 0; i < run->ncomp; i++)
         pthread_join(run->comp[i]->th, NULL);
 
     for (int i = 0; i < run->fixed_ncomp; i++) {
         while (run->comp[i]->speed != 0 && run->comp[i]->ftime == 0) {
-            
+
             nanosleep(&ts, NULL);
         }
     }
