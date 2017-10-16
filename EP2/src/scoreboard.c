@@ -25,19 +25,19 @@ void print_scoreboard(race* r, int verbose, int break_id) {
         int c;
         for (c = 0; c < r->ncomp && caux[c]->id != break_id; c++);
 
-        //printf(RED "BROKEN CYCLIST: %d LAP: %d POSITION: %d" RESET "\n",
-               //break_id, r->comp[break_id]->lap, c + 1);
+        printf(RED "BROKEN CYCLIST: %d LAP: %d POSITION: %d" RESET "\n",
+               break_id, r->comp[break_id]->lap, c + 1);
         return;
     }
 
-     /*
+
     if (verbose == 1)
         printf(BLUE "POSITION     ID     SCORE" RESET "\n");
     else if (verbose == 0)
         printf(YELLOW "POSITION     ID" RESET "\n");
     else
         printf(CYAN "ID     POSITION     TIME(min)     SCORE" RESET "\n");
-    */
+
 
     int offset = 0;
     for (int i = 0; i < r->fixed_ncomp; i++) {
@@ -46,20 +46,20 @@ void print_scoreboard(race* r, int verbose, int break_id) {
             if (verbose == 1) {
                 int debug = 0;
                 debug++;
-                //printf(BLUE "   %d     -   %d  -    %d" RESET "\n",
-                      //(i + 1 - offset), caux[i]->id, caux[i]->score);
+                printf(BLUE "   %d     -   %d  -    %d" RESET "\n",
+                      (i + 1 - offset), caux[i]->id, caux[i]->score);
             }
             else if (verbose == 0) {
                 int debug = 0;
                 debug++;
-                //printf(YELLOW "   %d     -     %d" RESET "\n",
-                      //(i + 1 - offset), caux[i]->id);
+                printf(YELLOW "   %d     -     %d" RESET "\n",
+                      (i + 1 - offset), caux[i]->id);
             }
             else {
                 int debug = 0;
                 debug++;
-                //printf(CYAN " %d  -    %d     -     %.2f     -     %d" RESET "\n",
-                    //caux[i]->id, (i + 1 - offset), caux[i]->ftime, caux[i]->score);
+                printf(CYAN " %d  -    %d     -     %.2f     -     %d" RESET "\n",
+                    caux[i]->id, (i + 1 - offset), caux[i]->ftime, caux[i]->score);
             }
         }
         else
