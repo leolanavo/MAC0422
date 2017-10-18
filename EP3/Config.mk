@@ -15,9 +15,9 @@
 #                                                 #
 ###################################################
 
-BIN       := ep2
-TARF      := ep2-leonardo-beatriz
-FINALDIR  := ep2-leonardo-beatriz
+BIN       := ep3
+TARF      := ep3-leonardo-beatriz
+FINALDIR  := ep3-leonardo-beatriz
 
 CFLAGS    := -Wall -Werror -Wextra -std=gnu11
-LDFLAGS   := -I $(INCDIR) -lpthread
+LDFLAGS   := -I $(INCDIR)
