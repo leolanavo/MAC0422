@@ -26,7 +26,6 @@ void print_tracks (velodrome* v) {
 velodrome* construct_velodrome (int length, int ncomp, cyclist** comp) {
     velodrome* v = malloc(sizeof(velodrome));
     v->length = length;
-
     v->tracks = malloc(length * sizeof(int*));
     for (int i = 0; i < length; i++)
         v->tracks[i] = malloc(TRACKS * sizeof(int));
