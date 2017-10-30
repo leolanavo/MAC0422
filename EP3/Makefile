@@ -6,7 +6,7 @@
 EXECFLAGS := -O2
 TESTFLAGS := -g
 
-CC    := gcc
+CC    := g++
 MV    := mv
 RM    := rm -f
 RMDIR := rm -rf
