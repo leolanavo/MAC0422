@@ -7,6 +7,10 @@ EXECFLAGS := -O2
 TESTFLAGS := -g
 
 CC    := g++
+CEXT  := cpp
+HEXT  := h
+OEXT  := o
+
 MV    := mv
 RM    := rm -f
 RMDIR := rm -rf
@@ -30,14 +34,14 @@ ROOT := $(SRCDIR) $(INCDIR) $(LTXDIR) $(TXTDIR) $(TSTDIR) $(OBJDIR)
 ifneq ($(words $(BIN)), 1)
 ROOT += $(foreach r,$(INCDIR) $(SRCDIR) $(OBJDIR),$(foreach b,$(BIN),$r/$b))
 $(foreach x,$(BIN),\
-  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/$x/*.c)))\
-  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
-  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/$x/*.h))))
+  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.$(CEXT)) $(wildcard $(SRCDIR)/$x/*.$(CEXT))))\
+  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.$(CEXT), $(OBJDIR)/%.$(OEXT), $($x.SRC)))\
+  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.$(HEXT)) $(wildcard $(INCDIR)/$x/*.$(HEXT)))))
 else
 $(foreach x,$(BIN),\
-  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.c)))\
-  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $($x.SRC)))\
-  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.h))))
+  $(eval $x.SRC := $(strip $(wildcard $(SRCDIR)/*.$(CEXT))))\
+  $(eval $x.OBJ := $(patsubst $(SRCDIR)/%.$(CEXT), $(OBJDIR)/%.$(OEXT), $($x.SRC)))\
+  $(eval $x.INC := $(strip $(wildcard $(INCDIR)/*.(HEXT)))))
 endif
 
 # main target
@@ -64,12 +68,12 @@ endef
 $(foreach x,$(BIN),$(eval $(call test-factory,$x)))
 
 define object-factory
-$$(OBJDIR)/$1.o: $$(SRCDIR)/$1.c $$(wildcard $$(INCDIR)/$1.h) | $$(OBJDIR) $$(ROOT)
+$$(OBJDIR)/$1.$(OEXT): $$(SRCDIR)/$1.$(CEXT) $$(wildcard $$(INCDIR)/$1.$(HEXT)) | $$(OBJDIR) $$(ROOT)
 	$$(CC) -c $$< -o $$@ $$(CFLAGS) $$(LDFLAGS)
 endef
 $(foreach b,$(BIN),\
 	$(foreach obj,$($b.OBJ),\
-		$(eval $(call object-factory,$(patsubst $(OBJDIR)/%.o,%,$(obj))))))
+		$(eval $(call object-factory,$(patsubst $(OBJDIR)/%.$(OEXT),%,$(obj))))))
 
 # Directory creation rules
 $(ROOT) $(BINDIR) $(FINALDIR):
