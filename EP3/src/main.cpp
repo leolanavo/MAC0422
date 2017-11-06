@@ -4,6 +4,7 @@
 
 #include "types.h"
 #include "shell.h"
+#include "process.h"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ void print_failed (string str) {
     exit(1);
 }
 
-int main (int argc, char** argv) {
+void tests() {
     string cmd = "carrega arquivo";
     string* cmd_parsed = split_spaces(cmd);
 
@@ -25,7 +26,11 @@ int main (int argc, char** argv) {
     else
         print_failed("split_spaces");
 
-    prompt();
+}
 
+int main (int argc, char** argv) {
+    if (argc == 2 && argv[1] == "t")
+        tests();
+    prompt();
     return 0;
 }
