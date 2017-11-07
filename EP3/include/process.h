@@ -6,17 +6,19 @@
 
 using namespace std;
 
-/*
- * t0     : arrival time of a process
- * tf     : finish time of a process
- * b      : quantity of memory used by process
- * name   : name of the process
- * access : positions where the process will be acessed
- * time   : when which position will be acessed
- * base   : where is the initial position of the process
- *          in the physical memory
- * next   : the index of the next position to be accesed of
- *          the process
+/* Class: Process
+ * --------------
+ * Fields:
+ *     t0     : arrival time of a process
+ *     tf     : finish time of a process
+ *     b      : quantity of memory used by process
+ *     name   : name of the process
+ *     access : positions where the process will be acessed
+ *     time   : when which position will be acessed
+ *     base   : where is the initial position of the process
+ *              in the physical memory
+ *     next   : the index of the next position to be accesed of
+ *              the process
  */
 class Process {
     int t0, tf, b, base, next;
