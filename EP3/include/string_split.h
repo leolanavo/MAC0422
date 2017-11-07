@@ -2,6 +2,7 @@
 #define STRING_SPLIT_H
 
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -18,6 +19,6 @@ int find_next_word(string str, int start);
  * Returns a string array where every position contains a word
  * from the original string separated by blank space.
  */
-string* split_spaces(string str);
+vector<string> split_spaces(string str);
 
 #endif

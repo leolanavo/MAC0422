@@ -20,26 +20,18 @@ int find_next_word(string str, int start) {
  * Returns a string array where every position contains a word
  * from the original string separated by blank space.
  */
-string* split_spaces(string str) {
-    int nspc = 1;
-
-    for (uint i = 0; i < str.length(); i++)
-        if (isspace(str[i])) nspc++;
-
-    string* parsed_str = new string[nspc];
-
+vector<string> split_spaces(string str) {
+    vector<string> parsed_str;
     int j = 0;
-    nspc = 0;
 
     for (uint i = 0; i < str.length(); i++)
         if (isspace(str[i])) {
-            parsed_str[nspc] = str.substr(j, i);
+            parsed_str.push_back(str.substr(j, i));
             j = find_next_word(str, i);
             if (j == -1) break;
             i = j;
-            nspc++;
         }
 
-    parsed_str[nspc] = str.substr(j, str.length());
+    parsed_str.push_back(str.substr(j, str.length()));
     return parsed_str;
 }
