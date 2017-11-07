@@ -4,38 +4,54 @@
 
 using namespace std;
 
-void read_file(string name) {
+/* Receives a filename.
+ *
+ * Reads and process the file according to the
+ * specification of the assignment.
+ *
+ * Returns nothing.
+ */
+vector<Process> read_file(string name) {
     string line;
     ifstream file(name);
     double len;
     int i;
     vector<int> access, time;
+    vector<Process> plist;
 
     if (!file.is_open())
         print_failed("Open input file");
 
     getline(file, line);
-    string* fline = split_spaces(line);
+    vector<string> fline = split_spaces(line);
     Memory mem(stoi(fline[0]), stoi(fline[1]),
                stoi(fline[2]), stoi(fline[3]));
-    delete fline;
+    fline.clear();
 
     while (!file.eof()) {
         getline(file, line);
         fline = split_spaces(line);
 
-        len = ceil(((double)(SIZE(fline) - 4))/2); // Get the size of the process arrays
-        access.resize(len);
-        time.resize(len);
-        i = 0;
+        if (fline.size() == 2) {
+           plist.push_back(Process (stoi(fline[0]), -1, -1, "COMPACTAR", access, time));
+        }
+        else {
+            len = (fline.size() - 4)/2; // Get the size of the process arrays
 
-        for (int j = 0; j < len; j++) {
-            i = j*2 + 4;
-            access[j] = stoi(fline[i]);
-            time[j] = stoi(fline[i+1]);
+            for (int j = 0; j < len; j++) {
+                i = j*2 + 4;
+                access.push_back(stoi(fline[i]));
+                time.push_back(stoi(fline[i + 1]));
+            }
+
+            plist.push_back(Process (stoi(fline[0]), stoi(fline[1]),
+                            stoi(fline[2]), fline[3], access, time));
         }
 
-        Process p(stoi(fline[0]), stoi(fline[1]), stoi(fline[2]), fline[3],
-                  access, time);
+        access.clear();
+        time.clear();
+        fline.clear();
     }
+
+    return plist;
 }

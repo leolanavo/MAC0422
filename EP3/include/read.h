@@ -12,4 +12,13 @@
 #include "string_split.h"
 #include "process.h"
 
+/* Receives a filename.
+ *
+ * Reads and process the file according to the
+ * specification of the assignment.
+ *
+ * Returns nothing.
+ */
+vector<Process> read_file(string name);
+
 #endif
