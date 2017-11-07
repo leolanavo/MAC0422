@@ -8,7 +8,8 @@ void read_file(string name) {
     string line;
     ifstream file(name);
     double len;
-    int i, *access, *time;
+    int i;
+    vector<int> access, time;
 
     if (!file.is_open())
         print_failed("Open input file");
@@ -24,8 +25,8 @@ void read_file(string name) {
         fline = split_spaces(line);
 
         len = ceil(((double)(SIZE(fline) - 4))/2); // Get the size of the process arrays
-        access = new int (len);
-        time = new int (len);
+        access.resize(len);
+        time.resize(len);
         i = 0;
 
         for (int j = 0; j < len; j++) {
