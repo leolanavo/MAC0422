@@ -13,7 +13,7 @@ void print_failed (string str) {
 
 void tests() {
     string cmd = "carrega arquivo";
-    string* cmd_parsed = split_spaces(cmd);
+    vector<string> cmd_parsed = split_spaces(cmd);
 
     if (cmd_parsed[0] == "carrega" && cmd_parsed[1] == "arquivo")
         print_check("split_spaces");
