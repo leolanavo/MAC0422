@@ -4,10 +4,14 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "string_split.h"
+#include "read.h"
 
 using namespace std;
+
+void simulate(vector<Process> plist, int id_fit, int id_page, int interval);
 
 /* Receives nothing.
  *
