@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -21,15 +22,15 @@ using namespace std;
  *              the process
  */
 class Process {
+  private:
     int t0, tf, b, base, next;
     string name;
-    int *access, *time;
+    vector <int> access, time;
   public:
-    Process(int t0, int tf, int b, string name, int* access, int* time);
+    Process(int t0, int tf, int b, string name, vector<int> access, vector<int> time);
     void set_base(int base);
     int get_base();
     void access_process(int current_time);
-    ~Process();
 };
 
 #endif

@@ -11,17 +11,9 @@ using namespace std;
  *
  * NOTE: the base field will be set according to the chosen algorithm.
  */
-Process::Process (int t0, int tf, int b, string name, int* access, int* time) :
-    t0(t0), tf(tf), b(b), name(name), next(0)
+Process::Process (int t0, int tf, int b, string name, vector<int> access, vector<int> time) :
+    t0(t0), tf(tf), b(b), name(name), next(0), access(access), time(time)
 {
-    int len = sizeof(access)/sizeof(int);
-    this->access = new int (len);
-    this->time = new int (len);
-
-    for (int i = 0; i < len; i++) {
-        this->access[i] = access[i];
-        this->time[i] = time[i];
-    }
 }
 
 /* Receives and integer.
@@ -56,18 +48,4 @@ void Process::access_process(int current_time) {
             this->next++;
         }
     }
-}
-
-/* Receives nothing.
- *
- * Deletes the pointers of the class Process, and points them to NULL.
- *
- * Returns nothing.
- */
-Process::~Process() {
-    delete this->access;
-    delete this->time;
-
-    this->access = NULL;
-    this->time = NULL;
 }
