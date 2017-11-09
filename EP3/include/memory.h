@@ -13,7 +13,10 @@ using namespace std;
  */
 class Memory {
     int phys, virt, unity, spage;
+    int *free_mem, *used_mem;
   public:
+
+    // Constructor
     Memory(int phys, int virt, int unity, int spage);
     ~Memory();
 };

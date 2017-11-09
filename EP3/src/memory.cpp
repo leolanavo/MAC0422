@@ -5,3 +5,7 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     unity(unity), spage(spage)
 {
 }
+
+Memory::~Memory () {
+    phys = virt = unity = spage = 0;
+}
