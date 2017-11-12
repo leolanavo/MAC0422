@@ -2,8 +2,8 @@
 #define MEMORY_H
 
 #include <vector>
+#include <list>
 #include "process.h"
-#include "linkedlist.h"
 #include "node.h"
 
 using namespace std;
@@ -17,7 +17,7 @@ using namespace std;
  *     p       : the presence bit
  */
 typedef struct {
-    int address;
+    int addr;
     bool r;
     bool m;
     bool p;
@@ -46,14 +46,16 @@ typedef struct {
  */
 class Memory {
     int phys, virt, unity, spage;
-    LinkedList<alloc> *free_mem, *used_mem;
+    list<alloc> *free_mem, *used_mem;
     vector<page*> pglist;
   public:
 
     // Constructor
     Memory(int phys, int virt, int unity, int spage);
-    int get_page(int access, Process p);
+    page get_page(int index);
     int get_page_frame(int addr, Process p);
+    int get_pglist_size();
+    int get_page_size();
     bool isLoaded(int addr, Process p);
     void best_fit(Process p);
     void worst_fit(Process p);

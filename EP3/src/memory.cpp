@@ -23,8 +23,8 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
  * Returns the page that corresponds to the given
  * address.
  */
-int Memory::get_page(int addr, Process p) {
-    return ((addr + p.get_base())/spage);
+page Memory::get_page(int index) {
+    return *(pglist[index]);
 }
 
 /* Receives a position in the virtual memory and
@@ -34,8 +34,16 @@ int Memory::get_page(int addr, Process p) {
  * arguments.
  */
 int Memory::get_page_frame(int addr, Process p) {
-    int index = get_page(addr, p);
-    return (pglist[index]->address*spage);
+    int index = ((addr + p.get_base())/spage);
+    return (pglist[index]->addr*spage);
+}
+
+int Memory::get_page_size() {
+    return spage;
+}
+
+int Memory::get_pglist_size() {
+    return pglist.size();
 }
 
 /* Receives a position in the virtual memory.
@@ -43,8 +51,8 @@ int Memory::get_page_frame(int addr, Process p) {
  * Returns true if the page is loaded in the physical
  * memory. False otherwise.
  */
-bool Memory::isLoaded(int access, Process p) {
-    int index = get_page(access, p);
+bool Memory::isLoaded(int addr, Process p) {
+    int index = ((addr + p.get_base())/spage);
     return pglist[index]->p;
 }
 
@@ -54,11 +62,12 @@ bool Memory::isLoaded(int access, Process p) {
  * Returns nothing.
  */
 void Memory::best_fit(Process p) {
-	Node<alloc> *aux, *best;
+    alloc *aux, *best;
 	int index, best_index, min_space;
 	alloc node_aux, node_best, node_remove, node_insert;
+    list<alloc>::iterator it_list = free_mem->begin();
 
-	aux = free_mem->head->next;
+	aux = ;
 	best = free_mem->head;
 	best_index = 0;
 	index = 1;
@@ -86,10 +95,10 @@ void Memory::best_fit(Process p) {
 	if (node_remove.size != min_space) {
 		node_remove.base = node_insert.base + min_space;
 		node_remove.size = node_remove.size - node_insert.size;
-		free_mem->add(node_remove);
+		free_mem->push_front(node_remove);
 	}
 
-	used_mem->add(node_insert);
+	used_mem->push_front(node_insert);
 }
 
 /* Receives a process to allocate in the virtual memory,
