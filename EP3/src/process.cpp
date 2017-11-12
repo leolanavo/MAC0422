@@ -42,8 +42,7 @@ int Process::get_base() {
  * Returns nothing.
  */
 void Process::access_process(int current_time) {
-    int len = sizeof(this->access)/sizeof(int);
-    for (int i = this->next; i < len; i++) {
+    for (int i = this->next; i < access.size(); i++) {
         if (this->time[i] <= current_time) {
             this->next++;
         }
