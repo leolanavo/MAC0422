@@ -1,6 +1,5 @@
 #include "memory.h"
 
-
 /* Receives the amount of space for the physical memory,
  * for the virtual memory, the allocation unity and
  * the size of a page.
@@ -19,12 +18,19 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
  * Returns the page that corresponds to the given
  * address.
  */
-int Memory::get_page(int access, Process p) {
-    return (access + p.get_base() /spage);
+int Memory::get_page(int addr, Process p) {
+    return ((addr + p.get_base())/spage);
 }
 
-int Memory::get_page_frame(int access) {
-    return 0;
+/* Receives a position in the virtual memory and
+ * a process.
+ *
+ * Returns the page frame according to the given
+ * arguments.
+ */
+int Memory::get_page_frame(int addr, Process p) {
+    int index = get_page(addr, p);
+    return (pglist[index]->address*spage);
 }
 
 /* Receives a position in the virtual memory.
