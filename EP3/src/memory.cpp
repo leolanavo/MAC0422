@@ -19,8 +19,12 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
  * Returns the page that corresponds to the given
  * address.
  */
-int Memory::get_page(int access) {
-    return access/spage;
+int Memory::get_page(int access, Process p) {
+    return (access + p.get_base() /spage);
+}
+
+int Memory::get_page_frame(int access) {
+    return 0;
 }
 
 /* Receives a position in the virtual memory.
@@ -28,8 +32,8 @@ int Memory::get_page(int access) {
  * Returns true if the page is loaded in the physical
  * memory. False otherwise.
  */
-bool Memory::isLoaded(int access) {
-    int index = get_page(access);
+bool Memory::isLoaded(int access, Process p) {
+    int index = get_page(access, p);
     return pglist[index]->p;
 }
 
