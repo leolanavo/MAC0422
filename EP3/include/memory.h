@@ -39,8 +39,8 @@ class Memory {
     // Constructor
     Memory(int phys, int virt, int unity, int spage);
     int get_page(int access, Process p);
-    int get_page_frame(int access);
-    bool isLoaded(int access, Process p);
+    int get_page_frame(int addr, Process p);
+    bool isLoaded(int addr, Process p);
     ~Memory();
 };
 
