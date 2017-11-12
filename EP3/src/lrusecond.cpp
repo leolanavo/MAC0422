@@ -24,6 +24,10 @@ void replace_page(int addr, Memory mem, matrix m) {
         }
     }
 
+    for (int i = 0; i < pglist.size(); i++) {
+        if(:
+    }
+
     // Substituir o page frame indicado por index
 }
 

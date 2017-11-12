@@ -34,6 +34,22 @@ int Process::get_base() {
     return this->base;
 }
 
+/* Receives nothing;
+ *
+ * Returns the size of the process
+ */
+int Process::get_size() {
+	return this->b;
+}
+
+/* Receives nothing;
+ *
+ * Returns the name of the process
+ */
+string Process::get_name() {
+	return this->name;
+}
+
 /* Receives the current time of execution.
  *
  * Moves the next index to the first postion that wasn't

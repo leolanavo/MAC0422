@@ -30,6 +30,8 @@ class Process {
     Process(int t0, int tf, int b, string name, vector<int> access, vector<int> time);
     void set_base(int base);
     int get_base();
+    int get_size();
+    string get_name();
     void access_process(int current_time);
 };
 
