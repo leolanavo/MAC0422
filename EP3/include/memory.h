@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "process.h"
+#include "linkedlist.h"
+#include "node.h"
 
 using namespace std;
 
@@ -21,6 +23,18 @@ typedef struct {
     bool p;
 } page;
 
+/* Struct: alloc
+ * ------------
+ *   Fields:
+ *     pid   : the process pid
+ *     base  : the virtual memory base
+ *     size  : the the virtual memory size
+ */
+typedef struct {
+	string pid;
+	int base, size;
+} alloc;
+
 
 /* Class: Memory
  * -------------
@@ -32,7 +46,7 @@ typedef struct {
  */
 class Memory {
     int phys, virt, unity, spage;
-    int *free_mem, *used_mem;
+    LinkedList<alloc> *free_mem, *used_mem;
     vector<page*> pglist;
   public:
 
@@ -41,6 +55,9 @@ class Memory {
     int get_page(int access, Process p);
     int get_page_frame(int access);
     bool isLoaded(int access, Process p);
+    void best_fit(Process p);
+    void worst_fit(Process p);
+    void quick_fit(Process p);
     ~Memory();
 };
 
