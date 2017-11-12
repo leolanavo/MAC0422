@@ -28,30 +28,7 @@ void check(bool val, string name) {
         print_failed(name);
 }
 
-void test_linkedlist () {
-    LinkedList<int> l;
-    bool val;
-    bool emp = l.isEmpty();
-
-    l.add(1); l.add(2); l.add(3);
-
-    bool ful = l.isEmpty();
-
-    check(l.head->get_data() == 1 &&
-          l.head->next->get_data() == 2 &&
-          l.head->next->next->get_data() == 3, "LinkedList Add");
-
-    l.remove(0);
-
-    check(l.head->get_data() == 2 &&
-        l.head->next->get_data() == 3, "LinkedList Remove");
-
-    check(!ful && emp, "LinkedList isEmpty");
-    l.print_list();
-}
-
 void tests() {
     test_split();
-    test_linkedlist();
     exit(0);
 }
