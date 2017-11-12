@@ -10,7 +10,7 @@ matrix init(int size) {
 }
 
 // Only finds which page has to be replaced
-void replace_page(int address, Memory mem, matrix m) {
+void replace_page(int addr, Memory mem, matrix m) {
     int min = std::numeric_limits<int>::max();
     int index = 0, val;
 
@@ -33,7 +33,7 @@ void access(int addr, Memory mem, matrix m, Process p) {
     if (page_fault)
         replace_page(addr, mem, m);
 
-    int k = mem.get_page_frame(addr);
+    int k = mem.get_page_frame(addr, p);
     for (int i = 0; i < m.size(); i++) {
         m[k][i] = 1;
         m[i][k] = 0;
