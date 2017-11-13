@@ -1,18 +1,15 @@
 #ifndef STRING_SPLIT_H
 #define STRING_SPLIT_H
 
+#include <iostream>
 #include <string>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 #include <vector>
 
 using namespace std;
 
-/* Receives a string and a integer, which is the starting point
- * of a substring.
- *
- * Retruns the index of the begging of the next word in the
- * substring. Returns -1 if no such integer is found.
- */
-int find_next_word(string str, int start);
 
 /* Receives a string.
  *
