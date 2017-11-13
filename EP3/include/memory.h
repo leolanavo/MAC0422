@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <list>
+#include <cmath>
+
 #include "process.h"
-#include "node.h"
 
 using namespace std;
 
@@ -56,6 +57,7 @@ class Memory {
     int get_page_frame(int addr, Process p);
     int get_pglist_size();
     int get_page_size();
+    vector<page*> get_page_list();
     bool isLoaded(int addr, Process p);
     void best_fit(Process p);
     void worst_fit(Process p);

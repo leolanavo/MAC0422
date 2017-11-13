@@ -11,11 +11,11 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     unity(unity), spage(spage),
     pglist(virt/spage)
 {
-	alloc mem;
+    alloc mem;
     mem.pid = "empty";
     mem.base = 0;
     mem.size = virt;
-    free_mem->add(mem);
+    free_mem->push_back(mem);
 }
 
 /* Receives a position in the virtual memory.
@@ -46,6 +46,10 @@ int Memory::get_pglist_size() {
     return pglist.size();
 }
 
+vector<page*> Memory::get_page_list() {
+    return pglist;
+}
+
 /* Receives a position in the virtual memory.
  *
  * Returns true if the page is loaded in the physical
@@ -62,43 +66,37 @@ bool Memory::isLoaded(int addr, Process p) {
  * Returns nothing.
  */
 void Memory::best_fit(Process p) {
-    alloc *aux, *best;
-	int index, best_index, min_space;
-	alloc node_aux, node_best, node_remove, node_insert;
+    int index, min_space;
+    alloc best, insert;
+    list<alloc>::iterator best_index, remove;
     list<alloc>::iterator it_list = free_mem->begin();
 
-	aux = ;
-	best = free_mem->head;
-	best_index = 0;
-	index = 1;
-	min_space = ((p.get_size()/unity) * unity) + ((p.get_size() % unity) * unity);
+    min_space = (int)ceil((double) p.get_size()/unity) * unity;
+    best = *(it_list++);
 
-	while (aux != NULL) {
+    while (it_list != free_mem->end()) {
 
-		node_aux = aux->get_data();
-		node_best = best->get_data();
+        if (it_list->size < best.size && it_list->size >= min_space) {
+            best = *(it_list);
+            best_index = it_list;
+        }
 
-		if (node_aux.size < node_best.size && node_aux.size >= min_space) {
-			best = aux;
-			best_index = index;
-		}
+        index++;
+        it_list++;
+    }
 
-		index++;
-		aux = aux->next;
-	}
+    remove = free_mem->erase(best_index);
+    insert.pid = p.get_name();
+    insert.base = remove->base;
+    insert.size = min_space;
 
-	node_remove = free_mem->remove(best_index);
-	node_insert.pid = p.get_name();
-	node_insert.base = node_remove.base;
-	node_insert.size = min_space;
+    if (remove->size != min_space) {
+        remove->base = insert.base + min_space;
+        remove->size = remove->size - insert.size;
+        free_mem->push_front(*(remove));
+    }
 
-	if (node_remove.size != min_space) {
-		node_remove.base = node_insert.base + min_space;
-		node_remove.size = node_remove.size - node_insert.size;
-		free_mem->push_front(node_remove);
-	}
-
-	used_mem->push_front(node_insert);
+    used_mem->push_front(insert);
 }
 
 /* Receives a process to allocate in the virtual memory,
