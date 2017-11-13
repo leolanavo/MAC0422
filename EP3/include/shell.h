@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void simulate(vector<Process> plist, int id_fit, int id_page, int interval);
+void simulate(assemb plist, int id_fit, int id_page, int interval);
 
 /* Receives nothing.
  *

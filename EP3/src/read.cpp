@@ -11,7 +11,7 @@ using namespace std;
  *
  * Returns nothing.
  */
-vector<Process> read_file(string name) {
+assemb read_file(string name) {
     string line;
     ifstream file(name);
     double len;
@@ -26,10 +26,12 @@ vector<Process> read_file(string name) {
     vector<string> fline = split_spaces(line);
     Memory mem(stoi(fline[0]), stoi(fline[1]),
                stoi(fline[2]), stoi(fline[3]));
+
     fline.clear();
 
     while (!file.eof()) {
         getline(file, line);
+
         fline = split_spaces(line);
 
         if (fline.size() == 2) {
@@ -53,5 +55,9 @@ vector<Process> read_file(string name) {
         fline.clear();
     }
 
-    return plist;
+    assemb rt;
+    rt.mem = mem;
+    rt.plist = plist;
+    
+    return rt;
 }

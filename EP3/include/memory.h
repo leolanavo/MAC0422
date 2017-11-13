@@ -47,11 +47,12 @@ typedef struct {
  */
 class Memory {
     int phys, virt, unity, spage;
-    list<alloc> *free_mem, *used_mem;
+    list<alloc> free_mem, used_mem;
     vector<page*> pglist;
   public:
 
     // Constructor
+    Memory ();
     Memory(int phys, int virt, int unity, int spage);
     page get_page(int index);
     int get_page_frame(int addr, Process p);

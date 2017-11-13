@@ -12,6 +12,11 @@
 #include "string_split.h"
 #include "process.h"
 
+typedef struct {
+	Memory mem;
+	vector<Process> plist;
+} assemb;
+
 /* Receives a filename.
  *
  * Reads and process the file according to the
@@ -19,6 +24,6 @@
  *
  * Returns nothing.
  */
-vector<Process> read_file(string name);
+assemb read_file(string name);
 
 #endif

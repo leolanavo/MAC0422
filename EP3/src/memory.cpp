@@ -1,5 +1,13 @@
 #include "memory.h"
 
+Memory::Memory () :
+    phys(0), virt(0),
+    unity(0), spage(0),
+    pglist(0)
+{
+}
+
+
 /* Receives the amount of space for the physical memory,
  * for the virtual memory, the allocation unity and
  * the size of a page.
@@ -15,7 +23,8 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     mem.pid = "empty";
     mem.base = 0;
     mem.size = virt;
-    free_mem->push_back(mem);
+    list<alloc> tmp(1, mem);
+    free_mem = tmp;
 }
 
 /* Receives a position in the virtual memory.
@@ -67,36 +76,41 @@ bool Memory::isLoaded(int addr, Process p) {
  */
 void Memory::best_fit(Process p) {
     int index, min_space;
-    alloc best, insert;
-    list<alloc>::iterator best_index, remove;
-    list<alloc>::iterator it_list = free_mem->begin();
+    alloc best, insert, reinsert, tmp;
+    list<alloc>::iterator it_list = free_mem.begin();
+    list<alloc>::iterator best_node = free_mem.begin();
 
     min_space = (int)ceil((double) p.get_size()/unity) * unity;
     best = *(it_list++);
 
-    while (it_list != free_mem->end()) {
+    while (it_list != free_mem.end()) {
 
         if (it_list->size < best.size && it_list->size >= min_space) {
             best = *(it_list);
-            best_index = it_list;
+            best_node = it_list;
         }
 
         index++;
         it_list++;
     }
 
-    remove = free_mem->erase(best_index);
     insert.pid = p.get_name();
-    insert.base = remove->base;
+    insert.base = best_node->base;
     insert.size = min_space;
 
-    if (remove->size != min_space) {
-        remove->base = insert.base + min_space;
-        remove->size = remove->size - insert.size;
-        free_mem->push_front(*(remove));
+    tmp.pid = best_node->pid;
+    tmp.base = best_node->base;
+    tmp.size = best_node->size;
+
+    free_mem.remove(tmp);
+
+    if (best_node->size != min_space) {
+        reinsert.base = insert.base + min_space;
+        reinsert.size = best_node->size - insert.size;
+        free_mem.push_front(reinsert);
     }
 
-    used_mem->push_front(insert);
+    used_mem.push_front(insert);
 }
 
 /* Receives a process to allocate in the virtual memory,

@@ -28,7 +28,20 @@ void check(bool val, string name) {
         print_failed(name);
 }
 
+
+void test_read () {
+    string file = "test.txt";
+    read_file(file);
+}
+
+void test_best () {
+    string file = "test.txt";
+    assemb a = read_file(file);
+    simulate(a, 1, 2, 3);
+}
+
 void tests() {
-    test_split();
+    test_best();
+    //test_split();
     exit(0);
 }

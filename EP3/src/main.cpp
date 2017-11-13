@@ -15,7 +15,6 @@ using namespace std;
 int main (int argc, char** argv) {
     if (argc == 2 && argv[1][0] == 't') {
         tests();
-        exit(0);
     }
     prompt();
     return 0;
