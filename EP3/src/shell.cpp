@@ -1,12 +1,11 @@
 #include "shell.h"
-#include "read.h"
 
 using namespace std;
 
 #define NCMD 5
 typedef unsigned int uint;
 
-void simulate(assemb proc_info, int id_fit, int id_page, int interval) {
+void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     cout << "SIMULATE" << endl;
     proc_info.mem.best_fit(proc_info.plist[0]);
 }

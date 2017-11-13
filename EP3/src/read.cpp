@@ -1,6 +1,5 @@
 #include "read.h"
 
-#define SIZE(array) (sizeof((array))/sizeof((array[0])))
 
 using namespace std;
 

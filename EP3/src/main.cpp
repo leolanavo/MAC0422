@@ -2,12 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include "colors.h"
 #include "shell.h"
-#include "process.h"
-#include "string_split.h"
-#include "memory.h"
-#include "read.h"
 #include "tests.h"
 
 using namespace std;

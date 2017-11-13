@@ -5,13 +5,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
 #include "string_split.h"
 #include "read.h"
 
+struct assemb;
+
 using namespace std;
 
-void simulate(assemb plist, int id_fit, int id_page, int interval);
+void simulate(assemb proc_info, int id_fit, int id_page, int interval);
 
 /* Receives nothing.
  *

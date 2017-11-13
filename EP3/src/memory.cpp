@@ -1,5 +1,7 @@
 #include "memory.h"
 
+using namespace std;
+
 Memory::Memory () :
     phys(0), virt(0),
     unity(0), spage(0),

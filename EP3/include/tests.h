@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
+#include "shell.h"
 #include "colors.h"
 #include "string_split.h"
 #include "read.h"
-#include "shell.h"
 
 using namespace std;
 

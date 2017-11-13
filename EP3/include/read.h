@@ -12,10 +12,10 @@
 #include "string_split.h"
 #include "process.h"
 
-typedef struct {
+struct assemb {
 	Memory mem;
 	vector<Process> plist;
-} assemb;
+};
 
 /* Receives a filename.
  *
