@@ -10,9 +10,8 @@ using namespace std;
 vector<string> split_spaces(string str) {
     istringstream iss(str);
 
-    vector<string> tokens{
+    return {
         istream_iterator<string>{iss},
-        istream_iterator<string>{}};
-
-    return tokens;
+        istream_iterator<string>{}
+    };
 }

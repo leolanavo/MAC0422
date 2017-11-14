@@ -21,11 +21,11 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     unity(unity), spage(spage),
     pglist(virt/spage)
 {
-    alloc mem;
+    Alloc mem;
     mem.pid = "empty";
     mem.base = 0;
     mem.size = virt;
-    list<alloc> tmp(1, mem);
+    list<Alloc> tmp(1, mem);
     free_mem = tmp;
 }
 
@@ -78,9 +78,9 @@ bool Memory::isLoaded(int addr, Process p) {
  */
 void Memory::best_fit(Process p) {
     int index, min_space;
-    alloc best, insert, reinsert, tmp;
-    list<alloc>::iterator it_list = free_mem.begin();
-    list<alloc>::iterator best_node = free_mem.begin();
+    Alloc best, insert, reinsert, tmp;
+    list<Alloc>::iterator it_list = free_mem.begin();
+    list<Alloc>::iterator best_node = free_mem.begin();
 
     min_space = (int)ceil((double) p.get_size()/unity) * unity;
     best = *(it_list++);

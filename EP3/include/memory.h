@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "process.h"
+#include "alloc.h"
 
 using namespace std;
 
@@ -17,33 +18,11 @@ using namespace std;
  *     m       : the write bit
  *     p       : the presence bit
  */
-typedef struct {
+struct page {
     int addr;
     bool r;
     bool m;
     bool p;
-} page;
-
-/* Struct: alloc
- * ------------
- *   Fields:
- *     pid   : the process pid
- *     base  : the virtual memory base
- *     size  : the the virtual memory size
- */
-struct alloc {
-	string pid;
-	int base, size;
-	
-	bool operator== (const alloc& b) {
-	if (this->base == b.base && this->size == b.size && this->pid == b.pid)
-		return true;
-	return false;
-	}
-	
-	void print_alloc () {
-		cout << base << " " << size << " " << pid << endl; 
-	}
 };
 
 
@@ -56,11 +35,12 @@ struct alloc {
  *      spage    : size of a single page
  */
 class Memory {
+  private:
     int phys, virt, unity, spage;
-    list<alloc> free_mem, used_mem;
+    list<Alloc> free_mem, used_mem;
     vector<page*> pglist;
-  public:
 
+  public:
     // Constructor
     Memory ();
     Memory(int phys, int virt, int unity, int spage);
