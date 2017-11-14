@@ -96,19 +96,15 @@ void Memory::best_fit(Process p) {
         it_list++;
     }
 
-    insert.pid = p.get_name();
-    insert.base = best_node->base;
-    insert.size = min_space;
-
-    tmp.pid = best_node->pid;
-    tmp.base = best_node->base;
-    tmp.size = best_node->size;
+    insert = {p.get_name(), best_node->base, min_space};
+	tmp = {best_node->pid, best_node->base, best_node->size};
 
     free_mem.remove(tmp);
 
     if (best_node->size != min_space) {
         reinsert.base = insert.base + min_space;
         reinsert.size = best_node->size - insert.size;
+        reinsert.pid = "empty";
         free_mem.push_front(reinsert);
     }
 

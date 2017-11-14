@@ -31,10 +31,20 @@ typedef struct {
  *     base  : the virtual memory base
  *     size  : the the virtual memory size
  */
-typedef struct {
+struct alloc {
 	string pid;
 	int base, size;
-} alloc;
+	
+	bool operator== (const alloc& b) {
+	if (this->base == b.base && this->size == b.size && this->pid == b.pid)
+		return true;
+	return false;
+	}
+	
+	void print_alloc () {
+		cout << base << " " << size << " " << pid << endl; 
+	}
+};
 
 
 /* Class: Memory
