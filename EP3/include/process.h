@@ -22,11 +22,11 @@ using namespace std;
  *              the process
  */
 class Process {
-  private:
+  public:
     int t0, tf, b, base, next;
     string name;
     vector <int> access, time;
-  public:
+
     Process(int t0, int tf, int b, string name, vector<int> access, vector<int> time);
     void set_base(int base);
     int get_base();

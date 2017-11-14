@@ -3,8 +3,27 @@
 using namespace std;
 
 void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
-    cout << "SIMULATE" << endl;
-    proc_info.mem.best_fit(proc_info.plist[0]);
+    int time = 0;
+    
+    for (int i = 0; i < proc_info.plist.size; i++) {
+        if (time >= proc_info.plist[i].t0) {
+            
+            vector<char> v;
+            
+            for (int k = 0; k <= i; k++) {
+            }
+        }
+
+        switch (id_fit) {
+            case 1:
+                return proc_info.mem.best_fit(proc_info.plist[i]);
+            case 2:
+                return proc_info.mem.worst_fit(proc_info.plist[i]);
+            case 3:
+                return proc_info.mem.quick_fit(proc_info.plist[i]);
+        }        
+    }
+
 }
 
 /* Receives nothing.
