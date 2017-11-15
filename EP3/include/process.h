@@ -7,6 +7,31 @@
 
 using namespace std;
 
+class access {
+  public:
+    int pos;
+    int time;
+
+    bool operator<(const access& b) {
+        return time < b.time;
+    }
+
+    bool operator>(const access& b) {
+        return time > b.time;
+    }
+
+    bool operator<=(const access& b) {
+        return time <= b.time;
+    }
+
+    bool operator>=(const access& b) {
+        return time >= b.time;
+    }
+    bool operator==(const access& b) {
+        return time == b.time;
+    }
+};
+
 /* Class: Process
  * --------------
  * Fields:
@@ -25,14 +50,14 @@ class Process {
   public:
     int t0, tf, b, base, pid, next;
     string name;
-    vector <int> access, time;
+    vector <access> access_list;
 
-    Process(int t0, int tf, int b, string name, vector<int> access, vector<int> time);
+    Process(int t0, int tf, int b, string name, vector<access> access_list);
     void set_base(int base);
     int get_base();
     int get_size();
     string get_name();
-    void access_process(int current_time);
+    void get_access(int current_time);
 };
 
 #endif
