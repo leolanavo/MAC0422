@@ -88,7 +88,7 @@ void Memory::free_process(Process p) {
             if (it->base + it->size == node.base ||
                 node.base + node.size == it->base) {
                 free_mem.remove(*it);
-                node.base = node.base > it.base? it->base : node.base;
+                node.base = node.base > it->base? it->base : node.base;
                 node.size += it->size;
             }
         }
