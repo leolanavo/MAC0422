@@ -11,8 +11,8 @@ using namespace std;
  *
  * NOTE: the base field will be set according to the chosen algorithm.
  */
-Process::Process (int t0, int tf, int b, string name, vector<access> access_list) :
-    t0(t0), tf(tf), b(b), name(name), next(0), access_list(access_list)
+Process::Process (int t0, int tf, int b, string name, vector<Access> access_list) :
+    t0(t0), tf(tf), b(b), name(name), p_base(-1), next(0), access_list(access_list)
 {
 }
 
@@ -23,7 +23,7 @@ Process::Process (int t0, int tf, int b, string name, vector<access> access_list
  * Returns nothing;
  */
 void Process::set_base(int base) {
-    this->base = base;
+    this->p_base = base;
 }
 
 /* Receives nothing;
@@ -31,7 +31,7 @@ void Process::set_base(int base) {
  * Returns the current base of the process
  */
 int Process::get_base() {
-    return this->base;
+    return this->p_base;
 }
 
 /* Receives nothing;

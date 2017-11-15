@@ -13,23 +13,16 @@ using namespace std;
 /* Struct: page
  * ------------
  *   Fields:
- *     address : address in the virtual memory
- *	   pid     : the current process PID
+ *     address : address in the physic memory
  *     r       : the access bit
  *     m       : the write bit
  *     p       : the presence bit
  */
 struct page {
     int addr;
-    int pid;
     bool r;
     bool m;
     bool p;
-};
-
-struct frame{
-	int pid;
-	int page_base;
 };
 
 /* Class: Memory
@@ -46,7 +39,7 @@ class Memory {
     list<Alloc> free_mem, used_mem;
     vector<int> virtual_mem, phys_mem;
     vector<page> page_list;
-    vector<frame> frame_list;
+    vector<int> frame_list;
 
     // Constructors
     Memory ();
@@ -62,7 +55,7 @@ class Memory {
     // Other Methods
     bool isLoaded(int addr, Process p);
     void free_process(Process p);
-    void best_fit(Process p);
+    void best_fit(Process& p);
     void worst_fit(Process p);
     void quick_fit(Process p);
     ~Memory();
