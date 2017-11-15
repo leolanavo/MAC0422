@@ -31,36 +31,14 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     for (int i = 0; i < phys/spage; i++) frame_list[i] = -1;
 }
 
-/* Receives a position in the virtual memory.
- *
- * Returns the page that corresponds to the given
- * address.
- */
-page Memory::get_page(int index) {
-    return page_list[index];
-}
-
 /* Receives a position in the virtual memory and
  * a process.
  *
  * Returns the page frame according to the given
  * arguments.
  */
-int Memory::get_page_frame(int addr, Process p) {
-    int index = ((addr + p.get_base())/spage);
-    return (page_list[index].addr*spage);
-}
-
-int Memory::get_page_size() {
-    return spage;
-}
-
-int Memory::get_page_list_size() {
-    return page_list.size();
-}
-
-vector<page> Memory::get_page_list() {
-    return page_list;
+int Memory::get_page(int addr, Process p) {
+    return ((addr + p.get_base())/spage);
 }
 
 /* Receives a position in the virtual memory.
@@ -68,7 +46,7 @@ vector<page> Memory::get_page_list() {
  * Returns true if the page is loaded in the physical
  * memory. False otherwise.
  */
-bool Memory::isLoaded(int addr, Process p) {
+bool Memory::is_loaded(int addr, Process p) {
     int index = ((addr + p.get_base())/spage);
     return page_list[index].p;
 }

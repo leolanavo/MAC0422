@@ -46,14 +46,10 @@ class Memory {
     Memory(int phys, int virt, int unity, int spage);
 
     // Getters
-    page get_page(int index);
-    int get_page_frame(int addr, Process p);
-    int get_page_list_size();
-    int get_page_size();
-    vector<page> get_page_list();
+    int get_page(int addr, Process p);
 
     // Other Methods
-    bool isLoaded(int addr, Process p);
+    bool is_loaded(int addr, Process p);
     void free_process(Process p);
     void best_fit(Process& p);
     void worst_fit(Process p);
