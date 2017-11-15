@@ -11,8 +11,8 @@ using namespace std;
  *
  * NOTE: the base field will be set according to the chosen algorithm.
  */
-Process::Process (int t0, int tf, int b, string name, vector<Access> access_list) :
-    t0(t0), tf(tf), b(b), name(name), p_base(-1), next(0), access_list(access_list)
+Process::Process (int t0, int tf, int b, string name, int naccess) :
+    t0(t0), tf(tf), b(b), name(name), p_base(-1), next(0), naccess(naccess)
 {
 }
 
