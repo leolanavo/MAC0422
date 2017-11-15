@@ -10,38 +10,49 @@ matrix init(int size) {
 }
 
 // Only finds which page has to be replaced
-void replace_page(int addr, Memory mem, matrix m) {
-    int min = std::numeric_limits<int>::max();
-    int index = 0, val;
+void replace_page(int addr, Memory mem, matrix m, Process p) {
+    int min = numeric_limits<int>::max();
+    int sub_index = 0, val;
+    int page_index = mem.get_page(addr, p);
 
-    for (int i = 0; m.size(); i++) {
-        val = 0;
-        for (int j = 0; m.size(); j++)
-            val += m[i][j] * ((int) pow(2.0, (double) m.size() - j - 1));
-
-        if (val < min) {
-            min = val;
-            index = i;
+    for (int i = 0; mem.frame_list.size(); i++) {
+        if (mem.frame_list[i] == -1) {
+            mem.page_list[page_index] = {i, 1, 0, 1};
+            mem.frame_list[i] = page_index;
+            return;
         }
     }
 
-    for (int i = 0; i < mem.get_page_list_size(); i++) {
+    for (int i = 0; m.size(); i++) {
+        val = 0;
+        for (int j = 0; j < m[i].size(); j++)
+            val += m[i][j] * ((int) pow(2.0, (double) m[i].size() - j - 1));
 
+        if (val < min) {
+            min = val;
+            sub_index = i;
+        }
     }
 
-    // Substituir o page frame indicado por index
+    mem.page_list[page_index] = {mem.page_list[sub_index].addr, 1, 0, 1};
+    mem.page_list[sub_index] = {-1, 0, 0, 0};
 }
 
 void access(int addr, Memory mem, matrix m, Process p) {
-    bool page_fault = mem.isLoaded(addr, p);
+    bool page_fault = !(mem.is_loaded(addr, p));
 
     if (page_fault)
-        replace_page(addr, mem, m);
+        replace_page(addr, mem, m, p);
 
-    int k = mem.get_page_frame(addr, p);
-    for (int i = 0; i < m.size(); i++) {
-        m[k][i] = 1;
-        m[i][k] = 0;
+    int page_index = mem.get_page(addr, p);
+    mem.page_list[page_index].r = 1;
+
+    for (int i = 0; m.size(); i++) {
+        m[page_index][i] = 1;
+        m[i][page_index] = 0;
     }
+
+    mem.page_list[page_index].r = 1;
+
 }
 
