@@ -7,14 +7,16 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
 
     for (int i = 0; i < proc_info.plist.size(); ) {
         
-        /*for (int j = 0; j < i; j++) {
-                
-        }*/
-        
+        for (int j = 0; j < i; j++) {
+            
+        }
+
         if (time == proc_info.plist[i].t0) {
             switch (id_fit) {
                 case 1:
                     proc_info.mem.best_fit(proc_info.plist[i]);
+                    cout << proc_info.plist[i].v_base << endl;
+
                     break;
                 case 2:
                     proc_info.mem.worst_fit(proc_info.plist[i]);
@@ -31,6 +33,7 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
 
     for (int i = 0; i < proc_info.mem.virt; i++)
             cout << proc_info.mem.virtual_mem[i] << endl;
+
 }
 
 /* Receives nothing.

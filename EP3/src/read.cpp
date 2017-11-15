@@ -15,7 +15,7 @@ assemb read_file(string name) {
     ifstream file(name);
     double len;
     int i, pid_count;
-    vector<access> access_list;
+    vector<Access> access_list;
     vector<Process> plist;
 
     pid_count = 1;

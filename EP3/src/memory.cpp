@@ -27,8 +27,8 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     list<Alloc> tmp(1, mem);
     free_mem = tmp;
 
-    for (int i = 0; i < virt; i++) virtual_mem[i] = -1;
-    for (int i = 0; i < phys; i++) phys_mem[i] = -1;
+    for (int i = 0; i < virt/spage; i++) page_list[i].addr = -1;
+    for (int i = 0; i < phys/spage; i++) frame_list[i] = -1;
 }
 
 /* Receives a position in the virtual memory.
@@ -88,7 +88,7 @@ void Memory::free_process(Process p) {
             if (it->base + it->size == node.base ||
                 node.base + node.size == it->base) {
                 free_mem.remove(*it);
-                node.base += it->base;
+                node.base = node.base > it.base? it->base : node.base;
                 node.size += it->size;
             }
         }
@@ -105,13 +105,13 @@ void Memory::free_process(Process p) {
  *
  * Returns nothing.
  */
-void Memory::best_fit(Process p) {
+void Memory::best_fit(Process& p) {
     int index, min_space;
     Alloc best, insert, reinsert, tmp;
     list<Alloc>::iterator it_list = free_mem.begin();
     list<Alloc>::iterator best_node = free_mem.begin();
 
-    min_space = (int)ceil((double) p.get_size()/unity) * unity;
+    min_space = (int)ceil((double) p.b/unity) * unity;
     best = *(it_list++);
 
     while (it_list != free_mem.end()) {
@@ -125,6 +125,7 @@ void Memory::best_fit(Process p) {
         it_list++;
     }
 
+    p.v_base = best_node->base;
     insert = {p.pid, best_node->base, min_space};
 	tmp = {best_node->pid, best_node->base, best_node->size};
 
