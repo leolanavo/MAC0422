@@ -19,15 +19,16 @@ Memory::Memory () :
 Memory::Memory (int phys, int virt, int unity, int spage) :
     phys(phys), virt(virt),
     unity(unity), spage(spage),
-    page_list(virt),
-    frame_list(phys)
+    virtual_mem(virt), phys_mem(phys),
+    page_list(virt/spage),
+    frame_list(phys/spage)
 {
     Alloc mem = {-1, 0, virt};
     list<Alloc> tmp(1, mem);
     free_mem = tmp;
 
-    for (int i = 0; i < virt; i++) page_list[i].pid = -1;
-    for (int i = 0; i < phys; i++) frame_list[i].pid = -1;
+    for (int i = 0; i < virt; i++) virtual_mem[i] = -1;
+    for (int i = 0; i < phys; i++) phys_mem[i] = -1;
 }
 
 /* Receives a position in the virtual memory.
@@ -84,7 +85,9 @@ void Memory::free_process(Process p) {
         used_mem.remove(remove);
 
         for (int i = find_p->base; i < find_p->size; i++)
-            page_list[i].pid = -1;
+            virtual_mem[i] = -1;
+
+
     }
 }
 
@@ -117,7 +120,7 @@ void Memory::best_fit(Process p) {
 	tmp = {best_node->pid, best_node->base, best_node->size};
 
 	for (int i = best_node->base; i < best_node->base + min_space; i++)
-		page_list[i].pid = p.pid;
+		virtual_mem[i] = p.pid;
 
 
     free_mem.remove(tmp);

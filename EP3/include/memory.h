@@ -44,6 +44,7 @@ class Memory {
  public:
     int phys, virt, unity, spage;
     list<Alloc> free_mem, used_mem;
+    vector<int> virtual_mem, phys_mem;
     vector<page> page_list;
     vector<frame> frame_list;
 
