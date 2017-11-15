@@ -17,8 +17,6 @@ struct assemb {
 	vector<Process> plist;
 };
 
-
-
 /* Receives a filename.
  *
  * Reads and process the file according to the

@@ -25,7 +25,7 @@ void replace_page(int addr, Memory mem, matrix m) {
         }
     }
 
-    for (int i = 0; i < mem.get_pglist_size(); i++) {
+    for (int i = 0; i < mem.get_page_list_size(); i++) {
         
     }
 

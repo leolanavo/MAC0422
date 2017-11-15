@@ -14,17 +14,23 @@ using namespace std;
  * ------------
  *   Fields:
  *     address : address in the virtual memory
+ *	   pid     : the current process PID
  *     r       : the access bit
  *     m       : the write bit
  *     p       : the presence bit
  */
 struct page {
-    int addr;
+    int addr; 
+    int pid;
     bool r;
     bool m;
     bool p;
 };
 
+struct frame{
+	int pid;
+	int page_base;
+};
 
 /* Class: Memory
  * -------------
@@ -35,21 +41,22 @@ struct page {
  *      spage    : size of a single page
  */
 class Memory {
-  private:
+ public:
     int phys, virt, unity, spage;
     list<Alloc> free_mem, used_mem;
-    vector<page*> pglist;
+    vector<page> page_list;
+    vector<frame> frame_list;
 
-  public:
     // Constructor
     Memory ();
     Memory(int phys, int virt, int unity, int spage);
     page get_page(int index);
     int get_page_frame(int addr, Process p);
-    int get_pglist_size();
+    int get_page_list_size();
     int get_page_size();
-    vector<page*> get_page_list();
+    vector<page> get_page_list();
     bool isLoaded(int addr, Process p);
+    void free_process(Process p);
     void best_fit(Process p);
     void worst_fit(Process p);
     void quick_fit(Process p);

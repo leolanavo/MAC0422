@@ -23,7 +23,7 @@ using namespace std;
  */
 class Process {
   public:
-    int t0, tf, b, base, next;
+    int t0, tf, b, base, pid, next;
     string name;
     vector <int> access, time;
 

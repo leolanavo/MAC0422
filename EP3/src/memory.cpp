@@ -5,7 +5,7 @@ using namespace std;
 Memory::Memory () :
     phys(0), virt(0),
     unity(0), spage(0),
-    pglist(0)
+    page_list(0)
 {
 }
 
@@ -19,14 +19,15 @@ Memory::Memory () :
 Memory::Memory (int phys, int virt, int unity, int spage) :
     phys(phys), virt(virt),
     unity(unity), spage(spage),
-    pglist(virt/spage)
+    page_list(virt),
+    frame_list(phys)
 {
-    Alloc mem;
-    mem.pid = "empty";
-    mem.base = 0;
-    mem.size = virt;
+    Alloc mem = {-1, 0, virt};
     list<Alloc> tmp(1, mem);
     free_mem = tmp;
+
+    for (int i = 0; i < virt; i++) page_list[i].pid = -1;
+    for (int i = 0; i < phys; i++) frame_list[i].pid = -1;
 }
 
 /* Receives a position in the virtual memory.
@@ -35,7 +36,7 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
  * address.
  */
 page Memory::get_page(int index) {
-    return *(pglist[index]);
+    return page_list[index];
 }
 
 /* Receives a position in the virtual memory and
@@ -46,19 +47,19 @@ page Memory::get_page(int index) {
  */
 int Memory::get_page_frame(int addr, Process p) {
     int index = ((addr + p.get_base())/spage);
-    return (pglist[index]->addr*spage);
+    return (page_list[index].addr*spage);
 }
 
 int Memory::get_page_size() {
     return spage;
 }
 
-int Memory::get_pglist_size() {
-    return pglist.size();
+int Memory::get_page_list_size() {
+    return page_list.size();
 }
 
-vector<page*> Memory::get_page_list() {
-    return pglist;
+vector<page> Memory::get_page_list() {
+    return page_list;
 }
 
 /* Receives a position in the virtual memory.
@@ -68,7 +69,23 @@ vector<page*> Memory::get_page_list() {
  */
 bool Memory::isLoaded(int addr, Process p) {
     int index = ((addr + p.get_base())/spage);
-    return pglist[index]->p;
+    return page_list[index].p;
+}
+
+void Memory::free_process(Process p) {
+    
+    list<Alloc>::iterator find_p = used_mem.begin();
+    Alloc remove;
+
+    while (find_p->pid != p.pid && find_p != used_mem.end()) find_p++;
+
+    if (find_p != used_mem.end()) {
+        remove = {find_p->pid, find_p->base, find_p->size};
+        used_mem.remove(remove);
+
+        for (int i = find_p->base; i < find_p->size; i++)
+            page_list[i].pid = -1;
+    }
 }
 
 /* Receives a process to allocate in the virtual memory,
@@ -81,7 +98,7 @@ void Memory::best_fit(Process p) {
     Alloc best, insert, reinsert, tmp;
     list<Alloc>::iterator it_list = free_mem.begin();
     list<Alloc>::iterator best_node = free_mem.begin();
-
+    
     min_space = (int)ceil((double) p.get_size()/unity) * unity;
     best = *(it_list++);
 
@@ -96,15 +113,19 @@ void Memory::best_fit(Process p) {
         it_list++;
     }
 
-    insert = {p.get_name(), best_node->base, min_space};
+    insert = {p.pid, best_node->base, min_space};
 	tmp = {best_node->pid, best_node->base, best_node->size};
+
+	for (int i = best_node->base; i < best_node->base + min_space; i++)
+		page_list[i].pid = p.pid;
+
 
     free_mem.remove(tmp);
 
     if (best_node->size != min_space) {
         reinsert.base = insert.base + min_space;
         reinsert.size = best_node->size - insert.size;
-        reinsert.pid = "empty";
+        reinsert.pid = -1;
         free_mem.push_front(reinsert);
     }
 

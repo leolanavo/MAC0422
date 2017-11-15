@@ -15,7 +15,7 @@ using namespace std;
  */
 class Alloc {
   public:
-	string pid;
+	int pid;
 	int base, size;
 
     //Methods

@@ -14,9 +14,11 @@ assemb read_file(string name) {
     string line;
     ifstream file(name);
     double len;
-    int i;
+    int i, pid_count;
     vector<int> access, time;
     vector<Process> plist;
+
+    pid_count = 1;
 
     if (!file.is_open())
         print_failed("Open input file");
@@ -45,8 +47,11 @@ assemb read_file(string name) {
                 time.push_back(stoi(fline[i + 1]));
             }
 
-            plist.push_back(Process (stoi(fline[0]), stoi(fline[1]),
-                            stoi(fline[2]), fline[3], access, time));
+            Process p (stoi(fline[0]), stoi(fline[1]), stoi(fline[2]), fline[3], access, time);
+            p.pid = pid_count;
+            pid_count++;
+
+            plist.push_back(p);
         }
 
         access.clear();

@@ -5,25 +5,29 @@ using namespace std;
 void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     int time = 0;
     
-    for (int i = 0; i < proc_info.plist.size; i++) {
-        if (time >= proc_info.plist[i].t0) {
+    for (int i = 0; i < proc_info.plist.size(); i++) {
+        /*if (time >= proc_info.plist[i].t0) {
             
             vector<char> v;
             
             for (int k = 0; k <= i; k++) {
             }
-        }
+        }*/
 
         switch (id_fit) {
             case 1:
-                return proc_info.mem.best_fit(proc_info.plist[i]);
+                proc_info.mem.best_fit(proc_info.plist[i]);
+                break;
             case 2:
-                return proc_info.mem.worst_fit(proc_info.plist[i]);
+                proc_info.mem.worst_fit(proc_info.plist[i]);
+                break;
             case 3:
-                return proc_info.mem.quick_fit(proc_info.plist[i]);
+                proc_info.mem.quick_fit(proc_info.plist[i]);
         }        
     }
 
+    for (int i = 0; i < proc_info.mem.virt; i++)
+            cout << proc_info.mem.page_list[i].pid << endl;
 }
 
 /* Receives nothing.
