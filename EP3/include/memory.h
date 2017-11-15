@@ -64,6 +64,7 @@ class Memory {
 struct assemb {
 	Memory mem;
 	vector<Process> plist;
+    vector<list<Access>> access_list;
 };
 
 #endif

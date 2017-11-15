@@ -10,26 +10,7 @@ using namespace std;
 class Access {
   public:
     int pos;
-    int time;
-
-    bool operator<(const Access& b) {
-        return time < b.time;
-    }
-
-    bool operator>(const Access& b) {
-        return time > b.time;
-    }
-
-    bool operator<=(const Access& b) {
-        return time <= b.time;
-    }
-
-    bool operator>=(const Access& b) {
-        return time >= b.time;
-    }
-    bool operator==(const Access& b) {
-        return time == b.time;
-    }
+    int pid;
 };
 
 /* Class: Process
@@ -48,11 +29,10 @@ class Access {
  */
 class Process {
   public:
-    int t0, tf, b, p_base, v_base, pid, next;
+    int t0, tf, b, p_base, v_base, pid, next, naccess;
     string name;
-    vector <Access> access_list;
 
-    Process(int t0, int tf, int b, string name, vector<Access> access_list);
+    Process(int t0, int tf, int b, string name, int naccess);
     void set_base(int base);
     int get_base();
     int get_size();
