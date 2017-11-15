@@ -75,19 +75,28 @@ bool Memory::isLoaded(int addr, Process p) {
 
 void Memory::free_process(Process p) {
 
-    list<Alloc>::iterator find_p = used_mem.begin();
-    Alloc remove;
+    auto find_p = used_mem.begin();
 
     while (find_p->pid != p.pid && find_p != used_mem.end()) find_p++;
 
     if (find_p != used_mem.end()) {
-        remove = {find_p->pid, find_p->base, find_p->size};
-        used_mem.remove(remove);
+        Alloc node = {find_p->pid, find_p->base, find_p->size};
+        used_mem.remove(node);
 
-        for (int i = find_p->base; i < find_p->size; i++)
-            virtual_mem[i] = -1;
+        node.pid = -1;
+        for (auto it = used_mem.begin(); it != free_mem.end(); it++) {
+            if (it->base + it->size == node.base ||
+                node.base + node.size == it->base) {
+                free_mem.remove(*it);
+                node.base += it->base;
+                node.size += it->size;
+            }
+        }
 
-
+        auto it = used_mem.begin();
+        while (it != free_mem.end() && *it < node)
+            it++;
+        free_mem.insert(it, node);
     }
 }
 

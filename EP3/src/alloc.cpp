@@ -7,3 +7,7 @@ bool Alloc::operator==(const Alloc& b) {
 void Alloc::operator<<(ostream& os) {
     os << base << " " << size << " " << pid;
 }
+
+bool Alloc::operator<(const Alloc& b) {
+    return base < b.base;
+}

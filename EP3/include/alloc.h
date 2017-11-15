@@ -21,6 +21,7 @@ class Alloc {
     //Methods
     bool operator==(const Alloc& b);
     void operator<<(ostream& os);
+    bool operator<(const Alloc& b);
 
 };
 

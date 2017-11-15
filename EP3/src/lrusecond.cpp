@@ -18,7 +18,7 @@ void replace_page(int addr, Memory mem, matrix m) {
         val = 0;
         for (int j = 0; m.size(); j++)
             val += m[i][j] * ((int) pow(2.0, (double) m.size() - j - 1));
-        
+
         if (val < min) {
             min = val;
             index = i;
@@ -26,7 +26,7 @@ void replace_page(int addr, Memory mem, matrix m) {
     }
 
     for (int i = 0; i < mem.get_page_list_size(); i++) {
-        
+
     }
 
     // Substituir o page frame indicado por index
