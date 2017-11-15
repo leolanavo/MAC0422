@@ -20,7 +20,7 @@ using namespace std;
  *     p       : the presence bit
  */
 struct page {
-    int addr; 
+    int addr;
     int pid;
     bool r;
     bool m;
@@ -48,20 +48,29 @@ class Memory {
     vector<page> page_list;
     vector<frame> frame_list;
 
-    // Constructor
+    // Constructors
     Memory ();
     Memory(int phys, int virt, int unity, int spage);
+
+    // Getters
     page get_page(int index);
     int get_page_frame(int addr, Process p);
     int get_page_list_size();
     int get_page_size();
     vector<page> get_page_list();
+
+    // Other Methods
     bool isLoaded(int addr, Process p);
     void free_process(Process p);
     void best_fit(Process p);
     void worst_fit(Process p);
     void quick_fit(Process p);
     ~Memory();
+};
+
+struct assemb {
+	Memory mem;
+	vector<Process> plist;
 };
 
 #endif

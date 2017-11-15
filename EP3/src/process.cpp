@@ -11,8 +11,8 @@ using namespace std;
  *
  * NOTE: the base field will be set according to the chosen algorithm.
  */
-Process::Process (int t0, int tf, int b, string name, vector<int> access, vector<int> time) :
-    t0(t0), tf(tf), b(b), name(name), next(0), access(access), time(time)
+Process::Process (int t0, int tf, int b, string name, vector<access> access_list) :
+    t0(t0), tf(tf), b(b), name(name), next(0), access_list(access_list)
 {
 }
 
@@ -57,10 +57,5 @@ string Process::get_name() {
  *
  * Returns nothing.
  */
-void Process::access_process(int current_time) {
-    for (int i = this->next; i < access.size(); i++) {
-        if (this->time[i] <= current_time) {
-            this->next++;
-        }
-    }
+void Process::get_access(int current_time) {
 }

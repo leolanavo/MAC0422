@@ -74,7 +74,7 @@ bool Memory::isLoaded(int addr, Process p) {
 }
 
 void Memory::free_process(Process p) {
-    
+
     list<Alloc>::iterator find_p = used_mem.begin();
     Alloc remove;
 
@@ -101,7 +101,7 @@ void Memory::best_fit(Process p) {
     Alloc best, insert, reinsert, tmp;
     list<Alloc>::iterator it_list = free_mem.begin();
     list<Alloc>::iterator best_node = free_mem.begin();
-    
+
     min_space = (int)ceil((double) p.get_size()/unity) * unity;
     best = *(it_list++);
 

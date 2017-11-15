@@ -12,10 +12,6 @@
 #include "string_split.h"
 #include "process.h"
 
-struct assemb {
-	Memory mem;
-	vector<Process> plist;
-};
 
 /* Receives a filename.
  *
