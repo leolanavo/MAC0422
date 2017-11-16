@@ -15,6 +15,6 @@ matrix init(int size);
 
 void replace_page(int addr, Memory mem, matrix m, Process p);
 
-void access(int addr, Memory mem, matrix m, Process p);
+void lrusecond_access(int addr, Memory mem, matrix m, Process p);
 
 #endif

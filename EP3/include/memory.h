@@ -47,6 +47,7 @@ class Memory {
 
     // Getters
     int get_page(int addr, Process p);
+    Process get_process(int pid,  vector<Process> plist);
 
     // Other Methods
     bool is_loaded(int addr, Process p);

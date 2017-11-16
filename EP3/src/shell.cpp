@@ -5,10 +5,23 @@ using namespace std;
 void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     int time = 0;
 
+    auto m = init(proc_info.mem.page_list.size());
+
     for (int i = 0; i < proc_info.plist.size(); ) {
         
-        for (int j = 0; j < i; j++) {
-           
+        //Acessos
+        auto ac_list = proc_info.access_list[time];
+        for (auto it = ac_list.begin(); it != ac_list.end(); it++) {
+            Process p = proc_info.mem.get_process(it->pid, proc_info.plist);
+            switch (id_page) {
+                case 1:
+                    lrusecond_access(it->pos, proc_info.mem, m, p);
+                    break;
+                /*case 2:
+                    break;
+                case 3:
+                    break;*/
+            }
         }
 
         if (time == proc_info.plist[i].t0) {

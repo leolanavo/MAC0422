@@ -41,6 +41,13 @@ int Memory::get_page(int addr, Process p) {
     return ((addr + p.get_base())/spage);
 }
 
+Process Memory::get_process(int pid, vector<Process> plist) {
+    for (int i = 0; i < plist.size(); i++) {
+        if (pid == plist[i].pid)
+            return plist[i];
+    }
+}
+
 /* Receives a position in the virtual memory.
  *
  * Returns true if the page is loaded in the physical
