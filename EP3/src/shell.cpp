@@ -43,9 +43,14 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
         time++;        
     }
 
+    for (int i = 0; i < (proc_info.mem.virt/proc_info.mem.spage); i++)
+        cout << proc_info.mem.page_list[i].addr << endl;
+    cout << endl;
+    for (int i = 0; i < (proc_info.mem.phys/proc_info.mem.spage); i++)
+        cout << proc_info.mem.frame_list[i] << endl;
+    cout << endl;
     for (int i = 0; i < proc_info.mem.virt; i++)
             cout << proc_info.mem.virtual_mem[i] << endl;
-
 }
 
 /* Receives nothing.

@@ -57,7 +57,6 @@ assemb read_file(string name) {
             plist.push_back(p);
         }
 
-        access_list.clear();
         fline.clear();
     }
 

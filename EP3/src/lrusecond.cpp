@@ -3,14 +3,12 @@
 using namespace std;
 
 matrix init(int size) {
-    matrix m;
-    m.resize(size);
-    for (int i = 0; i < size; i++)
-        m[i].resize(size);
+    matrix m (size, vector<int>(size));
+    return m;
 }
 
 // Only finds which page has to be replaced
-void replace_page(int addr, Memory mem, matrix m, Process p) {
+void replace_page(int addr, Memory& mem, matrix& m, Process p) {
     int min = numeric_limits<int>::max();
     int sub_index = 0, val;
     int page_index = mem.get_page(addr, p);
@@ -38,7 +36,7 @@ void replace_page(int addr, Memory mem, matrix m, Process p) {
     mem.page_list[sub_index] = {-1, 0, 0, 0};
 }
 
-void lrusecond_access(int addr, Memory mem, matrix m, Process p) {
+void lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
     bool page_fault = !(mem.is_loaded(addr, p));
 
     if (page_fault)
