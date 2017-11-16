@@ -17,6 +17,7 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
         if (mem.frame_list[i] == -1) {
             mem.page_list[page_index] = {i, 1, 0, 1};
             mem.frame_list[i] = page_index;
+            mem.page_list[page_index].p = 1;
             return;
         }
     }
@@ -37,15 +38,18 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
 }
 
 void lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
+
     bool page_fault = !(mem.is_loaded(addr, p));
 
     if (page_fault)
         replace_page(addr, mem, m, p);
+    
 
     int page_index = mem.get_page(addr, p);
+    
     mem.page_list[page_index].r = 1;
 
-    for (int i = 0; m.size(); i++) {
+    for (int i = 0; i < m.size(); i++) {
         m[page_index][i] = 1;
         m[i][page_index] = 0;
     }

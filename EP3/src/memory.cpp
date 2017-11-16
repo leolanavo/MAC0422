@@ -55,7 +55,8 @@ Process Memory::get_process(int pid, vector<Process> plist) {
  */
 bool Memory::is_loaded(int addr, Process p) {
     int index = ((addr + p.get_base())/spage);
-    return page_list[index].p;
+    if (page_list[index].p == 0) return false;
+    return true;
 }
 
 void Memory::free_process(Process p) {
