@@ -15,7 +15,7 @@ assemb read_file(string name) {
     ifstream file(name);
     double len;
     int pid_count;
-    vector<list<Access>> access_list;
+    vector<list<Access>> access_list (2, list<Access>(0));
     vector<Process> plist;
 
     pid_count = 1;
@@ -29,6 +29,7 @@ assemb read_file(string name) {
                stoi(fline[2]), stoi(fline[3]));
 
     fline.clear();
+
 
     while (!file.eof()) {
         getline(file, line);
@@ -44,10 +45,10 @@ assemb read_file(string name) {
             for (int j = 0; j < len; j++) {
                 int i = j*2 + 4;
                 int time = stoi(fline[i + 1]);
-                if (time > access_list.size())
+                if (time >= access_list.size())
                     access_list.resize(time + 1);
 
-                access_list[time].push_back({stoi(fline[i]), pid_count});
+                access_list[time].push_back({stoi(fline[i]), pid_count});                
             }
 
             Process p (stoi(fline[0]), stoi(fline[1]), stoi(fline[2]), fline[3], len);

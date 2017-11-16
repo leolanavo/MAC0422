@@ -40,9 +40,10 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
 void lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
 
     bool page_fault = !(mem.is_loaded(addr, p));
-
+    
     if (page_fault)
         replace_page(addr, mem, m, p);
+    
     
 
     int page_index = mem.get_page(addr, p);

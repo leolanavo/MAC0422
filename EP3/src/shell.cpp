@@ -3,55 +3,74 @@
 using namespace std;
 
 void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
-    int time = 0;
+    
+    int i, time;
+    i = time = 0;
+    list<Process> running;
 
-    auto m = init(proc_info.mem.page_list.size());
+    auto m = init(proc_info.mem.page_list.size());    
 
-    for (int i = 0; i < proc_info.plist.size(); ) {
-        
-        //Acessos
-        auto ac_list = proc_info.access_list[time];
-        for (auto it = ac_list.begin(); it != ac_list.end(); it++) {
-            Process p = proc_info.mem.get_process(it->pid, proc_info.plist);
-            switch (id_page) {
-                case 1:
-                    lrusecond_access(it->pos, proc_info.mem, m, p);
-                    break;
-                /*case 2:
-                    break;
-                case 3:
-                    break;*/
+    while (i < proc_info.plist.size() || !running.empty()) {
+
+        list<Process>::iterator it;
+        for (it = running.begin(); it != running.end(); it++) {
+            if (time == it->tf) {
+                //proc_info.mem.free_process(*it);
+                it = running.erase(it);
             }
         }
 
-        if (time == proc_info.plist[i].t0) {
+        if (i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
             switch (id_fit) {
                 case 1:
                     proc_info.mem.best_fit(proc_info.plist[i]);
+                    running.push_back(proc_info.plist[i]);
                     break;
                 case 2:
                     proc_info.mem.worst_fit(proc_info.plist[i]);
+                    running.push_back(proc_info.plist[i]);
                     break;
                 case 3:
                     proc_info.mem.quick_fit(proc_info.plist[i]);
+                    running.push_back(proc_info.plist[i]);
                     break;
             }
 
             i++;
         }
 
+        //Acessos
+        if (time < proc_info.access_list.size()) {
+            auto ac_list = proc_info.access_list[time];
+            for (auto it = ac_list.begin(); it != ac_list.end(); it++) {
+                Process p = proc_info.mem.get_process(it->pid, proc_info.plist);
+                switch (id_page) {
+                    case 1:
+                        lrusecond_access(it->pos, proc_info.mem, m, p);
+                        break;
+                    /*case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;*/
+                }   
+            }
+        }
+
         time++;        
     }
+
     /*
     for (int i = 0; i < (proc_info.mem.virt/proc_info.mem.spage); i++)
         cout << proc_info.mem.page_list[i].addr << endl;
-    cout << endl;
+    cout << endl;*/
     for (int i = 0; i < (proc_info.mem.phys/proc_info.mem.spage); i++)
         cout << proc_info.mem.frame_list[i] << endl;
     cout << endl;
     for (int i = 0; i < proc_info.mem.virt; i++)
             cout << proc_info.mem.virtual_mem[i] << endl;
-    */
+    
 }
 
 /* Receives nothing.

@@ -35,7 +35,7 @@ void test_read () {
 }
 
 void test_best () {
-    string file = "test.txt";
+    string file = "test.txt";    
     assemb a = read_file(file);
     simulate(a, 1, 1, 3);    
 }
