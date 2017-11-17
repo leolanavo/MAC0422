@@ -16,7 +16,7 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
         list<Process>::iterator it;
         for (it = running.begin(); it != running.end(); it++) {
             if (time == it->tf) {
-                //proc_info.mem.free_process(*it);
+                proc_info.mem.free_process(*it);
                 it = running.erase(it);
             }
         }

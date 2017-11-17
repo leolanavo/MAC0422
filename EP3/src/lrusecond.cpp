@@ -44,9 +44,7 @@ void lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
     
     if (page_fault)
         replace_page(addr, mem, m, p);
-    
-    
-
+        
     int page_index = mem.get_page(addr, p);
     
     mem.page_list[page_index].r = 1;

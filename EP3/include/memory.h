@@ -62,7 +62,7 @@ class Memory {
     Process get_process(int pid,  vector<Process> plist);
 
     // Other Methods
-    void load_phys(int page);
+    void load_phys(int page, int phys);
     bool is_loaded(int addr, Process p);
     void free_process(Process p);
     void best_fit(Process& p);
