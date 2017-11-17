@@ -21,6 +21,7 @@ void replace_page(int addr, Memory mem, Process p) {
     }
 
     for (int i = 0; mem.page_list.size(); i++) {
+        val = mem.page_list[i].counter;
         if (val < min) {
             min = val;
             sub_index = i;

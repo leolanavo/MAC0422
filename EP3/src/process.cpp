@@ -12,7 +12,7 @@ using namespace std;
  * NOTE: the base field will be set according to the chosen algorithm.
  */
 Process::Process (int t0, int tf, int b, string name, int naccess) :
-    t0(t0), tf(tf), b(b), name(name), p_base(-1), next(0), naccess(naccess)
+    t0(t0), tf(tf), b(b), name(name), v_base(-1), next(0), naccess(naccess)
 {
 }
 
@@ -23,7 +23,7 @@ Process::Process (int t0, int tf, int b, string name, int naccess) :
  * Returns nothing;
  */
 void Process::set_base(int base) {
-    this->p_base = base;
+    this->v_base = base;
 }
 
 /* Receives nothing;
