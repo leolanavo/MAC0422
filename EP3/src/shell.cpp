@@ -8,7 +8,7 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     i = time = 0;
     list<Process> running;
 
-    auto m = init(proc_info.mem.page_list.size());
+    auto m = lrusecond_init(proc_info.mem.page_list.size());
     list<page> fifo_pages = list<page>(0);   
 
     while (i < proc_info.plist.size() || !running.empty()) {

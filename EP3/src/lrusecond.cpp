@@ -2,7 +2,7 @@
 
 using namespace std;
 
-matrix init(int size) {
+matrix lrusecond_init(int size) {
     matrix m (size, vector<int>(size));
     return m;
 }
