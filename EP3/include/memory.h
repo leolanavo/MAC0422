@@ -25,6 +25,16 @@ struct page {
     bool p;
 };
 
+struct best_size {
+	int freq;
+	int size;
+};
+
+struct best_alloc {
+	int size;
+	list<Alloc> free_mem;
+};
+
 /* Class: Memory
  * -------------
  *  Fields:
@@ -40,6 +50,8 @@ class Memory {
     vector<int> virtual_mem, phys_mem;
     vector<page> page_list;
     vector<int> frame_list;
+    list<best_size> opt_size;
+    list<best_alloc> opt_mem;
 
     // Constructors
     Memory ();
@@ -50,6 +62,7 @@ class Memory {
     Process get_process(int pid,  vector<Process> plist);
 
     // Other Methods
+    void load_phys(int page);
     bool is_loaded(int addr, Process p);
     void free_process(Process p);
     void best_fit(Process& p);

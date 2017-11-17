@@ -9,6 +9,7 @@
 #include "string_split.h"
 #include "read.h"
 #include "lrusecond.h"
+#include "fifo.h"
 
 struct assemb;
 

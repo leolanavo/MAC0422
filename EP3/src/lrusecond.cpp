@@ -33,6 +33,7 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
         }
     }
 
+    mem.frame_list[mem.page_list[sub_index].addr] = page_index;
     mem.page_list[page_index] = {mem.page_list[sub_index].addr, 1, 0, 1};
     mem.page_list[sub_index] = {-1, 0, 0, 0};
 }

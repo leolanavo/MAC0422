@@ -26,6 +26,8 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     Alloc mem = {-1, 0, virt};
     list<Alloc> tmp(1, mem);
     free_mem = tmp;
+    opt_size = list<best_size>(0);
+    opt_mem = list<best_alloc>(0); 
 
     for (int i = 0; i < virt/spage; i++) page_list[i].addr = -1;
     for (int i = 0; i < phys/spage; i++) frame_list[i] = -1;
@@ -46,6 +48,12 @@ Process Memory::get_process(int pid, vector<Process> plist) {
         if (pid == plist[i].pid)
             return plist[i];
     }
+}
+
+void Memory::load_phys(int page) {
+    int start = page*spage;
+    for (int i = start; i < start + spage; i++)
+        phys_mem[i] = virtual_mem[i]; 
 }
 
 /* Receives a position in the virtual memory.
@@ -70,7 +78,7 @@ void Memory::free_process(Process p) {
     if (find_p != used_mem.end()) {
         Alloc node = {find_p->pid, find_p->base, find_p->size};
         used_mem.remove(node);
-        
+
         node.pid = -1;
         for (auto it = free_mem.begin(); it != free_mem.end(); it++) {
             if (it->base + it->size == node.base ||
@@ -121,6 +129,50 @@ void Memory::best_fit(Process& p) {
 	for (int i = best_node->base; i < best_node->base + min_space; i++)
 		virtual_mem[i] = p.pid;
 
+    if (best_node->size != min_space) {
+        reinsert.base = insert.base + min_space;
+        reinsert.size = best_node->size - insert.size;
+        reinsert.pid = -1;
+        free_mem.insert(best_node, reinsert);
+    }
+    
+    free_mem.remove(tmp);
+    used_mem.push_back(insert);
+}
+
+/* Receives a process to allocate in the virtual memory,
+ * using the "worst fit" algorithm.
+ *
+ * Returns nothing.
+ */
+void Memory::worst_fit(Process p) {
+
+    int index, min_space;
+    Alloc best, insert, reinsert, tmp;
+    list<Alloc>::iterator it_list = free_mem.begin();
+    list<Alloc>::iterator best_node = free_mem.begin();
+
+    min_space = (int)ceil((double) p.b/unity) * unity;
+    best = *(it_list++);
+
+    while (it_list != free_mem.end()) {
+
+        if (it_list->size > best.size && it_list->size >= min_space) {
+            best = *(it_list);
+            best_node = it_list;
+        }
+
+        index++;
+        it_list++;
+    }
+
+    p.v_base = best_node->base;
+    insert = {p.pid, best_node->base, min_space};
+    tmp = {best_node->pid, best_node->base, best_node->size};
+
+    for (int i = best_node->base; i < best_node->base + min_space; i++)
+        virtual_mem[i] = p.pid;
+
 
     free_mem.remove(tmp);
 
@@ -132,14 +184,6 @@ void Memory::best_fit(Process& p) {
     }
 
     used_mem.push_front(insert);
-}
-
-/* Receives a process to allocate in the virtual memory,
- * using the "worst fit" algorithm.
- *
- * Returns nothing.
- */
-void Memory::worst_fit(Process p) {
 
 }
 

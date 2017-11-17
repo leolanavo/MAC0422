@@ -34,6 +34,17 @@ assemb read_file(string name) {
     while (!file.eof()) {
         getline(file, line);
 
+        auto it = mem.opt_size.begin();
+        for (; it != mem.opt_size.end(); it++) {
+            if (it->size == stoi(fline[2])) {
+                it->freq++;
+                break;
+            }
+        }
+        if (it == mem.opt_size.end()) {
+            mem.opt_size.push_back({1 , stoi(fline[2])});
+        }
+
         fline = split_spaces(line);
 
         if (fline.size() == 2) {

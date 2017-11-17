@@ -31,7 +31,7 @@ void Process::set_base(int base) {
  * Returns the current base of the process
  */
 int Process::get_base() {
-    return this->p_base;
+    return this->v_base;
 }
 
 /* Receives nothing;

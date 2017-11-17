@@ -8,7 +8,8 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     i = time = 0;
     list<Process> running;
 
-    auto m = init(proc_info.mem.page_list.size());    
+    auto m = init(proc_info.mem.page_list.size());
+    list<page> fifo_pages = list<page>(0);   
 
     while (i < proc_info.plist.size() || !running.empty()) {
 
@@ -48,9 +49,10 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
                     case 1:
                         lrusecond_access(it->pos, proc_info.mem, m, p);
                         break;
-                    /*case 2:
+                    case 2:
+                        fifo_access(it->pos, proc_info.mem, fifo_pages, p);
                         break;
-                    case 3:
+                    /*case 3:
                         break;
                     case 4:
                         break;*/
@@ -61,15 +63,22 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
         time++;        
     }
 
-    /*
+    for (auto it = proc_info.mem.used_mem.begin(); it != proc_info.mem.used_mem.end(); it++) {
+        cout << "base " << it->base << endl;
+        cout << "size " << it->size << endl;
+    }
+    cout << endl;
     for (int i = 0; i < (proc_info.mem.virt/proc_info.mem.spage); i++)
         cout << proc_info.mem.page_list[i].addr << endl;
-    cout << endl;*/
+    cout << endl;
     for (int i = 0; i < (proc_info.mem.phys/proc_info.mem.spage); i++)
         cout << proc_info.mem.frame_list[i] << endl;
     cout << endl;
     for (int i = 0; i < proc_info.mem.virt; i++)
             cout << proc_info.mem.virtual_mem[i] << endl;
+    cout << endl;
+    for (int i = 0; i < proc_info.mem.phys; i++)
+            cout << proc_info.mem.phys_mem[i] << endl;
     
 }
 
