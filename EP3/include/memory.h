@@ -47,11 +47,11 @@ struct best_alloc {
 class Memory {
  public:
     int phys, virt, unity, spage;
+    int page_counter_size;
     list<Alloc> free_mem, used_mem;
     vector<int> virtual_mem, phys_mem;
     vector<page> page_list;
     vector<int> frame_list;
-    list<best_size> opt_size;
     list<best_alloc> opt_mem;
 
     // Constructors
@@ -68,7 +68,9 @@ class Memory {
     void free_process(Process p);
     void best_fit(Process& p);
     void worst_fit(Process p);
+    void generate_lists(list<best_size> l);
     void quick_fit(Process p);
+
     ~Memory();
 };
 

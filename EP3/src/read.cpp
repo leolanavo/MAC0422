@@ -17,6 +17,8 @@ assemb read_file(string name) {
     int pid_count;
     vector<list<Access>> access_list (2, list<Access>(0));
     vector<Process> plist;
+    list<best_size> opt_size;
+
 
     pid_count = 1;
 
@@ -34,15 +36,15 @@ assemb read_file(string name) {
     while (!file.eof()) {
         getline(file, line);
 
-        auto it = mem.opt_size.begin();
-        for (; it != mem.opt_size.end(); it++) {
+        auto it = opt_size.begin();
+        for (; it != opt_size.end(); it++) {
             if (it->size == stoi(fline[2])) {
                 it->freq++;
                 break;
             }
         }
-        if (it == mem.opt_size.end()) {
-            mem.opt_size.push_back({1 , stoi(fline[2])});
+        if (it == opt_size.end()) {
+            opt_size.push_back({1 , stoi(fline[2])});
         }
 
         fline = split_spaces(line);
@@ -71,6 +73,8 @@ assemb read_file(string name) {
 
         fline.clear();
     }
+
+    mem.generate_lists(opt_size);
 
     return {mem, plist, access_list};
 }

@@ -26,8 +26,7 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     Alloc mem = {-1, 0, virt};
     list<Alloc> tmp(1, mem);
     free_mem = tmp;
-    opt_size = list<best_size>(0);
-    opt_mem = list<best_alloc>(0);
+    opt_mem = list<best_alloc>(0); 
 
     for (int i = 0; i < virt/spage; i++) page_list[i].addr = -1;
     for (int i = 0; i < phys/spage; i++) frame_list[i] = -1;
@@ -189,6 +188,20 @@ void Memory::worst_fit(Process p) {
     used_mem.push_front(insert);
 
 }
+
+bool compare_size (const best_size& b1, const best_size& b2) {
+    if (b1.freq < b2.freq) return true;
+    return false; 
+}
+
+void Memory::generate_lists(list<best_size> l) {
+    l.sort(compare_size);
+
+    for (auto it = l.begin(); it != l.end(); it++) {
+
+    }
+}
+
 
 /* Receives a process to allocate in the virtual memory,
  * using the "quick fit" algorithm.
