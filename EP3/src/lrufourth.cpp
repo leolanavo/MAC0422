@@ -1,14 +1,12 @@
-#include "lrusecond.h"
+#include "lrufourth.h"
 
-using namespace std;
-
-matrix init(int size) {
-    matrix m (size, vector<int>(size));
-    return m;
+void lrufourth_access(Memory mem) {
+    for (int i = 0; i < mem.page_list.size(); i++)
+        mem.page_list[i].counter = 0;
+    mem.page_counter_size = mem.page_list.size();
 }
 
-// Only finds which page has to be replaced
-void replace_page(int addr, Memory& mem, matrix& m, Process p) {
+void replace_page(int addr, Memory mem, Process p) {
     int min = numeric_limits<int>::max();
     int sub_index = 0, val;
     int page_index = mem.get_page(addr, p);
@@ -22,11 +20,7 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
         }
     }
 
-    for (int i = 0; m.size(); i++) {
-        val = 0;
-        for (int j = 0; j < m[i].size(); j++)
-            val += m[i][j] * ((int) pow(2.0, (double) m[i].size() - j - 1));
-
+    for (int i = 0; mem.page_list.size(); i++) {
         if (val < min) {
             min = val;
             sub_index = i;
@@ -38,20 +32,20 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
     mem.page_list[sub_index] = {-1, 0, 0, 0};
 }
 
-void lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
-
+void lrufourth_access(int addr, Memory mem, Process p) {
     bool page_fault = !(mem.is_loaded(addr, p));
 
     if (page_fault)
-        replace_page(addr, mem, m, p);
-
+        replace_page(addr, mem, p);
     int page_index = mem.get_page(addr, p);
 
     mem.page_list[page_index].r = 1;
 
-    for (int i = 0; i < m.size(); i++) {
-        m[page_index][i] = 1;
-        m[i][page_index] = 0;
+    for (int i = 0; i < mem.page_list.size(); i++) {
+        mem.page_list[i].counter >> 2;
+        mem.page_list[i].counter += mem.page_list[i].r *
+            pow(2.0, mem.page_counter_size - 1);
     }
-}
 
+    mem.page_list[page_index].r = 1;
+}

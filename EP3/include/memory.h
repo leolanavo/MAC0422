@@ -23,6 +23,7 @@ struct page {
     bool r;
     bool m;
     bool p;
+    int counter;
 };
 
 struct best_size {

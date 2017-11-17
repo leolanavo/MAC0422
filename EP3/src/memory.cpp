@@ -27,7 +27,7 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     list<Alloc> tmp(1, mem);
     free_mem = tmp;
     opt_size = list<best_size>(0);
-    opt_mem = list<best_alloc>(0); 
+    opt_mem = list<best_alloc>(0);
 
     for (int i = 0; i < virt/spage; i++) page_list[i].addr = -1;
     for (int i = 0; i < phys/spage; i++) frame_list[i] = -1;
@@ -51,12 +51,12 @@ Process Memory::get_process(int pid, vector<Process> plist) {
 }
 
 void Memory::load_phys(int page, int phys) {
-    int v_start, p_start;  
+    int v_start, p_start;
     v_start = page*spage;
     p_start = phys*spage;
 
     for (int i = v_start, j = p_start; i < v_start + spage; i++, j++)
-        phys_mem[j] = virtual_mem[i]; 
+        phys_mem[j] = virtual_mem[i];
 }
 
 /* Receives a position in the virtual memory.
@@ -86,17 +86,17 @@ void Memory::free_process(Process p) {
         for (auto it = free_mem.begin(); it != free_mem.end(); it++) {
             if (it->base + it->size == node.base) {
                 node.base = it->base;
-                node.size = node.size + it->size;                 
+                node.size = node.size + it->size;
                 free_mem.insert(it, node);
                 it = free_mem.erase(it);
             }
 
             if (node.base + node.size == it->base) {
-                node.size = node.size + it->size;                 
+                node.size = node.size + it->size;
                 free_mem.insert(it, node);
                 it = free_mem.erase(it);
             }
-        }        
+        }
     }
 }
 
@@ -138,7 +138,7 @@ void Memory::best_fit(Process& p) {
         reinsert.pid = -1;
         free_mem.insert(best_node, reinsert);
     }
-    
+
     free_mem.remove(tmp);
     used_mem.push_back(insert);
 }
