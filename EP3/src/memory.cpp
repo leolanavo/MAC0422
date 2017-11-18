@@ -189,16 +189,29 @@ void Memory::worst_fit(Process p) {
 
 }
 
-bool compare_size (const best_size& b1, const best_size& b2) {
+bool compare_freq (const best_size& b1, const best_size& b2) {
     if (b1.freq < b2.freq) return true;
     return false; 
 }
 
 void Memory::generate_lists(list<best_size> l) {
-    l.sort(compare_size);
+    int n, ac_freq, min_size;
+    n = l.size()/3;
+    ac_freq = 0;
+    l.sort(compare_freq);
+    
+    auto it = --l.end();
+    for (int i = 0; i < n; i++, it--) 
+        ac_freq += it->freq;
 
-    for (auto it = l.begin(); it != l.end(); it++) {
-
+    it = --l.end();
+    for (int i = 0; i < n; i++, it--) {   
+        min_size = (int)ceil((double) it->size/unity) * unity;
+/*        for () {
+            
+        }
+*/
+        opt_mem.push_back({min_size, list<Alloc>(0)});
     }
 }
 

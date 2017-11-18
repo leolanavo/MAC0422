@@ -9,6 +9,9 @@ void replace_page(int addr, int current_time, Memory mem,
     int sub_index = -1;
     int time = current_time;
 
+    if (check_empty(addr, mem, p))
+        return;
+
     for(int i = 0; i < mem.frame_list.size(); i++) {
         int index = mem.frame_list[i];
         bool skip = false;

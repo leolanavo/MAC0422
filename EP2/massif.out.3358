@@ -1,0 +1,869 @@
+desc: (none)
+cmd: bin/ep2 250 15 160
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=5453407
+mem_heap_B=18192
+mem_heap_extra_B=4424
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=9569151
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=13614521
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=17710677
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=23176909
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=detailed
+n6: 18312 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n0: 368 in 7 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=6
+#-----------
+time=27252042
+mem_heap_B=18192
+mem_heap_extra_B=4424
+mem_stacks_B=0
+heap_tree=detailed
+n6: 18192 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n0: 248 in 7 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=7
+#-----------
+time=31253767
+mem_heap_B=18192
+mem_heap_extra_B=4424
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=36631855
+mem_heap_B=18192
+mem_heap_extra_B=4424
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=40719819
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=47516172
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=51581130
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=57085641
+mem_heap_B=18192
+mem_heap_extra_B=4424
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=62445162
+mem_heap_B=19096
+mem_heap_extra_B=4664
+mem_stacks_B=0
+heap_tree=detailed
+n7: 19096 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n2: 784 0x401B20: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n2: 784 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 784 0x401812: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 784 0x4E386B8: start_thread (pthread_create.c:333)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n0: 368 in 6 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=14
+#-----------
+time=66811858
+mem_heap_B=19096
+mem_heap_extra_B=4664
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=70806812
+mem_heap_B=19096
+mem_heap_extra_B=4664
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=77559204
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=82936577
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=88398819
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=93849109
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=99378238
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=106262012
+mem_heap_B=19096
+mem_heap_extra_B=4664
+mem_stacks_B=0
+heap_tree=detailed
+n7: 19096 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n2: 784 0x401B20: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n2: 784 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 784 0x401812: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 784 0x4E386B8: start_thread (pthread_create.c:333)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n0: 368 in 6 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=22
+#-----------
+time=111688391
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=118404843
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=122515768
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=128029465
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=134934611
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=139068653
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=143132704
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=148530724
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=152703874
+mem_heap_B=19096
+mem_heap_extra_B=4664
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=156702316
+mem_heap_B=18312
+mem_heap_extra_B=4440
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=161951037
+mem_heap_B=21414
+mem_heap_extra_B=4922
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=165710801
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=172210570
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=176134494
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=181247234
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=185069639
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=190127113
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=192819693
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=197874687
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=204187926
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=210612677
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=216925765
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=220717953
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=225829066
+mem_heap_B=20966
+mem_heap_extra_B=4794
+mem_stacks_B=0
+heap_tree=detailed
+n9: 20966 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 1182 0x400BBF4: _dl_new_object (dl-object.c:75)
+  n1: 1182 0x400650B: _dl_map_object_from_fd (dl-load.c:1006)
+   n1: 1182 0x4008C25: _dl_map_object (dl-load.c:2476)
+    n1: 1182 0x4015575: dl_open_worker (dl-open.c:237)
+     n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+      n1: 1182 0x4014DA7: _dl_open (dl-open.c:660)
+       n1: 1182 0x519156B: do_dlopen (dl-libc.c:87)
+        n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+         n1: 1182 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+          n1: 1182 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+           n1: 1182 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+            n1: 1182 0x4E4106E: __pthread_unwind (unwind.c:121)
+             n1: 1182 0x4E39843: pthread_exit (pthreadP.h:283)
+              n1: 1182 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+               n1: 1182 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+                n0: 1182 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n2: 840 0x401B20: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n2: 840 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x40188A: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x4E386B8: start_thread (pthread_create.c:333)
+   n0: 0 in 2 places, all below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n0: 640 in 10 places, all below massif's threshold (1.00%)
+ n1: 360 0x40120BC: _dl_check_map_versions (dl-version.c:293)
+  n1: 360 0x4015B17: dl_open_worker (dl-open.c:286)
+   n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+    n1: 360 0x4014DA7: _dl_open (dl-open.c:660)
+     n1: 360 0x519156B: do_dlopen (dl-libc.c:87)
+      n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+       n1: 360 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+        n1: 360 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+         n1: 360 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+          n1: 360 0x4E4106E: __pthread_unwind (unwind.c:121)
+           n1: 360 0x4E39843: pthread_exit (pthreadP.h:283)
+            n1: 360 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+             n1: 360 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+              n0: 360 0x4E386B8: start_thread (pthread_create.c:333)
+#-----------
+snapshot=46
+#-----------
+time=229658653
+mem_heap_B=22790
+mem_heap_extra_B=5306
+mem_stacks_B=0
+heap_tree=peak
+n10: 22790 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n2: 2520 0x401B20: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n3: 2520 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 1680 0x40188A: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 1680 0x4E386B8: start_thread (pthread_create.c:333)
+   n1: 840 0x401812: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x4E386B8: start_thread (pthread_create.c:333)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 1182 0x400BBF4: _dl_new_object (dl-object.c:75)
+  n1: 1182 0x400650B: _dl_map_object_from_fd (dl-load.c:1006)
+   n1: 1182 0x4008C25: _dl_map_object (dl-load.c:2476)
+    n1: 1182 0x4015575: dl_open_worker (dl-open.c:237)
+     n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+      n1: 1182 0x4014DA7: _dl_open (dl-open.c:660)
+       n1: 1182 0x519156B: do_dlopen (dl-libc.c:87)
+        n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+         n1: 1182 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+          n1: 1182 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+           n1: 1182 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+            n1: 1182 0x4E4106E: __pthread_unwind (unwind.c:121)
+             n1: 1182 0x4E39843: pthread_exit (pthreadP.h:283)
+              n1: 1182 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+               n1: 1182 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+                n0: 1182 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n0: 424 in 9 places, all below massif's threshold (1.00%)
+ n1: 360 0x40120BC: _dl_check_map_versions (dl-version.c:293)
+  n1: 360 0x4015B17: dl_open_worker (dl-open.c:286)
+   n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+    n1: 360 0x4014DA7: _dl_open (dl-open.c:660)
+     n1: 360 0x519156B: do_dlopen (dl-libc.c:87)
+      n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+       n1: 360 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+        n1: 360 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+         n1: 360 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+          n1: 360 0x4E4106E: __pthread_unwind (unwind.c:121)
+           n1: 360 0x4E39843: pthread_exit (pthreadP.h:283)
+            n1: 360 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+             n1: 360 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+              n0: 360 0x4E386B8: start_thread (pthread_create.c:333)
+ n2: 360 0x401AEB: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 360 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 360 in 3 places, all below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=47
+#-----------
+time=233171120
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=237915421
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=242721067
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=246292051
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=detailed
+n10: 21950 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n2: 1680 0x401B20: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n2: 1680 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 1680 0x40188A: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 1680 0x4E386B8: start_thread (pthread_create.c:333)
+   n0: 0 in 2 places, all below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1182 0x400BBF4: _dl_new_object (dl-object.c:75)
+  n1: 1182 0x400650B: _dl_map_object_from_fd (dl-load.c:1006)
+   n1: 1182 0x4008C25: _dl_map_object (dl-load.c:2476)
+    n1: 1182 0x4015575: dl_open_worker (dl-open.c:237)
+     n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+      n1: 1182 0x4014DA7: _dl_open (dl-open.c:660)
+       n1: 1182 0x519156B: do_dlopen (dl-libc.c:87)
+        n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+         n1: 1182 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+          n1: 1182 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+           n1: 1182 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+            n1: 1182 0x4E4106E: __pthread_unwind (unwind.c:121)
+             n1: 1182 0x4E39843: pthread_exit (pthreadP.h:283)
+              n1: 1182 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+               n1: 1182 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+                n0: 1182 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n0: 424 in 9 places, all below massif's threshold (1.00%)
+ n1: 360 0x40120BC: _dl_check_map_versions (dl-version.c:293)
+  n1: 360 0x4015B17: dl_open_worker (dl-open.c:286)
+   n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+    n1: 360 0x4014DA7: _dl_open (dl-open.c:660)
+     n1: 360 0x519156B: do_dlopen (dl-libc.c:87)
+      n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+       n1: 360 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+        n1: 360 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+         n1: 360 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+          n1: 360 0x4E4106E: __pthread_unwind (unwind.c:121)
+           n1: 360 0x4E39843: pthread_exit (pthreadP.h:283)
+            n1: 360 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+             n1: 360 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+              n0: 360 0x4E386B8: start_thread (pthread_create.c:333)
+ n2: 360 0x401AEB: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 360 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 360 in 3 places, all below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=51
+#-----------
+time=249879319
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=254690077
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=258222566
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=261845708
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=265516852
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=269076961
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=273806254
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=277404355
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=282105619
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=285649952
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=detailed
+n10: 21950 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 10000 0x401290: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 10000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 10000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 4080 0x40138A3: _dl_allocate_tls (dl-tls.c:322)
+  n1: 4080 0x4E3926D: pthread_create@@GLIBC_2.2.5 (allocatestack.c:588)
+   n1: 4080 0x4018EB: init_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 4080 0x400BF2: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n1: 2000 0x401249: construct_velodrome (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 2000 0x4019E4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 2000 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n2: 1680 0x401B20: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n2: 1680 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 1680 0x40188A: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 1680 0x4E386B8: start_thread (pthread_create.c:333)
+   n0: 0 in 2 places, all below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 1182 0x400BBF4: _dl_new_object (dl-object.c:75)
+  n1: 1182 0x400650B: _dl_map_object_from_fd (dl-load.c:1006)
+   n1: 1182 0x4008C25: _dl_map_object (dl-load.c:2476)
+    n1: 1182 0x4015575: dl_open_worker (dl-open.c:237)
+     n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+      n1: 1182 0x4014DA7: _dl_open (dl-open.c:660)
+       n1: 1182 0x519156B: do_dlopen (dl-libc.c:87)
+        n1: 1182 0x4010562: _dl_catch_error (dl-error.c:187)
+         n1: 1182 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+          n1: 1182 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+           n1: 1182 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+            n1: 1182 0x4E4106E: __pthread_unwind (unwind.c:121)
+             n1: 1182 0x4E39843: pthread_exit (pthreadP.h:283)
+              n1: 1182 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+               n1: 1182 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+                n0: 1182 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 1024 0x50BB1D3: _IO_file_doallocate (filedoalloc.c:127)
+  n1: 1024 0x50C9592: _IO_doallocbuf (genops.c:398)
+   n1: 1024 0x50C88F6: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:820)
+    n1: 1024 0x50C728B: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1331)
+     n1: 1024 0x509B23F: vfprintf (vfprintf.c:1320)
+      n1: 1024 0x51649AD: __printf_chk (printf_chk.c:35)
+       n1: 1024 0x4017FF: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+        n0: 1024 0x4E386B8: start_thread (pthread_create.c:333)
+ n1: 840 0x401D1B: init_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 840 0x40139D: construct_competitors (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n1: 840 0x4019D4: construct_race (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+    n0: 840 0x400BBC: main (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+ n0: 424 in 9 places, all below massif's threshold (1.00%)
+ n1: 360 0x40120BC: _dl_check_map_versions (dl-version.c:293)
+  n1: 360 0x4015B17: dl_open_worker (dl-open.c:286)
+   n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+    n1: 360 0x4014DA7: _dl_open (dl-open.c:660)
+     n1: 360 0x519156B: do_dlopen (dl-libc.c:87)
+      n1: 360 0x4010562: _dl_catch_error (dl-error.c:187)
+       n1: 360 0x5191622: __libc_dlopen_mode (dl-libc.c:46)
+        n1: 360 0x4E42919: pthread_cancel_init (unwind-forcedunwind.c:52)
+         n1: 360 0x4E42B02: _Unwind_ForcedUnwind (unwind-forcedunwind.c:126)
+          n1: 360 0x4E4106E: __pthread_unwind (unwind.c:121)
+           n1: 360 0x4E39843: pthread_exit (pthreadP.h:283)
+            n1: 360 0x4016E3: hold (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+             n1: 360 0x401720: thread_cyclist (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+              n0: 360 0x4E386B8: start_thread (pthread_create.c:333)
+ n2: 360 0x401AEB: copy_array (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+  n1: 360 0x400DCA: print_scoreboard (in /home/beatriz/Documentos/MAC0422/EP2/bin/ep2)
+   n0: 360 in 3 places, all below massif's threshold (1.00%)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=61
+#-----------
+time=293786730
+mem_heap_B=21950
+mem_heap_extra_B=5066
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=302263277
+mem_heap_B=20742
+mem_heap_extra_B=5018
+mem_stacks_B=0
+heap_tree=empty

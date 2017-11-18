@@ -7,6 +7,7 @@
 #include <limits>
 
 #include "memory.h"
+#include "check_empty.h"
 
 void lrufourth_init(Memory mem);
 

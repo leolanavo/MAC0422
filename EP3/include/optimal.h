@@ -6,6 +6,7 @@
 
 #include "process.h"
 #include "memory.h"
+#include "check_empty.h"
 
 
 void access(int addr, int current_time, Memory mem,

@@ -13,14 +13,8 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
     int sub_index = 0, val;
     int page_index = mem.get_page(addr, p);
 
-    for (int i = 0; mem.frame_list.size(); i++) {
-        if (mem.frame_list[i] == -1) {
-            mem.page_list[page_index] = {i, 1, 0, 1};
-            mem.frame_list[i] = page_index;
-            mem.page_list[page_index].p = 1;
-            return;
-        }
-    }
+    if (check_empty(addr, mem, p))
+        return;
 
     for (int i = 0; m.size(); i++) {
         val = 0;
