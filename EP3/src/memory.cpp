@@ -40,11 +40,11 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
  * Returns the page frame according to the given
  * arguments.
  */
-int Memory::get_page(int addr, Process p) {
+int Memory::get_page(int addr, Process& p) {
     return ((addr + p.get_base())/spage);
 }
 
-Process Memory::get_process(int pid, vector<Process> plist) {
+Process Memory::get_process(int pid, vector<Process>& plist) {
     for (int i = 0; i < plist.size(); i++) {
         if (pid == plist[i].pid)
             return plist[i];
@@ -65,7 +65,7 @@ void Memory::load_phys(int page, int phys) {
  * Returns true if the page is loaded in the physical
  * memory. False otherwise.
  */
-bool Memory::is_loaded(int addr, Process p) {
+bool Memory::is_loaded(int addr, Process& p) {
     int index = ((addr + p.get_base())/spage);
     if (page_list[index].p == 0) return false;
     return true;
@@ -144,7 +144,7 @@ void Memory::compact(vector<Process>& plist) {
     used_mem = used_aux;
 }
 
-void Memory::free_process(Process p) {
+void Memory::free_process(Process& p) {
 
     bool append = false;
 
@@ -232,7 +232,7 @@ void Memory::best_fit(Process& p) {
  *
  * Returns nothing.
  */
-void Memory::worst_fit(Process p) {
+void Memory::worst_fit(Process& p) {
     int index, min_space;
     Alloc best, insert, reinsert, tmp;
     list<Alloc>::iterator it_list = free_mem.begin();
@@ -278,7 +278,7 @@ bool compare_size (const best_alloc& a1, const best_alloc& a2) {
     return (a1.size < a2.size); 
 }
 
-void Memory::generate_lists(list<best_size> l) {
+void Memory::generate_lists(list<best_size>& l) {
     int n, ac_freq, min_size, offset;
     n = l.size()/3;
     ac_freq = 0;
@@ -303,7 +303,10 @@ void Memory::generate_lists(list<best_size> l) {
     opt_mem.sort(compare_size);
 }
 
-void Memory::quick_free_process (Process p) {
+
+void Memory::quick_free_process (Process& p) {
+    free_process(p);
+    update_lists();
 }
 
 
@@ -312,7 +315,7 @@ void Memory::quick_free_process (Process p) {
  *
  * Returns nothing.
  */
-void Memory::quick_fit(Process p) {
+void Memory::quick_fit(Process& p) {
     auto it = opt_mem.begin();    
     int min_size = (int)ceil((double) p.b/unity) * unity;   
 

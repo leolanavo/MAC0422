@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
+void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
     
     int i, time, counter_pf;
     bool page_fault = false;
@@ -14,7 +14,7 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     auto m = lrusecond_init(proc_info.mem.page_list.size());
     list<page> fifo_pages = list<page>(0);   
 
-    while (i < proc_info.plist.size() || !running.empty()) {
+    while ((unsigned int)i < proc_info.plist.size() || !running.empty()) {
 
         list<Process>::iterator it;
         for (it = running.begin(); it != running.end(); it++) {
@@ -26,10 +26,9 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
             }
         }
 
-
-
         while (i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
             time(&start);
+
             if (proc_info.plist[i].name == "COMPACTAR")
                 proc_info.mem.compact(proc_info.plist);
             else {
@@ -89,7 +88,6 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
         }*/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         time++;        
     }
-    cout << "É TETRA" << endl;
 }
 
 /* Receives nothing.
@@ -128,7 +126,7 @@ void prompt() {
         }
 
         else if (cmd == "sai")
-            exit(0);
+            return;
 
         else
             cout << "Comando não encontrado" << endl;

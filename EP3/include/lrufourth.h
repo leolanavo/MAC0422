@@ -11,6 +11,6 @@
 
 void lrufourth_init(Memory& mem);
 
-bool lrufourth_access(int addr, Memory& mem, Process p);
+bool lrufourth_access(int addr, Memory& mem,  Process& p);
 
 #endif

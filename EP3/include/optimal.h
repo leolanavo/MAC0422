@@ -10,7 +10,7 @@
 
 
 bool optimal_access(int addr, int current_time, Memory& mem,
-            vector<list<Access>> access_list, Process p,
-            vector<Process> plist);
+            const vector<list<Access>>& access_list, Process& p,
+            const vector<Process>& plist);
 
 #endif
