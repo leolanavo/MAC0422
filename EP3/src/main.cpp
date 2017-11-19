@@ -8,8 +8,8 @@
 using namespace std;
 
 int main (int argc, char** argv) {
-    if (argc == 2 && argv[1][0] == 't') {
-        tests();
+    if (argc == 3 && argv[1][0] == 't') {
+        tests(stoi(argv[2]));
     }
     prompt();
     return 0;

@@ -20,6 +20,6 @@ void test_read ();
 
 void test_best ();
 
-void tests();
+void tests(int id);
 
 #endif
