@@ -35,19 +35,19 @@ assemb read_file(string name) {
 
     while (!file.eof()) {
         getline(file, line);
+        fline = split_spaces(line);
 
         auto it = opt_size.begin();
-        for (; it != opt_size.end(); it++) {
+        for (; it != opt_size.end() && fline.size() != 2; it++) {
             if (it->size == stoi(fline[2])) {
                 it->freq++;
                 break;
             }
         }
+
         if (it == opt_size.end()) {
             opt_size.push_back({1 , stoi(fline[2])});
         }
-
-        fline = split_spaces(line);
 
         if (fline.size() == 2) {
            plist.push_back(Process (stoi(fline[0]), -1, -1, "COMPACTAR", 0));

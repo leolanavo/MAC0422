@@ -76,7 +76,6 @@ class Memory {
     void update_lists();
     void generate_lists(list<best_size> l);
     void quick_free_process(Process p);
-
     void quick_fit(Process p);
 
     ~Memory();

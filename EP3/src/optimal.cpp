@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void replace_page(int addr, int current_time, Memory mem,
+void replace_page(int addr, int current_time, Memory& mem,
             vector<list<Access>> access_list, Process p,
             vector<Process> plist) {
 
@@ -39,7 +39,7 @@ void replace_page(int addr, int current_time, Memory mem,
 
 }
 
-bool optimal_access(int addr, int current_time, Memory mem,
+bool optimal_access(int addr, int current_time, Memory& mem,
             vector<list<Access>> access_list, Process p,
             vector<Process> plist) {
     bool page_fault = !(mem.is_loaded(addr, p));

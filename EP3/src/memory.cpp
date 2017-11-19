@@ -28,6 +28,8 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
     free_mem = tmp;
     opt_mem = list<best_alloc>(0); 
 
+    for (int i = 0; i < virt; i++) virtual_mem[i] = -1;
+    for (int i = 0; i < phys; i++) phys_mem[i] = -1;
     for (int i = 0; i < virt/spage; i++) page_list[i].addr = -1;
     for (int i = 0; i < phys/spage; i++) frame_list[i] = -1;
 }
@@ -70,20 +72,20 @@ bool Memory::is_loaded(int addr, Process p) {
 }
 
 void Memory::print_memory () {
+    cout << "indíce : Virtual | Física" << endl;
     for (int i = virtual_mem.size() - 1; i >= 0; i--) {
-        cout << "indíce : Virtual | Física" << endl;
 
         if (i > phys_mem.size())
-            cout << "i : " << virtual_mem[i] << endl;
-        else
-            cout << "i : " << virtual_mem[i] << " | " << phys_mem[i] << endl;
+            cout << i << " : " << virtual_mem[i] << endl;
+        else    
+            cout << i << " : " << virtual_mem[i] << " | " << phys_mem[i] << endl;
     }
 }
 
 void Memory::print_phys_memory() {
     ofstream file ("/tmp/ep3.mem");
     for (int i = phys_mem.size() - 1; i >= 0; i--) {
-        cout << "i : " << phys_mem[i] << endl;
+        cout << i << " : " << phys_mem[i] << endl;
     }
     file.close();
 }
@@ -91,7 +93,7 @@ void Memory::print_phys_memory() {
 void Memory::print_virtual_memory() {
     ofstream file ("/tmp/ep3.virt");
     for (int i = virtual_mem.size() - 1; i >= 0; i--) {
-        cout << "i : " << virtual_mem[i] << endl;
+        cout << i << " : " << virtual_mem[i] << endl;
     }
     file.close();
 }
@@ -144,6 +146,8 @@ void Memory::compact(vector<Process>& plist) {
 
 void Memory::free_process(Process p) {
 
+    bool append = false;
+
     for (int i = p.v_base; i < p.v_base + p.b; i++)
         virtual_mem[i] = -1;
 
@@ -161,13 +165,21 @@ void Memory::free_process(Process p) {
                 node.size = node.size + it->size;
                 free_mem.insert(it, node);
                 it = free_mem.erase(it);
+                append = true;
             }
 
             if (node.base + node.size == it->base) {
                 node.size = node.size + it->size;
                 free_mem.insert(it, node);
                 it = free_mem.erase(it);
+                append = true;
             }
+        }
+
+        if (!append) {
+            auto it = free_mem.begin();
+            for (; it != free_mem.end() && it->base < node.base; it++);
+            free_mem.insert(it, node);
         }
     }
 }
@@ -188,7 +200,7 @@ void Memory::best_fit(Process& p) {
 
     while (it_list != free_mem.end()) {
 
-        if (it_list->size < best.size && it_list->size >= min_space) {
+        if ((it_list->size < best.size && it_list->size >= min_space) || best.size < min_space) {
             best = *(it_list);
             best_node = it_list;
         }
@@ -204,7 +216,7 @@ void Memory::best_fit(Process& p) {
 	for (int i = best_node->base; i < best_node->base + min_space; i++)
 		virtual_mem[i] = p.pid;
 
-    if (best_node->size != min_space) {
+    if (best_node->size > min_space) {
         reinsert.base = insert.base + min_space;
         reinsert.size = best_node->size - insert.size;
         reinsert.pid = -1;
@@ -221,7 +233,6 @@ void Memory::best_fit(Process& p) {
  * Returns nothing.
  */
 void Memory::worst_fit(Process p) {
-
     int index, min_space;
     Alloc best, insert, reinsert, tmp;
     list<Alloc>::iterator it_list = free_mem.begin();
@@ -232,7 +243,7 @@ void Memory::worst_fit(Process p) {
 
     while (it_list != free_mem.end()) {
 
-        if (it_list->size > best.size && it_list->size >= min_space) {
+        if ((it_list->size > best.size && it_list->size >= min_space) || best.size < min_space) {
             best = *(it_list);
             best_node = it_list;
         }
@@ -248,18 +259,15 @@ void Memory::worst_fit(Process p) {
     for (int i = best_node->base; i < best_node->base + min_space; i++)
         virtual_mem[i] = p.pid;
 
-
-    free_mem.remove(tmp);
-
-    if (best_node->size != min_space) {
+    if (best_node->size > min_space) {
         reinsert.base = insert.base + min_space;
         reinsert.size = best_node->size - insert.size;
         reinsert.pid = -1;
-        free_mem.push_front(reinsert);
+        free_mem.insert(best_node, reinsert);
     }
 
-    used_mem.push_front(insert);
-
+    free_mem.remove(tmp);
+    used_mem.push_back(insert);
 }
 
 bool compare_freq (const best_size& b1, const best_size& b2) {

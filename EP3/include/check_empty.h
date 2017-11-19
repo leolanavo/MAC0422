@@ -6,6 +6,6 @@
 #include "memory.h"
 #include "process.h"
 
-bool check_empty (int addr, Memory mem, Process p);
+bool check_empty (int addr, Memory& mem, Process p);
 
 #endif

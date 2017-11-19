@@ -1,6 +1,6 @@
 #include "check_empty.h"
 
-bool check_empty (int addr, Memory mem, Process p) {
+bool check_empty (int addr, Memory& mem, Process p) {
 	
     int page_index = mem.get_page(addr, p);
 

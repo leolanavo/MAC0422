@@ -1,4 +1,5 @@
 #include "lrusecond.h"
+#include <iostream>
 
 using namespace std;
 
@@ -47,7 +48,6 @@ bool lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
         m[page_index][i] = 1;
         m[i][page_index] = 0;
     }
-
     return page_fault;
 }
 

@@ -50,7 +50,6 @@ all: CFLAGS += $(EXECFLAGS)
 all: $(addprefix $(BINDIR)/,$(BIN))
 
 .PHONY: debug
-debug: clean
 debug: CFLAGS += $(TESTFLAGS)
 debug: $(addprefix $(TSTDIR)/,$(BIN))
 

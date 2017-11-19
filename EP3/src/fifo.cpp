@@ -2,12 +2,12 @@
 
 using namespace std;
 
-void fifo_access(int addr, Memory& mem, list<page> l, Process p) {
+bool fifo_access(int addr, Memory& mem, list<page> l, Process p) {
 
     int page_index = mem.get_page(addr, p);
     auto it = --l.cend();
 
-    if (mem.page_list[page_index].p == 1) return;
+    if (mem.page_list[page_index].p == 1) return false;
 
 	for (int i = 0; mem.frame_list.size(); i++) {
         if (mem.frame_list[i] == -1) {
@@ -17,7 +17,7 @@ void fifo_access(int addr, Memory& mem, list<page> l, Process p) {
             l.push_front(mem.page_list[page_index]);
     		mem.load_phys(page_index, i);
             
-            return;
+            return true;
         }
     }
 
@@ -25,5 +25,6 @@ void fifo_access(int addr, Memory& mem, list<page> l, Process p) {
     mem.load_phys(page_index, it->addr);
     mem.frame_list[it->addr] = page_index;
     l.push_front({it->addr, 1, 0, 1});
-    l.erase(it); 
+    l.erase(it);
+    return true;
 }

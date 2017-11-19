@@ -1,11 +1,11 @@
 #include "lrufourth.h"
 
-void lrufourth_access(Memory mem) {
+void lrufourth_access(Memory& mem) {
     for (int i = 0; i < mem.page_list.size(); i++)
         mem.page_list[i].counter = 0;
 }
 
-void replace_page(int addr, Memory mem, Process p) {
+void replace_page(int addr, Memory& mem, Process p) {
     int min = numeric_limits<int>::max();
     int sub_index = 0, val;
     int page_index = mem.get_page(addr, p);
@@ -26,7 +26,7 @@ void replace_page(int addr, Memory mem, Process p) {
     mem.page_list[sub_index] = {-1, 0, 0, 0};
 }
 
-bool lrufourth_access(int addr, Memory mem, Process p) {
+bool lrufourth_access(int addr, Memory& mem, Process p) {
     bool page_fault = !(mem.is_loaded(addr, p));
 
     if (page_fault)
