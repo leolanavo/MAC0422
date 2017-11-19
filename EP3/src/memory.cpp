@@ -304,7 +304,6 @@ void Memory::generate_lists(list<best_size> l) {
 }
 
 void Memory::quick_free_process (Process p) {
-
 }
 
 
@@ -335,12 +334,4 @@ void Memory::quick_fit(Process p) {
     }
 
     used_mem.push_back({p.pid, a.base, a.size});
-}
-
-/* Receives nothing.
- *
- * Destructs a memory object.
- */
-Memory::~Memory () {
-    phys = virt = unity = spage = 0;
 }

@@ -17,7 +17,7 @@ struct assemb;
 
 using namespace std;
 
-void simulate(assemb proc_info, int id_fit, int id_page, int interval);
+void simulate(assemb& proc_info, int id_fit, int id_page, int interval);
 
 /* Receives nothing.
  *

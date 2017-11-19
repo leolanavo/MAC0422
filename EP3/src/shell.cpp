@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <ctime>
 
 using namespace std;
 
@@ -6,8 +7,9 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     
     int i, time, counter_pf;
     bool page_fault = false;
+    time_t start, end;
     i = time = counter_pf = 0;
-    list<Process> running ;
+    list<Process> running;
 
     auto m = lrusecond_init(proc_info.mem.page_list.size());
     list<page> fifo_pages = list<page>(0);   
@@ -27,6 +29,7 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
 
 
         while (i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
+            time(&start);
             if (proc_info.plist[i].name == "COMPACTAR")
                 proc_info.mem.compact(proc_info.plist);
             else {
@@ -43,6 +46,8 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
                 }
                 running.push_back(proc_info.plist[i]);
             }
+            time(&end);
+            cout << difftime(end, start) << endl;
 
             //proc_info.mem.print_virtual_memory();
             i++;
