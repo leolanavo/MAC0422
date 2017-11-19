@@ -93,7 +93,6 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     printf("MEM: %p\n", proc_info.mem.free_mem);
     printf("MEM: %p\n", proc_info.mem.used_mem);
 
-    delete running;
 
     cout << "É TETRA" << endl;
 }

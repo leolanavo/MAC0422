@@ -19,5 +19,5 @@ BIN       := ep3
 TARF      := ep3-leonardo-beatriz
 FINALDIR  := ep3-leonardo-beatriz
 
-CFLAGS    := -std=c++1z
+CFLAGS    := -std=c++1z -Wall -Wextra
 LDFLAGS   := -I $(INCDIR)
