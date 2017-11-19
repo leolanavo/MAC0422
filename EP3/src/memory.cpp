@@ -69,6 +69,23 @@ bool Memory::is_loaded(int addr, Process p) {
     return true;
 }
 
+void Memory::print_memory () {
+    for (int i = virtual_mem.size() - 1; i >= 0; i--) {
+        cout << "indíce : Virtual | Física"
+        if (i > phys_mem.size())
+            cout << "i : " << virtual_mem[i] << endl;
+        else
+            cout << "i : " << virtual_mem[i] << " | " << phys_mem[i] << endl;
+    }
+}
+
+void Memory::print_bitmap () {
+    for (int i = 0; i < virtual_mem.size(); i += unity) {
+        int bit = virtual_mem[i] != -1 ? 1 : 0;
+        cout << bit << " " << endl;
+    }
+}
+
 void Memory::update_lists() {
     for (auto it = opt_mem.begin(); it != opt_mem.end(); it++) {
         it->free_mem.clear();

@@ -64,6 +64,8 @@ class Memory {
     // Other Methods
     void load_phys(int page, int phys);
     bool is_loaded(int addr, Process p);
+    void print_memory ();
+    void update_lists();
     void compact(vector<Process>& plist);
     void free_process(Process p);
     void best_fit(Process& p);
