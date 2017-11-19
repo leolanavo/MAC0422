@@ -47,7 +47,6 @@ struct best_alloc {
 class Memory {
  public:
     int phys, virt, unity, spage;
-    int page_counter_size;
     list<Alloc> free_mem, used_mem;
     vector<int> virtual_mem, phys_mem;
     vector<page> page_list;
@@ -65,10 +64,14 @@ class Memory {
     // Other Methods
     void load_phys(int page, int phys);
     bool is_loaded(int addr, Process p);
+    void compact(vector<Process>& plist);
     void free_process(Process p);
     void best_fit(Process& p);
     void worst_fit(Process p);
     void generate_lists(list<best_size> l);
+    void quick_free_process(Process p);
+    void update_lists();
+
     void quick_fit(Process p);
 
     ~Memory();

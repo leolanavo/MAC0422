@@ -49,13 +49,3 @@ int Process::get_size() {
 string Process::get_name() {
 	return this->name;
 }
-
-/* Receives the current time of execution.
- *
- * Moves the next index to the first postion that wasn't
- * accessed until the current time of execution.
- *
- * Returns nothing.
- */
-void Process::get_access(int current_time) {
-}

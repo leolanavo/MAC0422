@@ -3,7 +3,6 @@
 void lrufourth_access(Memory mem) {
     for (int i = 0; i < mem.page_list.size(); i++)
         mem.page_list[i].counter = 0;
-    mem.page_counter_size = mem.page_list.size();
 }
 
 void replace_page(int addr, Memory mem, Process p) {
@@ -39,7 +38,7 @@ void lrufourth_access(int addr, Memory mem, Process p) {
     for (int i = 0; i < mem.page_list.size(); i++) {
         mem.page_list[i].counter >> 2;
         mem.page_list[i].counter += mem.page_list[i].r *
-            pow(2.0, mem.page_counter_size - 1);
+            pow(2.0, mem.page_list.size() - 1);
     }
 
     mem.page_list[page_index].r = 1;

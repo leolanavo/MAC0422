@@ -46,5 +46,7 @@ void access(int addr, int current_time, Memory mem,
 
     if (page_fault)
         replace_page (addr, current_time, mem, access_list, p, plist);
-
-}
+    
+    int page_index = mem.get_page(addr, p);    
+    mem.page_list[page_index].r = 1;
+}   

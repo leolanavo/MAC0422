@@ -16,7 +16,8 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
         list<Process>::iterator it;
         for (it = running.begin(); it != running.end(); it++) {
             if (time == it->tf) {
-                proc_info.mem.free_process(*it);
+                if (id_fit == 3) proc_info.mem.quick_free_process(*it);
+                else proc_info.mem.free_process(*it);
                 it = running.erase(it);
             }
         }
@@ -25,18 +26,16 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
             switch (id_fit) {
                 case 1:
                     proc_info.mem.best_fit(proc_info.plist[i]);
-                    running.push_back(proc_info.plist[i]);
                     break;
                 case 2:
                     proc_info.mem.worst_fit(proc_info.plist[i]);
-                    running.push_back(proc_info.plist[i]);
                     break;
                 case 3:
                     proc_info.mem.quick_fit(proc_info.plist[i]);
-                    running.push_back(proc_info.plist[i]);
                     break;
             }
-
+            
+            running.push_back(proc_info.plist[i]);
             i++;
         }
 

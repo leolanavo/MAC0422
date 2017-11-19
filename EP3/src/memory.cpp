@@ -69,6 +69,45 @@ bool Memory::is_loaded(int addr, Process p) {
     return true;
 }
 
+void Memory::update_lists() {
+    for (auto it = opt_mem.begin(); it != opt_mem.end(); it++) {
+        it->free_mem.clear();
+
+        for (auto jt = free_mem.begin(); jt != free_mem.end(); jt++) {
+            int n = jt->size/it->size;
+            for (int i = 0, base = jt->base; i < n; i++, base += it->size) {
+                it->free_mem.push_back({-1, base, it->size});
+            }
+        }
+    }
+
+}
+
+void Memory::compact(vector<Process>& plist) {
+   list<Alloc> used_aux, free_aux;
+   int base, total_used; 
+   base = 0;
+
+   for (auto it = used_mem.begin(); it != used_mem.end(); it++) {
+        used_aux.push_back({it->pid, base, it->size});
+        
+        for (int i = 0; i < plist.size(); i++)
+            if (it->pid == plist[i].pid)
+                plist[i].v_base = base;
+
+        base += it->size;
+    }
+
+    for (int i = 0; i < phys; i++) phys_mem[i] = -1;
+    for (int i = 0; i < virt/spage; i++) page_list[i].addr = -1;
+    for (int i = 0; i < phys/spage; i++) frame_list[i] = -1;
+    
+    free_mem.clear();
+    free_aux.push_back({-1, base, virt - base});
+    free_mem = free_aux;
+    used_mem = used_aux;
+}
+
 void Memory::free_process(Process p) {
 
     for (int i = p.v_base; i < p.v_base + p.b; i++)
@@ -190,12 +229,15 @@ void Memory::worst_fit(Process p) {
 }
 
 bool compare_freq (const best_size& b1, const best_size& b2) {
-    if (b1.freq < b2.freq) return true;
-    return false; 
+    return (b1.freq < b2.freq);
+}
+
+bool compare_size (const best_alloc& a1, const best_alloc& a2) {
+    return (a1.size < a2.size); 
 }
 
 void Memory::generate_lists(list<best_size> l) {
-    int n, ac_freq, min_size;
+    int n, ac_freq, min_size, offset;
     n = l.size()/3;
     ac_freq = 0;
     l.sort(compare_freq);
@@ -207,12 +249,20 @@ void Memory::generate_lists(list<best_size> l) {
     it = --l.end();
     for (int i = 0; i < n; i++, it--) {   
         min_size = (int)ceil((double) it->size/unity) * unity;
-/*        for () {
-            
-        }
-*/
-        opt_mem.push_back({min_size, list<Alloc>(0)});
+        offset = virt/min_size;
+        list<Alloc> l;
+        
+        for (int j = 0; j < virt; j += offset)
+            l.push_back({-1, j, min_size});    
+
+        opt_mem.push_back({min_size, l});
     }
+
+    opt_mem.sort(compare_size);
+}
+
+void Memory::quick_free_process (Process p) {
+
 }
 
 
@@ -222,7 +272,27 @@ void Memory::generate_lists(list<best_size> l) {
  * Returns nothing.
  */
 void Memory::quick_fit(Process p) {
+    auto it = opt_mem.begin();    
+    int min_size = (int)ceil((double) p.b/unity) * unity;   
 
+    for (; it != opt_mem.end() 
+         && it->size >= min_size; it++);   
+    Alloc& a = it->free_mem.front();
+
+    for (auto it1 = free_mem.begin(); it1 != free_mem.end(); it1++) {
+        if (a.base == it1->base) {
+            it1 = free_mem.insert(it1, {-1, a.base + a.size, it1->size - a.size});
+            it1 = free_mem.erase(it1);
+        }
+
+        else if (a.base > it1->base && a.base <= it1->base + it1->size - 1) {
+            it1 = free_mem.insert(it1, {-1, it1->base, a.base - it1->base});
+            it1 = free_mem.insert(it1, {-1, a.base + a.size, it1->size - a.size - a.base + it1->base});
+            it1 = free_mem.erase(it1);
+        }
+    }
+
+    used_mem.push_back({p.pid, a.base, a.size});
 }
 
 /* Receives nothing.

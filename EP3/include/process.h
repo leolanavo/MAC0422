@@ -7,8 +7,8 @@
 
 using namespace std;
 
-class Access {
-  public:
+struct Access {
+
     int pos;
     int pid;
 };
@@ -37,7 +37,6 @@ class Process {
     int get_base();
     int get_size();
     string get_name();
-    void get_access(int current_time);
 };
 
 #endif
