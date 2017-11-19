@@ -71,7 +71,7 @@ bool Memory::is_loaded(int addr, Process p) {
 
 void Memory::print_memory () {
     for (int i = virtual_mem.size() - 1; i >= 0; i--) {
-        cout << "indíce : Virtual | Física"
+        cout << "indíce : Virtual | Física";
         if (i > phys_mem.size())
             cout << "i : " << virtual_mem[i] << endl;
         else

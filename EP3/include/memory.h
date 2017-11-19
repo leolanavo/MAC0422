@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <cmath>
+#include <fstream>
 
 #include "process.h"
 #include "alloc.h"
@@ -65,6 +66,7 @@ class Memory {
     void load_phys(int page, int phys);
     bool is_loaded(int addr, Process p);
     void print_memory ();
+    void print_bitmap ();
     void update_lists();
     void compact(vector<Process>& plist);
     void free_process(Process p);
@@ -72,7 +74,6 @@ class Memory {
     void worst_fit(Process p);
     void generate_lists(list<best_size> l);
     void quick_free_process(Process p);
-    void update_lists();
 
     void quick_fit(Process p);
 
