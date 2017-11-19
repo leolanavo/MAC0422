@@ -49,15 +49,18 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
                 Process p = proc_info.mem.get_process(it->pid, proc_info.plist);
                 switch (id_page) {
                     case 1:
-                        lrusecond_access(it->pos, proc_info.mem, m, p);
+                        optimal_access(it->pos, time, proc_info.mem, 
+                                       proc_info.access_list, p, proc_info.plist);
                         break;
                     case 2:
                         fifo_access(it->pos, proc_info.mem, fifo_pages, p);
                         break;
-                    /*case 3:
+                    case 3:
+                        lrusecond_access(it->pos, proc_info.mem, m, p);
                         break;
                     case 4:
-                        break;*/
+                        lrufourth_access(it->pos, proc_info.mem, p);
+                        break;
                 }   
             }
         }
