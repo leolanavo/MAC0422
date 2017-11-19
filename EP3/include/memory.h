@@ -35,6 +35,7 @@ struct best_size {
 struct best_alloc {
 	int size;
 	list<Alloc> free_mem;
+
 };
 
 /* Class: Memory
@@ -49,9 +50,8 @@ class Memory {
  public:
     int phys, virt, unity, spage;
     list<Alloc> free_mem, used_mem;
-    vector<int> virtual_mem, phys_mem;
+    vector<int> virtual_mem, phys_mem, frame_list;
     vector<page> page_list;
-    vector<int> frame_list;
     list<best_alloc> opt_mem;
 
     // Constructors
@@ -59,24 +59,24 @@ class Memory {
     Memory(int phys, int virt, int unity, int spage);
 
     // Getters
-    int get_page(int addr, Process p);
-    Process get_process(int pid,  vector<Process> plist);
+    int get_page(int addr, Process& p);
+    Process get_process(int pid,  vector<Process>& plist);
 
     // Other Methods
     void load_phys(int page, int phys);
-    bool is_loaded(int addr, Process p);
+    bool is_loaded(int addr, Process& p);
     void print_memory ();
     void print_bitmap();
     void print_phys_memory();
     void print_virtual_memory();
     void compact(vector<Process>& plist);
-    void free_process(Process p);
+    void free_process(Process& p);
     void best_fit(Process& p);
-    void worst_fit(Process p);
+    void worst_fit(Process& p);
     void update_lists();
-    void generate_lists(list<best_size> l);
-    void quick_free_process(Process p);
-    void quick_fit(Process p);
+    void generate_lists(list<best_size>& l);
+    void quick_free_process(Process& p);
+    void quick_fit(Process& p);
 };
 
 struct assemb {

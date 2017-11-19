@@ -5,6 +5,6 @@
 #include "memory.h"
 #include "process.h"
 
-bool fifo_access(int addr, Memory& mem, list<page>& l, const Process& p);
+bool fifo_access(int addr, Memory& mem, list<page>& l, Process& p);
 
 #endif

@@ -82,19 +82,6 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
         }*/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         time++;        
     }
-
-    printf("PROC_INFO: %p\n", proc_info);
-    printf("MEM: %p\n", proc_info.mem);
-    printf("PLIST: %p\n", proc_info.plist);
-    printf("ACCESS_LIST: %p\n", proc_info.access_list);
-    printf("RUNNING: %p\n", running);
-    printf("MEM: %p\n", proc_info.mem.page_list);
-    printf("MEM: %p\n", proc_info.mem.opt_mem);
-    printf("MEM: %p\n", proc_info.mem.free_mem);
-    printf("MEM: %p\n", proc_info.mem.used_mem);
-
-
-    cout << "É TETRA" << endl;
 }
 
 /* Receives nothing.
@@ -133,7 +120,7 @@ void prompt() {
         }
 
         else if (cmd == "sai")
-            exit(0);
+            return;
 
         else
             cout << "Comando não encontrado" << endl;

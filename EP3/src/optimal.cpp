@@ -40,7 +40,7 @@ void replace_page(int addr, int current_time, Memory& mem,
 }
 
 bool optimal_access(int addr, int current_time, Memory& mem,
-            const vector<list<Access>>& access_list, const Process& p,
+            const vector<list<Access>>& access_list, Process& p,
             const vector<Process>& plist) {
     bool page_fault = !(mem.is_loaded(addr, p));
 

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-bool fifo_access(int addr, Memory& mem, list<page>& l, const Process& p) {
+bool fifo_access(int addr, Memory& mem, list<page>& l, Process& p) {
 
     int page_index = mem.get_page(addr, p);
     auto it = --l.cend();

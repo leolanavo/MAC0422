@@ -19,11 +19,7 @@ assemb read_file(string name) {
     vector<Process> plist;
     list<best_size> opt_size;
 
-
     pid_count = 1;
-
-    if (!file.is_open())
-        print_failed("Open input file");
 
     getline(file, line);
     vector<string> fline = split_spaces(line);
