@@ -71,12 +71,29 @@ bool Memory::is_loaded(int addr, Process p) {
 
 void Memory::print_memory () {
     for (int i = virtual_mem.size() - 1; i >= 0; i--) {
-        cout << "indíce : Virtual | Física"
+            cout << "indíce : Virtual | Física" << endl;
+
         if (i > phys_mem.size())
             cout << "i : " << virtual_mem[i] << endl;
         else
             cout << "i : " << virtual_mem[i] << " | " << phys_mem[i] << endl;
     }
+}
+
+void Memory::print_phys_memory() {
+    ofstream file ("/tmp/ep3.mem");
+    for (int i = phys_mem.size() - 1; i >= 0; i--) {
+        cout << "i : " << phys_mem[i] << endl;
+    }
+    file.close();
+}
+
+void Memory::print_virtual_memory() {
+    ofstream file ("/tmp/ep3.virt");
+    for (int i = virtual_mem.size() - 1; i >= 0; i--) {
+        cout << "i : " << virtual_mem[i] << endl;
+    }
+    file.close();
 }
 
 void Memory::print_bitmap () {

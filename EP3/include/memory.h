@@ -65,7 +65,9 @@ class Memory {
     void load_phys(int page, int phys);
     bool is_loaded(int addr, Process p);
     void print_memory ();
-    void update_lists();
+    void print_bitmap();
+    void print_phys_memory();
+    void print_virtual_memory();
     void compact(vector<Process>& plist);
     void free_process(Process p);
     void best_fit(Process& p);
