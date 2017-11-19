@@ -22,11 +22,11 @@ void replace_page(int addr, Memory& mem, Process p) {
     }
 
     mem.frame_list[mem.page_list[sub_index].addr] = page_index;
-    mem.page_list[page_index] = {mem.page_list[sub_index].addr, 1, 0, 1};
-    mem.page_list[sub_index] = {-1, 0, 0, 0};
+    mem.page_list[page_index] = {mem.page_list[sub_index].addr, 1, 0, 1, 0};
+    mem.page_list[sub_index] = {-1, 0, 0, 0, 0};
 }
 
-bool lrufourth_access(int addr, Memory& mem, Process p) {
+bool lrufourth_access(int addr, Memory& mem, const Process& p) {
     bool page_fault = !(mem.is_loaded(addr, p));
 
     if (page_fault)
@@ -36,7 +36,7 @@ bool lrufourth_access(int addr, Memory& mem, Process p) {
     mem.page_list[page_index].r = 1;
 
     for (int i = 0; i < mem.page_list.size(); i++) {
-        mem.page_list[i].counter >> 2;
+        mem.page_list[i].counter >>= 1;
         mem.page_list[i].counter += mem.page_list[i].r *
             pow(2.0, mem.page_list.size() - 1);
     }

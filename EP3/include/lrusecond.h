@@ -14,6 +14,6 @@ typedef vector<vector<int>> matrix;
 
 matrix lrusecond_init(int size);
 
-bool lrusecond_access(int addr, Memory& mem, matrix& m, Process p);
+bool lrusecond_access(int addr, Memory& mem, matrix& m, const Process& p);
 
 #endif
