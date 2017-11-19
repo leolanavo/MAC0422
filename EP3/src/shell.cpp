@@ -7,7 +7,7 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
     int i, time, counter_pf;
     bool page_fault = false;
     i = time = counter_pf = 0;
-    list<Process> running ;
+    list<Process> running;
 
     auto m = lrusecond_init(proc_info.mem.page_list.size());
     list<page> fifo_pages = list<page>(0);   
@@ -23,8 +23,6 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
                 it = running.erase(it);
             }
         }
-
-
 
         while (i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
             if (proc_info.plist[i].name == "COMPACTAR")
@@ -84,6 +82,19 @@ void simulate (assemb proc_info, int id_fit, int id_page, int interval) {
         }*/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         time++;        
     }
+
+    printf("PROC_INFO: %p\n", proc_info);
+    printf("MEM: %p\n", proc_info.mem);
+    printf("PLIST: %p\n", proc_info.plist);
+    printf("ACCESS_LIST: %p\n", proc_info.access_list);
+    printf("RUNNING: %p\n", running);
+    printf("MEM: %p\n", proc_info.mem.page_list);
+    printf("MEM: %p\n", proc_info.mem.opt_mem);
+    printf("MEM: %p\n", proc_info.mem.free_mem);
+    printf("MEM: %p\n", proc_info.mem.used_mem);
+
+    delete running;
+
     cout << "É TETRA" << endl;
 }
 
