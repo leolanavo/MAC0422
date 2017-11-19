@@ -9,7 +9,7 @@
 #include "check_empty.h"
 
 
-void access(int addr, int current_time, Memory mem,
+bool access(int addr, int current_time, Memory mem,
             vector<list<Access>> access_list, Process p,
             vector<Process> plist);
 

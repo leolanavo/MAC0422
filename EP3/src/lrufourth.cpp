@@ -26,7 +26,7 @@ void replace_page(int addr, Memory mem, Process p) {
     mem.page_list[sub_index] = {-1, 0, 0, 0};
 }
 
-void lrufourth_access(int addr, Memory mem, Process p) {
+bool lrufourth_access(int addr, Memory mem, Process p) {
     bool page_fault = !(mem.is_loaded(addr, p));
 
     if (page_fault)
@@ -42,4 +42,5 @@ void lrufourth_access(int addr, Memory mem, Process p) {
     }
 
     mem.page_list[page_index].r = 1;
+    return page_fault;
 }

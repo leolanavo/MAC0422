@@ -32,7 +32,7 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
     mem.page_list[sub_index] = {-1, 0, 0, 0};
 }
 
-void lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
+bool lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
 
     bool page_fault = !(mem.is_loaded(addr, p));
 
@@ -47,5 +47,7 @@ void lrusecond_access(int addr, Memory& mem, matrix& m, Process p) {
         m[page_index][i] = 1;
         m[i][page_index] = 0;
     }
+
+    return page_fault;
 }
 
