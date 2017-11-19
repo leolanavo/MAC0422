@@ -8,8 +8,10 @@
 
 #include "string_split.h"
 #include "read.h"
-#include "lrusecond.h"
+#include "optimal.h"
 #include "fifo.h"
+#include "lrusecond.h"
+#include "lrufourth.h"
 
 struct assemb;
 
