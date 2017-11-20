@@ -69,6 +69,8 @@ class Memory {
     void print_bitmap();
     void print_phys_memory();
     void print_virtual_memory();
+    void print_free_memory();
+    void print_used_memory();
     void compact(vector<Process>& plist);
     void free_process(Process& p);
     void best_fit(Process& p);

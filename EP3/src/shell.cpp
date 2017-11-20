@@ -19,15 +19,30 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
             if (time >= it->tf) {
                 if (id_fit == 3) proc_info.mem.quick_free_process(*it);
                 else proc_info.mem.free_process(*it);
-
+                
+                for (int i = 0; i < proc_info.plist.size(); i++)
+                    if (proc_info.plist[i].pid == it->pid) {
+                        proc_info.plist[i].v_base = -1;
+                        break;
+                    }
+                
                 it = running.erase(it);
             }
         }
 
         while ((unsigned int)i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
-            if (proc_info.plist[i].name == "COMPACTAR")
+            if (proc_info.plist[i].name == "COMPACTAR") {
                 proc_info.mem.compact(proc_info.plist);
+                running.clear();
+
+                for (int i = 0; i < proc_info.plist.size(); i++)
+                    if (proc_info.plist[i].v_base != -1)
+                        running.push_back(proc_info.plist[i]);
+
+
+            }
             else {
+                clock_t begin = clock();
                 switch (id_fit) {
                     case 1:
                         proc_info.mem.best_fit(proc_info.plist[i]);
@@ -39,10 +54,13 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
                         proc_info.mem.quick_fit(proc_info.plist[i]);
                         break;
                 }
+                clock_t end = clock();
+                double elt = (double(end - begin) / CLOCKS_PER_SEC) * 1000000000;
+                cout << elt << endl;
                 running.push_back(proc_info.plist[i]);
             }
 
-            //proc_info.mem.print_virtual_memory();
+            proc_info.mem.print_virtual_memory();
             i++;
         }
         
@@ -69,7 +87,7 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
                 }
 
                 if (page_fault) {
-                    //proc_info.mem.print_phys_memory();
+                    proc_info.mem.print_phys_memory();
                     counter_pf++;
                     page_fault = false;
                 }  
