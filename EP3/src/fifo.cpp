@@ -5,11 +5,13 @@ using namespace std;
 bool fifo_access(int addr, Memory& mem, list<page>& l, Process& p) {
 
     int page_index = mem.get_page(addr, p);
-    auto it = --l.cend();
+    auto it = --l.end();
 
-    if (mem.page_list[page_index].p == 1) return false;
-
-	for (unsigned int i = 0; mem.frame_list.size(); i++) {
+    if (mem.page_list[page_index].p == 1) {
+        return false;
+    }
+    
+	for (int i = 0; mem.frame_list.size(); i++) {
         if (mem.frame_list[i] == -1) {
             mem.page_list[page_index] = {(int)i, 1, 0, 1, 0};
             mem.frame_list[i] = page_index;

@@ -5,20 +5,20 @@ using namespace std;
 
 void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
     
-    int i, time, counter_pf;
+    int i, timer, counter_pf;
     bool page_fault = false;
     time_t start, end;
-    i = time = counter_pf = 0;
+    i = timer = counter_pf = 0;
     list<Process> running;
 
     auto m = lrusecond_init(proc_info.mem.page_list.size());
     list<page> fifo_pages = list<page>(0);   
 
-    while ((unsigned int)i < proc_info.plist.size() || !running.empty()) {
+    while (i < proc_info.plist.size() || !running.empty()) {
 
         list<Process>::iterator it;
         for (it = running.begin(); it != running.end(); it++) {
-            if (time >= it->tf) {
+            if (timer >= it->tf) {
                 if (id_fit == 3) proc_info.mem.quick_free_process(*it);
                 else proc_info.mem.free_process(*it);
 
@@ -26,8 +26,8 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
             }
         }
 
-        while (i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
-            time(&start);
+        while (i < proc_info.plist.size() && timer == proc_info.plist[i].t0) {
+            utime(&start);
 
             if (proc_info.plist[i].name == "COMPACTAR")
                 proc_info.mem.compact(proc_info.plist);
@@ -45,8 +45,8 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
                 }
                 running.push_back(proc_info.plist[i]);
             }
-            time(&end);
-            cout << difftime(end, start) << endl;
+            utime(&end);
+            printf ("%lu %lu\n", start, end);
 
             //proc_info.mem.print_virtual_memory();
             i++;
@@ -54,13 +54,13 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
         
 
         //Acessos
-        if (time < proc_info.access_list.size()) {
-            auto ac_list = proc_info.access_list[time];
+        if (timer < proc_info.access_list.size()) {
+            auto ac_list = proc_info.access_list[timer];
             for (auto it = ac_list.begin(); it != ac_list.end(); it++) {
                 Process p = proc_info.mem.get_process(it->pid, proc_info.plist);
                 switch (id_page) {
                     case 1:
-                        page_fault = optimal_access(it->pos, time, proc_info.mem, 
+                        page_fault = optimal_access(it->pos, timer, proc_info.mem, 
                                        proc_info.access_list, p, proc_info.plist);
                         break;
                     case 2:
@@ -82,12 +82,13 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
             }
         }
         
-        /*if (time % interval == 0) {
+        /*if (timer % interval == 0) {
             proc_info.mem.print_memory();
             proc_info.mem.print_bitmap();
         }*/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-        time++;        
+        timer++;        
     }
+    printf("page fault %d\n", counter_pf);
 }
 
 /* Receives nothing.

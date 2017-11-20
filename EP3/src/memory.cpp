@@ -101,8 +101,9 @@ void Memory::print_virtual_memory() {
 void Memory::print_bitmap () {
     for (int i = 0; i < virtual_mem.size(); i += unity) {
         int bit = virtual_mem[i] != -1 ? 1 : 0;
-        cout << bit << " " << endl;
+        cout << bit;
     }
+    cout << endl;
 }
 
 void Memory::update_lists() {
@@ -147,9 +148,16 @@ void Memory::compact(vector<Process>& plist) {
 void Memory::free_process(Process& p) {
 
     bool append = false;
+    int pg_frame;
 
-    for (int i = p.v_base; i < p.v_base + p.b; i++)
+    for (int i = p.v_base; i < p.v_base + p.b; i++) {
         virtual_mem[i] = -1;
+        pg_frame = page_list[i/spage].addr;    
+        if (pg_frame != -1) {
+            for(int j = pg_frame*spage; j < pg_frame*spage + spage; j++)
+                phys_mem[j] = -1;
+        } 
+    }
 
     auto find_p = used_mem.begin();
     while (find_p->pid != p.pid && find_p != used_mem.end()) find_p++;
