@@ -17,9 +17,7 @@ def conf(sample):
     return conf    
 
 
-def main():
-
-        
+def main():      
 
     analysis_fl = "analysis" + ".txt"
     file_output = open(analysis_fl, 'w')
@@ -30,7 +28,7 @@ def main():
     for i in range (1, 31):    
         sum_mean = 0.0
 
-        result_fl = "result" + str(i) + "_" + ".txt"
+        result_fl = "result" + "_" + str(i) + ".txt"
         file_input = open(result_fl, 'r')
 
         for j in range (1, 30):

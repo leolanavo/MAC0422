@@ -32,7 +32,7 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
             }
         }
 
-        while ((unsigned int)i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
+        while ((unsigned int)i < proc_info.plist.size() && timer == proc_info.plist[i].t0) {
             if (proc_info.plist[i].name == "COMPACTAR") {
 
                 proc_info.mem.compact(proc_info.plist);
@@ -42,7 +42,7 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
                     if (proc_info.plist[i].v_base != -1)
                         running.push_back(proc_info.plist[i]);
             }
-            
+
             else {
                 clock_t begin = clock();
                 switch (id_fit) {
@@ -102,7 +102,7 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
         }*/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         timer++;        
     }
-    printf("page fault %d\n", counter_pf);
+    printf("%d\n", counter_pf);
 }
 
 /* Receives nothing.
@@ -115,6 +115,14 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
 void prompt() {
     assemb proc_info;
     int id_fit, id_page, interval;
+    
+
+    /*proc_info = read_file("test.txt");
+    id_fit = 1;
+    id_page = 3;
+    interval = 5;
+    simulate(proc_info, id_fit, id_page, interval);
+    */
 
     while (true) {
         cout << "[ep3]: ";

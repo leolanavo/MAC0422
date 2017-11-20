@@ -175,6 +175,8 @@ void Memory::free_process(Process& p) {
         if (pg_frame != -1) {
             for(int j = pg_frame*spage; j < pg_frame*spage + spage; j++)
                 phys_mem[j] = -1;
+            page_list[i/spage].addr = -1;
+            page_list[i/spage].p = 0;
         } 
     }
 
