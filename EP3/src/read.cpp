@@ -46,7 +46,8 @@ assemb read_file(string name) {
         }
 
         if (fline.size() == 2) {
-           plist.push_back(Process (stoi(fline[0]), -1, -1, "COMPACTAR", 0));
+            plist.push_back(Process (stoi(fline[0]), -1, -1, "COMPACTAR", 0));
+            plist.back().pid = -1;
         }
         else {
             len = (fline.size() - 4)/2; // Get the size of the process arrays

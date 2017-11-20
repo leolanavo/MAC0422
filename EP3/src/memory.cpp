@@ -85,7 +85,7 @@ void Memory::print_memory () {
 void Memory::print_phys_memory() {
     ofstream file ("/tmp/ep3.mem");
     for (int i = phys_mem.size() - 1; i >= 0; i--) {
-        cout << i << " : " << phys_mem[i] << endl;
+        file << i << " : " << phys_mem[i] << endl;
     }
     file.close();
 }
@@ -93,7 +93,7 @@ void Memory::print_phys_memory() {
 void Memory::print_virtual_memory() {
     ofstream file ("/tmp/ep3.virt");
     for (int i = virtual_mem.size() - 1; i >= 0; i--) {
-        cout << i << " : " << virtual_mem[i] << endl;
+        file << i << " : " << virtual_mem[i] << endl;
     }
     file.close();
 }
@@ -103,6 +103,24 @@ void Memory::print_bitmap () {
         int bit = virtual_mem[i] != -1 ? 1 : 0;
         cout << bit;
     }
+    cout << endl;
+}
+
+void Memory::print_free_memory() {
+    for (auto it = free_mem.begin(); it != free_mem.end(); it++)
+        cout << it->base << " || " << it->size << endl;
+    cout << endl;
+}
+
+void Memory::print_used_memory() {
+    for (auto it = used_mem.begin(); it != used_mem.end(); it++)
+        cout << it->pid << " || " << it->base << " || " << it->size << endl;
+    cout << endl;
+}
+
+void print_plist(vector<Process> plist) {
+    for(int i = 0; i < plist.size(); i++)
+        cout << plist[i].pid << " | " << plist[i].v_base << endl;
     cout << endl;
 }
 
@@ -121,9 +139,9 @@ void Memory::update_lists() {
 }
 
 void Memory::compact(vector<Process>& plist) {
-   list<Alloc> used_aux, free_aux;
-   int base, total_used; 
-   base = 0;
+    list<Alloc> used_aux, free_aux;
+    int base, total_used; 
+    base = 0;
 
    for (auto it = used_mem.begin(); it != used_mem.end(); it++) {
         used_aux.push_back({it->pid, base, it->size});
@@ -146,9 +164,10 @@ void Memory::compact(vector<Process>& plist) {
 }
 
 void Memory::free_process(Process& p) {
-
     bool append = false;
     int pg_frame;
+
+    int min_space = (int)ceil((double) p.b/unity) * unity;
 
     for (int i = p.v_base; i < p.v_base + p.b; i++) {
         virtual_mem[i] = -1;
@@ -159,37 +178,31 @@ void Memory::free_process(Process& p) {
         } 
     }
 
-    auto find_p = used_mem.begin();
-    while (find_p->pid != p.pid && find_p != used_mem.end()) find_p++;
+    Alloc node = {p.pid, p.v_base, min_space};
+    used_mem.remove(node);
 
-    if (find_p != used_mem.end()) {
-        Alloc node = {find_p->pid, find_p->base, find_p->size};
-        used_mem.remove(node);
-
-        node.pid = -1;
-        for (auto it = free_mem.begin(); it != free_mem.end(); it++) {
-            if (it->base + it->size == node.base) {
-                node.base = it->base;
-                node.size = node.size + it->size;
-                free_mem.insert(it, node);
-                it = free_mem.erase(it);
-                append = true;
-            }
-
-            if (node.base + node.size == it->base) {
-                node.size = node.size + it->size;
-                free_mem.insert(it, node);
-                it = free_mem.erase(it);
-                append = true;
-            }
+    node.pid = -1;
+    auto it = free_mem.begin();
+    for (; it != free_mem.end() && !append; it++) {
+        
+        if (it->base + it->size == node.base) {
+            node.base = it->base;
+            node.size = node.size + it->size;
+            it = free_mem.erase(it);
+            append = true;
         }
 
-        if (!append) {
-            auto it = free_mem.begin();
-            for (; it != free_mem.end() && it->base < node.base; it++);
-            free_mem.insert(it, node);
+        if (node.base + node.size == it->base) {
+            node.size = node.size + it->size;
+            it = free_mem.erase(it);
+            append = true;
         }
     }
+
+    it = free_mem.begin();
+    for (; it != free_mem.end() && it->base < node.base; it++);
+    it = free_mem.insert(it, node);
+
 }
 
 /* Receives a process to allocate in the virtual memory,
@@ -200,8 +213,8 @@ void Memory::free_process(Process& p) {
 void Memory::best_fit(Process& p) {
     int index, min_space;
     Alloc best, insert, reinsert, tmp;
-    list<Alloc>::iterator it_list = free_mem.begin();
-    list<Alloc>::iterator best_node = free_mem.begin();
+    auto it_list = free_mem.begin();
+    auto best_node = free_mem.begin();
 
     min_space = (int)ceil((double) p.b/unity) * unity;
     best = *(it_list++);
@@ -243,8 +256,8 @@ void Memory::best_fit(Process& p) {
 void Memory::worst_fit(Process& p) {
     int index, min_space;
     Alloc best, insert, reinsert, tmp;
-    list<Alloc>::iterator it_list = free_mem.begin();
-    list<Alloc>::iterator best_node = free_mem.begin();
+    auto it_list = free_mem.begin();
+    auto best_node = free_mem.begin();
 
     min_space = (int)ceil((double) p.b/unity) * unity;
     best = *(it_list++);

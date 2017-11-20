@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ctime>
+#include <chrono>
 
 #include "string_split.h"
 #include "read.h"
