@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <ctime>
 
 using namespace std;
 
@@ -6,6 +7,7 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
     
     int i, time, counter_pf;
     bool page_fault = false;
+    time_t start, end;
     i = time = counter_pf = 0;
     list<Process> running;
 
@@ -32,6 +34,7 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
 
         while ((unsigned int)i < proc_info.plist.size() && time == proc_info.plist[i].t0) {
             if (proc_info.plist[i].name == "COMPACTAR") {
+
                 proc_info.mem.compact(proc_info.plist);
                 running.clear();
 
@@ -59,6 +62,8 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
                 cout << elt << endl;
                 running.push_back(proc_info.plist[i]);
             }
+            time(&end);
+            cout << difftime(end, start) << endl;
 
             proc_info.mem.print_virtual_memory();
             i++;

@@ -316,6 +316,7 @@ void Memory::generate_lists(list<best_size>& l) {
     opt_mem.sort(compare_size);
 }
 
+
 void Memory::quick_free_process (Process& p) {
     free_process(p);
     update_lists();

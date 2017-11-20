@@ -72,6 +72,6 @@ assemb read_file(string name) {
     }
 
     mem.generate_lists(opt_size);
-
-    return {mem, plist, access_list};
+    assemb ret = {mem, plist, access_list};
+    return ret;
 }
