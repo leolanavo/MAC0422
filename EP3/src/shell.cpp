@@ -19,8 +19,10 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
         list<Process>::iterator it;
         for (it = running.begin(); it != running.end(); it++) {
             if (timer >= it->tf) {
-                if (id_fit == 3) proc_info.mem.quick_free_process(*it);
-                else proc_info.mem.free_process(*it);
+                if (id_fit == 3) 
+                    proc_info.mem.quick_free_process(*it);
+                else 
+                    proc_info.mem.free_process(*it);
                 
                 for (int i = 0; i < proc_info.plist.size(); i++)
                     if (proc_info.plist[i].pid == it->pid) {

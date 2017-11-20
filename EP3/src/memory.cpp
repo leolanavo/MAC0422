@@ -85,7 +85,7 @@ void Memory::print_memory () {
 void Memory::print_phys_memory() {
     ofstream file ("/tmp/ep3.mem");
     for (int i = phys_mem.size() - 1; i >= 0; i--) {
-        file << i << " : " << phys_mem[i] << endl;
+        file << phys_mem[i] << endl;
     }
     file.close();
 }
@@ -93,7 +93,7 @@ void Memory::print_phys_memory() {
 void Memory::print_virtual_memory() {
     ofstream file ("/tmp/ep3.virt");
     for (int i = virtual_mem.size() - 1; i >= 0; i--) {
-        file << i << " : " << virtual_mem[i] << endl;
+        file << virtual_mem[i] << endl;
     }
     file.close();
 }
@@ -137,19 +137,7 @@ void print_plist(vector<Process> plist) {
     cout << endl;
 }
 
-void Memory::update_lists() {
-    for (auto it = opt_mem.begin(); it != opt_mem.end(); it++) {
-        it->free_mem.clear();
 
-        for (auto jt = free_mem.begin(); jt != free_mem.end(); jt++) {
-            int n = jt->size/it->size;
-            for (int i = 0, base = jt->base; i < n; i++, base += it->size) {
-                it->free_mem.push_back({-1, base, it->size});
-            }
-        }
-    }
-
-}
 
 void Memory::compact(vector<Process>& plist) {
     list<Alloc> used_aux, free_aux;
@@ -316,6 +304,19 @@ bool compare_size (const best_alloc& a1, const best_alloc& a2) {
     return (a1.size < a2.size); 
 }
 
+void Memory::update_lists() {
+    for (auto it = opt_mem.begin(); it != opt_mem.end(); it++) {
+        it->free_mem.clear();
+
+        for (auto jt = free_mem.begin(); jt != free_mem.end(); jt++) {
+            int n = jt->size/it->size;
+            for (int i = 0, base = jt->base; i < n; i++, base += it->size) {
+                it->free_mem.push_back({-1, base, it->size});
+            }
+        }
+    }
+}
+
 void Memory::generate_lists(list<best_size>& l) {
     int n, ac_freq, min_size, offset;
     n = l.size()/3;
@@ -345,6 +346,7 @@ void Memory::generate_lists(list<best_size>& l) {
 void Memory::quick_free_process (Process& p) {
     free_process(p);
     update_lists();
+    cout << "hello" << endl;
 }
 
 
