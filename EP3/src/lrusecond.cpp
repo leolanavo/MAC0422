@@ -17,7 +17,7 @@ void replace_page(int addr, Memory& mem, matrix& m, Process p) {
     if (check_empty(addr, mem, p))
         return;
 
-    for (int i = 0; m.size(); i++) {
+    for (int i = 0; i < m.size(); i++) {
         val = 0;
         for (unsigned int j = 0; j < m[i].size(); j++)
             val += m[i][j] * ((int) pow(2.0, (double) m[i].size() - j - 1));

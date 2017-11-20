@@ -13,7 +13,7 @@ void replace_page(int addr, Memory& mem, Process p) {
     if (check_empty(addr, mem, p))
         return;
 
-    for (int i = 0; mem.page_list.size(); i++) {
+    for (int i = 0; i < mem.page_list.size(); i++) {
         val = mem.page_list[i].counter;
         if (val < min) {
             min = val;

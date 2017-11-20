@@ -71,6 +71,8 @@ class Memory {
     void print_virtual_memory();
     void print_free_memory();
     void print_used_memory();
+    void print_page_list();
+    void print_frame_list();
     void compact(vector<Process>& plist);
     void free_process(Process& p);
     void best_fit(Process& p);

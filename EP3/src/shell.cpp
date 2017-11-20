@@ -29,6 +29,9 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
                     }
                 
                 it = running.erase(it);
+                proc_info.mem.print_virtual_memory();
+                proc_info.mem.print_phys_memory();
+
             }
         }
 
@@ -58,7 +61,7 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
                 }
                 clock_t end = clock();
                 double elt = (double(end - begin) / CLOCKS_PER_SEC) * 1000000000;
-                cout << elt << endl;
+                //cout << elt << endl;
                 running.push_back(proc_info.plist[i]);
             }
 
@@ -100,8 +103,10 @@ void simulate (assemb& proc_info, int id_fit=1, int id_page=1, int interval=1) {
             proc_info.mem.print_memory();
             proc_info.mem.print_bitmap();
         }*/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-        timer++;        
+        timer++;
     }
+    proc_info.mem.print_page_list();
+    proc_info.mem.print_frame_list();
     printf("%d\n", counter_pf);
 }
 

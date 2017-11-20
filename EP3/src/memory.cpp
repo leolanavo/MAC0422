@@ -41,7 +41,7 @@ Memory::Memory (int phys, int virt, int unity, int spage) :
  * arguments.
  */
 int Memory::get_page(int addr, Process& p) {
-    return ((addr + p.get_base())/spage);
+    return ((addr + p.v_base)/spage);
 }
 
 Process Memory::get_process(int pid, vector<Process>& plist) {
@@ -118,7 +118,20 @@ void Memory::print_used_memory() {
     cout << endl;
 }
 
+void Memory::print_page_list() {
+    for (int i = 0; i < page_list.size(); i++)
+        cout << page_list[i].addr << " | " << page_list[i].p << endl;
+    cout << endl;
+}
+
+void Memory::print_frame_list() {
+    for (int i = 0; i < frame_list.size(); i++)
+        cout << frame_list[i] << endl;
+    cout << endl;
+}
+
 void print_plist(vector<Process> plist) {
+    cout << "==========" << endl;
     for(int i = 0; i < plist.size(); i++)
         cout << plist[i].pid << " | " << plist[i].v_base << endl;
     cout << endl;
@@ -169,15 +182,17 @@ void Memory::free_process(Process& p) {
 
     int min_space = (int)ceil((double) p.b/unity) * unity;
 
-    for (int i = p.v_base; i < p.v_base + p.b; i++) {
+    for (int i = p.v_base; i < p.v_base + min_space; i++) {
         virtual_mem[i] = -1;
         pg_frame = page_list[i/spage].addr;    
-        if (pg_frame != -1) {
-            for(int j = pg_frame*spage; j < pg_frame*spage + spage; j++)
-                phys_mem[j] = -1;
-            page_list[i/spage].addr = -1;
-            page_list[i/spage].p = 0;
-        } 
+        
+        for(int j = pg_frame*spage; j < pg_frame*spage + spage; j++)
+            phys_mem[j] = -1;
+            
+        page_list[i/spage].addr = -1;
+        page_list[i/spage].p = 0;
+
+        frame_list[pg_frame] = -1;
     }
 
     Alloc node = {p.pid, p.v_base, min_space};
